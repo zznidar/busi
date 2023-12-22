@@ -1,0 +1,22 @@
+
+.loader {
+    border: 0.5em solid #9cbfba; /* Light grey */
+    border-top: 0.5em solid #2f4ea8; /* Blue */
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+    animation: spin 1.5s cubic-bezier(.46,.18,.17,.74) infinite;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 999;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+} 
+
+.no {
+display: none;
+}

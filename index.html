@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8" />
+	<meta name="author" content="Žan Žnidar">
+	<title>Busi</title>
+	<meta name="description" content="Lorem ipsum dolor ...">
+
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+   
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
+   
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+   <!-- style.css -->
+   <link rel="stylesheet" href="style.css" />
+   
+</head> 
+ 
+ 
+<body> 
+	 <div id="mapid" style="height: 80vh; "></div>
+	 <button type="button" style="height:2em; width:fit" onclick="godusModus();">Vsi OJPP busi</button>
+	 <div id="gumbiZaRelacije"><p>Nimate dodanih priljubljenih relacij. Dodajte jih na dnu strani v zavihku "Dodaj nove relacije".</p></div><br>
+
+	 <div class="loader center no" id="loader"></div>
+	 
+	 
+	 <button type="button" style="height:2em; width:fit" onclick="document.getElementById('log').innerText = '';">Clear log</button>
+	 
+	 <button type="button" style="height:2em; width:fit" onclick="rotirajPopup();">Umakni popup</button>
+	 <button type="button" style="height:2em; width:fit" onclick="mymap.flyTo(xy, 13);">Centriraj</button>
+<!-- TODO: We can use Google Maps to calculate expected time of arrival. Figure out something to add start & stop locations to this radio list. Does vse_postaje contain lat, lng? 	
+	<div>
+		<p>Google Maps 2 clij:
+		<label> <input type="radio" name="cilj" value="myLocation.getLatLng()" checked> Current location</label>&nbsp;&nbsp;&nbsp;&nbsp;
+		<label> <input type="radio" name="cilj" value="dest = {'lat':46.060053, 'lng': 14.497838}"> Tivoli</label>&nbsp;&nbsp;&nbsp;&nbsp;
+		<label> <input type="radio" name="cilj" value="dest = {'lat':46.073814, 'lng': 14.485797}"> Remiza</label>&nbsp;&nbsp;&nbsp;&nbsp;
+		<label> <input type="radio" name="cilj" value="dest = {'lat':46.052517, 'lng': 14.471862}"> ZOO</label>&nbsp;&nbsp;&nbsp;&nbsp;
+		</p>
+	</div>
+ -->	<input type="text" id="iskalnik" placeholder="Išči po vehicleId"><button type="button" style="width:fit" onclick="m2[document.getElementById('iskalnik').value].openPopup()">Išči!</button>
+	<p id="log">Log: <br></p>
+	
+	<input type="text" id="linije" placeholder="Išči po linijah LPP"><button type="button" style="width:fit" onclick="posodobi('LPP-linija', linije.value)">Prikaži!</button>
+	
+<br><button type="button" style="width:fit" onclick="brisiMarkerje()">Pobriši vse markerje</button>
+
+<input type="checkbox" name="prikazujStareBuse" id="prikazujStareBuse"><label for="prikazujStareBuse">Prikazuj stare buse</input></label>
+<br>
+<div id="urnik">
+	<p>Opomba: Urnik prikazuje tudi linije, ki niso več aktivne (npr. izpred 10 let). Preverite vozni red pri svojem prevozniku!</p>
+	<!-- Timetable -->
+	<table id="timetable">
+		<tr>
+			<th>Ura</th>
+			<th>Linija</th>
+			<th>Trajanje</th>
+			<th>Prevoznik</th>
+		</tr>
+	</table>
+</div>
+
+<br>
+<details><summary>Dodaj nove relacije</summary>
+	<button type="button" id="dodajPostajeBtn" style="height:2em; width:fit" onclick="dodajPostaje();">Dodaj novo relacijo</button>
+	<div id="dodajanjePostajContainer">
+
+	</div>
+</details>
+
+</body>
+
+
+<script>
+// Uporabne funkcije, src nekaterih: https://www.scirra.com/manual/126/system-expressions
+
+/*lerp = function(a, b, x) {
+	return(a + x * (b - a));
+}*/
+var lerp = (a, b, x) => (a + x * (b - a)); // Linear interpolation
+
+var qarp = (a, b, c, x) => (lerp(lerp(a, b, x), lerp(b, c, x), x)); // Quadratic interpolation
+
+var cubic = (a, b, c, d, x) => (lerp(qarp(a, b, c, x), qarp(b, c, d, x), x)); // Cubic interpolation
+;
+var cosp = (a, b, x) => ((a + b + (a - b) * Math.cos(x * Math.PI)) / 2); // Cosine interpolation
+
+var plusminus = (p) => (Math.random() < p) ? -1 : 1; // Negate number or not (probability of negation)
+</script>
+
+
+<script src="zemljevid.js"></script>
+<script src="OJPP.js"></script>
+
+</html>
