@@ -24,16 +24,16 @@
  
 <body> 
 	 <div id="mapid" style="height: 80vh; "></div>
-	 <button type="button" style="height:2em; width:fit" onclick="godusModus();">Vsi OJPP busi</button>
+	 <button type="button" onclick="godusModus();">Vsi OJPP busi</button>
 	 <div id="gumbiZaRelacije"><p>Nimate dodanih priljubljenih relacij. Dodajte jih na dnu strani v zavihku "Dodaj nove relacije".</p></div><br>
 
 	 <div class="loader center no" id="loader"></div>
 	 
 	 
-	 <button type="button" style="height:2em; width:fit" onclick="document.getElementById('log').innerText = '';">Clear log</button>
+	 <button type="button" onclick="document.getElementById('log').innerText = '';">Clear log</button>
 	 
-	 <button type="button" style="height:2em; width:fit" onclick="rotirajPopup();">Umakni popup</button>
-	 <button type="button" style="height:2em; width:fit" onclick="mymap.flyTo(xy, 13);">Centriraj</button>
+	 <button type="button" onclick="rotirajPopup();">Umakni popup</button>
+	 <button type="button" onclick="mymap.flyTo(xy, 13);">Centriraj</button>
 <!-- TODO: We can use Google Maps to calculate expected time of arrival. Figure out something to add start & stop locations to this radio list. Does vse_postaje contain lat, lng? 	
 	<div>
 		<p>Google Maps 2 clij:
@@ -43,12 +43,10 @@
 		<label> <input type="radio" name="cilj" value="dest = {'lat':46.052517, 'lng': 14.471862}"> ZOO</label>&nbsp;&nbsp;&nbsp;&nbsp;
 		</p>
 	</div>
- -->	<input type="text" id="iskalnik" placeholder="Išči po vehicleId"><button type="button" style="width:fit" onclick="m2[document.getElementById('iskalnik').value].openPopup()">Išči!</button>
+ -->	<input type="text" id="iskalnik" placeholder="Išči po vehicleId"><button type="button" style="height: unset;" onclick="m2[document.getElementById('iskalnik').value].openPopup()">Išči!</button>
 	<p id="log">Log: <br></p>
 	
-	<input type="text" id="linije" placeholder="Išči po linijah LPP"><button type="button" style="width:fit" onclick="posodobi('LPP-linija', linije.value)">Prikaži!</button>
-	
-<br><button type="button" style="width:fit" onclick="brisiMarkerje()">Pobriši vse markerje</button>
+<br><button type="button" style="height: unset;" onclick="brisiMarkerje()">Pobriši vse markerje</button>
 
 <input type="checkbox" name="prikazujStareBuse" id="prikazujStareBuse"><label for="prikazujStareBuse">Prikazuj stare buse</input></label>
 <br>
@@ -67,7 +65,7 @@
 
 <br>
 <details><summary>Dodaj nove relacije</summary>
-	<button type="button" id="dodajPostajeBtn" style="height:2em; width:fit" onclick="dodajPostaje();">Dodaj novo relacijo</button>
+	<button type="button" id="dodajPostajeBtn" onclick="dodajPostaje();">Dodaj novo relacijo</button>
 	<div id="dodajanjePostajContainer">
 
 	</div>

@@ -260,8 +260,6 @@ function izrisiRelacijskeGumbe(gumbi) {
     for(let [ime, relacija] of gumbi) {
         let btn = document.createElement("button");
         btn.type = "button";
-        btn.style.height = "2em";
-        btn.style.width = "fit";
         btn.onclick = () => {
             zahtevaj_relacijo_vsi_peroni(start=relacija.start, cilj=relacija.cilj);
         }

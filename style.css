@@ -21,3 +21,7 @@
 .no {
 display: none;
 }
+
+button:not(.zamudas button) {
+    height: 2em; 
+}
