@@ -91,6 +91,8 @@ var cubic = (a, b, c, d, x) => (lerp(qarp(a, b, c, x), qarp(b, c, d, x), x)); //
 var cosp = (a, b, x) => ((a + b + (a - b) * Math.cos(x * Math.PI)) / 2); // Cosine interpolation
 
 var plusminus = (p) => (Math.random() < p) ? -1 : 1; // Negate number or not (probability of negation)
+
+var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between a and b
 </script>
 
 

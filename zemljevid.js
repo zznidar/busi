@@ -224,8 +224,10 @@ function izrisi_OJPP(odg) {
 
             m2[vozilo].bindPopup(info);
 
+            m2[vozilo]["busTstamp"] = busTstamp;
 
             animiraj(m2[vozilo], lat, lng);
+            outdejtajBus(vozilo);
 
         }
 
@@ -234,3 +236,17 @@ function izrisi_OJPP(odg) {
     }
 	
 }
+
+function outdejtajBuse() {
+    for(let m in m2) {
+        outdejtajBus(m);
+    }
+}
+function outdejtajBus(m) {
+    let outdejtanost = clamp((((new Date()) - (new Date(m2[m]["busTstamp"])))/1000 - 90)/300, 0, 1); // New data arrives every 30 seconds, and is 60 seconds old. Fade out the marker slowly for 5 minutes.
+    console.log(outdejtanost);
+    m2[m]["_icon"]["style"]["filter"] = `grayscale(${lerp(0, 89, outdejtanost)}%) blur(${lerp(0, 0.07, outdejtanost)}rem) opacity(${lerp(100, 65, outdejtanost)}%)`
+    //m2[m]["_icon"]["style"]["filter"] = `grayscale(${lerp(0, 100, outdejtanost)}%) opacity(${lerp(100, 65, outdejtanost)}%)`
+}
+
+let outdejtanje = setInterval(outdejtajBuse, 20000);
