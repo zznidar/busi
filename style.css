@@ -42,3 +42,11 @@ button:not(.zamudas button) {
 .pritozba:active {
     background-color: #d9b2b2; */
 }
+
+footer {
+    font-size: small;
+    color: gray; 
+    padding-bottom: 1.5rem;
+    padding-top: 1.5rem;
+    text-align: center;
+}
