@@ -25,3 +25,20 @@ display: none;
 button:not(.zamudas button) {
     height: 2em; 
 }
+
+.pritozba {
+    font-size: smaller;
+    padding: 0.5px;
+    /* Uncomment the styles below if we ever make it a mailto:prevoznik with a pritozba template */
+/*     background-color: #ffe3e3;
+    color: #740000;
+    border: 1px solid;
+}
+
+.pritozba:hover {
+    background-color: #e3caca;
+}
+
+.pritozba:active {
+    background-color: #d9b2b2; */
+}

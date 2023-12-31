@@ -149,7 +149,8 @@ async function izpisi_zamudo(gumb, busId) {
     for(let z of zamude) {
         let barva = z.zamuda <= 0 ? "darkgreen" : "darkred";
         if(zamudeHTML === "") {
-            zamudeHTML += `<summary>${z.postaja}: <b style="color: ${barva}">${z.zamuda}</b> min</summary>`;
+            zamudeHTML += `<summary>${z.postaja}: <b style="color: ${barva}">${z.zamuda}</b> min${(z.zamuda > 3 || z.zamuda < -1) ? ` <button type="button" class="pritozba">Pritoži se na tramvaj komando</button>` : ""}</summary>`;
+            // Če je zamuda > 3 min ali spelje prej kot –1 min, dodamo gumb za pritožbo na tramvaj komando (https://fran.si/iskanje?View=1&=&Query=tramvaj)
             continue;
         }
         zamudeHTML += `<li>${z.postaja}: <b style="color: ${barva}">${z.zamuda}</b> min</li>`;
