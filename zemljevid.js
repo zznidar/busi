@@ -41,16 +41,19 @@ var myIconlocation = L.icon({
 
 /* ZEMLJEVID */
 var mymap = L.map('mapid', {
-    attributionControl: false
+    
 }).setView([x, y], 13);
-L.tileLayer('https://tiles.derp.si/maps/streets/{z}/{x}/{y}@2x.png', {
+L.maptilerLayer({
+    apiKey: "Iz6oqHAlxuXztN4SolAF"
+}).addTo(mymap);
+L.tileLayer("", {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, data from <a href="https://ojpp.si">OJPP (CC BY 4.0)</a>',
     maxZoom: 18,
 }).addTo(mymap);
-L.control.attribution({
+/* L.control.attribution({
     position: 'topright'
 }).addTo(mymap);
-
+ */
 /* LOKACIJA */
 var radius, myLocation, myAccuracy;
 mymap.locate({
