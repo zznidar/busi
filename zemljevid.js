@@ -33,7 +33,7 @@ var busIconKrsiDekret = L.icon({
 }); 
 
 var myIconlocation = L.icon({
-    iconUrl: 'lokacija.png',
+    iconUrl: 'location_accent-01.svg',
 	iconSize: [16, 16],
     iconAnchor: [8, 8],
     popupAnchor: [-3, -76]
@@ -41,7 +41,7 @@ var myIconlocation = L.icon({
 
 /* ZEMLJEVID */
 var mymap = L.map('mapid', {
-    
+    zoomControl: false
 }).setView([x, y], 13);
 L.maptilerLayer({
     apiKey: "Iz6oqHAlxuXztN4SolAF"
@@ -63,11 +63,12 @@ mymap.locate({
 });
 function onLocationFound(e) {
     var radius = e.accuracy / 2;
+    var color = '#3a4d39';
     if (!myLocation) {
         myLocation = L.marker(e.latlng, {
             icon: myIconlocation
         }).addTo(mymap);
-        myAccuracy = L.circle(e.latlng, radius).addTo(mymap);
+        myAccuracy = L.circle(e.latlng, radius, {fillColor: color, color:color}).addTo(mymap);
         mymap.flyTo(e.latlng, 13)
     } else {
         animiraj(myLocation, e.latlng.lat, e.latlng.lng);
@@ -206,26 +207,21 @@ function izrisi_OJPP(odg) {
             bear = odg["direction"];
             speed = odg?.["vehicleSpeed"] ?? `<span style="font-size: xx-small;">${odg?.["operator_name"]}</span>` ?? "🤷🏻‍♀️";
             vid = odg["vehicle_id"];
-			
-            info = "";
-            info += ("<h1 style='transform: rotate(" + bear + "deg); width: -moz-fit-content; width: fit-content; margin-bottom: 0px'>&uarr;</h1>"); //SMER
-            /* info += ("<button type='button' onclick='odpriMaps(\"" + vid + "\");'>Odpri Google Maps 2</button>"); //MAPS */
-            info += (`<div class="zamudas"><button type='button' onclick='izpisi_zamudo(this, \"${vid}\");'>Kolikšna je zamuda?</button><details class="zamudice"></details></div>`); //ZAMUDA
-            info += ("<br>Hitrost: " + speed + " km/h"); //HITROST
-			info += ("<span style='position: absolute; top: 10%; right: 10%;'>id: " + vid + "</span>"); //ID
-			
-    
-            info += `; model: <a href="https://ojpp.si/vehicles/${vid}" target="_blank">${odg?.["model"]?.["name"]}</a> <br>Urnik: ${odg?.["time_departure"]}–${odg?.["prihodNaCilj"]}`; //ODO
-            info += `<br><br><b><a href="https://ojpp.si/trips/${odg?.["trip_id"]}" target="_blank">${odg?.["route_name"]}</a></b>`; //LINIJA
-            info += ("<br><b>" + odg["plate"] + "</b>"); //REGISTRSKA
-			
-			
-			//info += ("<span style='position: absolute; bottom: 10%; right: 10%;'>pred " + "čas" + "</span>"); //STAROST
-			info += ("<br><span style='color: gray;font-size: 80%;bottom: 10%;right: 10%;' id='stamp_" + vid + "'><i>Nazadnje posodobljeno " + busTstamp + "</i></span><br>"); //TIMESTAMP (kmalu depreciated, ko bo STAROST)
-			
-			info += ("<img id='eksekuter' src='' onerror='console.log(\"test\"); for(let i = 0; i < odstevalci.length; i++) {clearInterval(odstevalci.pop());} odstevalci.push(setInterval(starost, 1000, \"" + busTstamp + "\", \"" + vid + "\")); document.getElementById(\"stamp_" + vid + "\").style.position = \"absolute\"; starost(\"" + busTstamp + "\", \"" + vid + "\"); this.remove();'/>");
 
-            m2[vozilo].bindPopup(info);
+
+            content=""
+            content +="<div class=''>"
+            content += `<a href="https://ojpp.si/trips/${odg?.["trip_id"]}" target="_blank" class="popup_route">${odg?.["route_name"]}</a>`; //LINIJA
+            content += ("<span class='popup_id' >Številka avtobusa: " + vid + "</span>"); //ID
+            content += `<br>Pričakovan prihod na cilj: ${odg?.["time_departure"]}–${odg?.["prihodNaCilj"]}`; //ODO
+            content += ("<br><b>" + odg["plate"] + "</b>"); //REGISTRSKA
+
+
+
+            content += (`<div class="popup_zamuda"><span class='popup_zamuda_button' onclick='izpisi_zamudo(this, \"${vid}\");'>Kolikšna je zamuda?</span><details class="zamudice"><summary>Zamuda</summary></details></div>`); //ZAMUDA
+            content += "</div>"
+
+            m2[vozilo].bindPopup(content);
 
             m2[vozilo]["busTstamp"] = busTstamp;
 

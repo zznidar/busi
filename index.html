@@ -6,6 +6,9 @@
 	<title>Busi</title>
 	<meta name="description" content="Prikazovalnik lokacij avtobusov in njihovih zamud">
 
+	<link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="">
 	<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
 	    <script src="https://cdn.maptiler.com/maptiler-sdk-js/v1.2.0/maptiler-sdk.umd.js"></script>
@@ -20,59 +23,90 @@
  
  
 <body> 
-	 <div id="mapid" style="height: 80vh; "></div>
-	 <button type="button" onclick="godusModus();">Vsi OJPP busi</button>
-	 <div id="gumbiZaRelacije"><p>Nimate dodanih priljubljenih relacij. Dodajte jih na dnu strani v zavihku "Dodaj nove relacije".</p></div><br>
-
+	 <div id="mapid" class="map"></div>
 	 <div class="loader center no" id="loader"></div>
-	 
-	 
-	 <button type="button" onclick="document.getElementById('log').innerText = '';">Clear log</button>
-	 
-	 <button type="button" onclick="rotirajPopup();">Umakni popup</button>
-	 <button type="button" onclick="mymap.flyTo(xy, 13);">Centriraj</button>
-<!-- TODO: We can use Google Maps to calculate expected time of arrival. Figure out something to add start & stop locations to this radio list. Does vse_postaje contain lat, lng? 	
-	<div>
-		<p>Google Maps 2 clij:
-		<label> <input type="radio" name="cilj" value="myLocation.getLatLng()" checked> Current location</label>&nbsp;&nbsp;&nbsp;&nbsp;
-		<label> <input type="radio" name="cilj" value="dest = {'lat':46.060053, 'lng': 14.497838}"> Tivoli</label>&nbsp;&nbsp;&nbsp;&nbsp;
-		<label> <input type="radio" name="cilj" value="dest = {'lat':46.073814, 'lng': 14.485797}"> Remiza</label>&nbsp;&nbsp;&nbsp;&nbsp;
-		<label> <input type="radio" name="cilj" value="dest = {'lat':46.052517, 'lng': 14.471862}"> ZOO</label>&nbsp;&nbsp;&nbsp;&nbsp;
-		</p>
-	</div>
- -->	<input type="text" id="iskalnik" placeholder="Išči po vehicleId"><button type="button" style="height: unset;" onclick="m2[document.getElementById('iskalnik').value].openPopup()">Išči!</button>
-	<p id="log">Log: <br></p>
 	
-<br><button type="button" style="height: unset;" onclick="brisiMarkerje()">Pobriši vse markerje</button>
-
-<input type="checkbox" name="prikazujStareBuse" id="prikazujStareBuse"><label for="prikazujStareBuse">Prikazuj stare buse</input></label>
-<br>
-<div id="urnik">
-	<p>Opomba: Urnik prikazuje tudi linije, ki niso več aktivne (npr. izpred 10 let). Preverite vozni red pri svojem prevozniku!</p>
-	<!-- Timetable -->
-	<table id="timetable">
-		<tr>
-			<th>Ura</th>
-			<th>Linija</th>
-			<th>Trajanje</th>
-			<th>Prevoznik</th>
-		</tr>
-	</table>
-</div>
-
-<br>
-<details><summary>Dodaj nove relacije</summary>
-	<button type="button" id="dodajPostajeBtn" onclick="dodajPostaje();">Dodaj novo relacijo</button>
-	<div id="dodajanjePostajContainer">
+	<div class="info-container">
+		<span class="material-symbols-outlined tool_icon" style="left: 50%; top:10px;" onclick="toggleVisibility()">info</span>
+		<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="mymap.flyTo(xy, 13);">my_location</span>
 
 	</div>
-</details>
 
-<footer>
-	<p>Avtor prikazovalnika: Žan&nbsp;Žnidar, ©&nbsp;2023<br>
-		Vir podatkov: <a href="https://ojpp.si/about" target="_blank">OJPP</a><br>
-		Source code is available on <a href="https://github.com/zznidar/busi">GitHub</a></p>
-</footer>
+	<div class="info-panel no" id="info">
+		<div class ="center" style="width:75%">
+			<h2>Busi</h2>
+			<p>Prikazovalnik lokacije avtobusov in njihovih zamud.</p>
+			<p>Avtorja: <br>
+				Žan&nbsp;Žnidar <br>
+				Marko&nbsp;Zupan<br> ©
+				&nbsp;2023<br>
+				<br>
+				<br>
+				Vir podatkov: <a href="https://ojpp.si/about" target="_blank">OJPP</a><br>
+				Source code is available on <a href="https://github.com/zznidar/busi">GitHub</a></p>
+		</div>
+	</div>
+
+
+	<div class = "tool_container">
+		<div style="padding-top: 5px; padding-bottom: 5px;">
+			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="window.location.reload();">sync</span>
+			<span class= "tool_item" style="left:37.5%">Ozveži</span>
+
+			<span class="material-symbols-outlined tool_icon" style="left: 12.5%;" onclick="toggleFavorite()">favorite</span>
+			<span class= "tool_item" style="left:12.5%">Priljubljene</span>
+
+			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;">search</span>
+			<span class= "tool_item" style="left:87.5%">Išči</span>
+
+			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="godusModus()">directions_bus</span>
+			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span>
+		</div>
+		
+	</div>
+
+	<div class = "site_container">
+		<hr class="line">
+		<div id="favorites" style="padding-left: 5px; padding-right: 5px; margin-top: 20px;" class="center no">
+			
+			<h2>Priljubljene relacije</h2>
+			<p style="margin-top: -15px;">Novo relacijo dodaš z gumbom "Dodaj relacijo"</p>
+			
+			<div id="dodajanjePostajContainer">
+			</div>
+
+			<div id="gumbiZaRelacije" style ="margin-top: 25px;"><p></p></div><br>
+			<span class="btn_general center" id="dodajPostajeBtn" onclick="dodajPostaje();">Dodaj relacijo</span>
+
+		</div>
+			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center">
+				<h2>Urnik za izbrano relacijo</h2>
+				<div id="urnik">
+					<p>Opomba: Urnik prikazuje tudi linije, ki niso več aktivne (npr. izpred 10 let). Preverite vozni red pri svojem prevozniku!</p>
+					<!-- Timetable -->
+					<table id="timetable">
+						
+					</table>
+				</div>
+			</div>
+	 	
+	<p id="log" style="display:none">Log: <br></p>
+	<input type="checkbox" name="prikazujStareBuse" id="prikazujStareBuse" style="display: none;"><label for="prikazujStareBuse"></input></label>
+
+
+<br>
+
+
+<br>
+
+		</div>
+
+
+	</div>
+
+
+
+	 
 </body>
 
 
@@ -93,6 +127,16 @@ var cosp = (a, b, x) => ((a + b + (a - b) * Math.cos(x * Math.PI)) / 2); // Cosi
 var plusminus = (p) => (Math.random() < p) ? -1 : 1; // Negate number or not (probability of negation)
 
 var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between a and b
+
+function toggleVisibility() {
+        var element = document.getElementById('info');
+        element.classList.toggle('no');
+    }
+
+	function toggleFavorite() {
+        var element = document.getElementById('favorites');
+        element.classList.toggle('no');
+    }
 </script>
 
 

@@ -1,7 +1,25 @@
+/*Color variables*/
+:root{
+    --color-beige: #ECE3CE;
+    --color-third: #739072;
+    --color-secondary: #4f6f52;
+    --color-primary: #3a4d39;    
+}
+
+
+body{
+    overflow-x: hidden;
+    -webkit-user-select: none;
+    font-family: "Open Sans", sans-serif;
+    font-size: 0.8rem;
+}
+
+
+
 
 .loader {
     border: 0.5em solid #9cbfba; /* Light grey */
-    border-top: 0.5em solid #2f4ea8; /* Blue */
+    border-top: 0.5em solid var(--color-primary);
     border-radius: 50%;
     width: 2em;
     height: 2em;
@@ -13,13 +31,15 @@
     translate: -50% -50%;
 }
 
+
+
 @keyframes spin {
 0% { transform: rotate(0deg); }
 100% { transform: rotate(360deg); }
 } 
 
 .no {
-display: none;
+    display: none !important;
 }
 
 button:not(.zamudas button) {
@@ -27,21 +47,50 @@ button:not(.zamudas button) {
 }
 
 .pritozba {
-    font-size: smaller;
-    padding: 0.5px;
-    /* Uncomment the styles below if we ever make it a mailto:prevoznik with a pritozba template */
-/*     background-color: #ffe3e3;
-    color: #740000;
-    border: 1px solid;
+    background-color: white;
+    color:black;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+    border-color: white;
+    border-radius: 1rem;
+    width:fit-content;
+    padding: 0.5rem 1rem;
+    margin-left: 5px;
+    margin-right: 5px;
+    display:inline-block;
+    font-size: 0.5rem;
+    position: absolute;
+    display: none;
 }
 
-.pritozba:hover {
-    background-color: #e3caca;
+
+
+.btn_general{
+    background-color: var(--color-secondary);
+    color:white;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.1);
+    border-color: white;
+    border-radius: 1rem;
+    width:fit-content;
+
+    padding: 0.5rem 1rem;
+
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.8rem;
 }
 
-.pritozba:active {
-    background-color: #d9b2b2; */
+.map{
+    height: calc(100dvh - 150px);
+    border-radius: 1.5rem;
+    margin-top: 10px;
+    left: 2.5vw;
+    width: 95vw;
+    position:fixed;
+    top:0;
+    z-index: 0;
 }
+
+
+
 
 footer {
     font-size: small;
@@ -49,4 +98,275 @@ footer {
     padding-bottom: 1.5rem;
     padding-top: 1.5rem;
     text-align: center;
+}
+
+
+.tool_container{
+    height: 85px;
+    position: fixed;
+    left:0;
+    right:0;
+    bottom: 0%;
+    border-radius: 1.5rem 1.5rem 0 0;
+    background-color: white;
+    opacity: 1;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    display: block;
+    z-index: 1;
+}
+
+.line{
+    height: 0.3rem;
+    border-radius: 5rem;
+    width: 30vw;
+    background-color: var(--color-primary);
+    position: relative;
+    top: 5px
+}
+
+.site_container{
+    min-height: 100vh;
+    left:0;
+    right:0;
+    border-radius: 1.5rem 1.5rem 0 0;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    position: absolute;
+    top:calc(100dvh - 120px);
+    background-color: white;
+
+    z-index: 0;
+}
+
+.tool_item{
+    font-size: 0.8em;
+    position: absolute;
+    transform:translateX(-50%);
+    bottom: 10px;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    color: var(--color-primary);
+
+}
+
+.tool_icon{
+    font-size: 2.5em;
+    color: var(--color-primary);
+    padding-top: 5px;
+    padding: 0.5rem;
+    position: absolute; 
+    transform:translateX(-50%);
+
+
+}
+
+.tool_icon:hover{
+    color: var(--color-secondary);
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    padding: 0.5rem;
+    opacity: 0.9;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 200,
+  'GRAD' 0,
+  'opsz' 48
+}
+
+.center{
+    text-align: center;
+    display:table;
+    margin: 0 auto;
+
+}
+
+h2{
+    font-family: "Open Sans", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 100;
+    color: var(--color-primary);
+}
+
+.btn_busstop{
+    background-color: white;
+    color:black;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
+    border-color: white;
+    border-radius: 1rem;
+    width:fit-content;
+    padding: 0.5rem 1rem;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-block-end: 5px;
+    margin-block-start: 5px;
+    display:inline-block;
+    font-size: 0.8rem;
+}
+
+.btn_busstop:hover{
+    background-color: var(--color-beige);
+}
+
+.btn_busline{
+    background-color: var(--color-third);
+    color:white;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
+    border-color: white;
+    border-radius: 1rem;
+    width:fit-content;
+    padding: 0.5rem 1rem;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-block-end: 5px;
+    margin-block-start: 5px;
+    display:inline-block;
+    font-size: 0.8rem;
+}
+
+.btn_busline:hover{
+    background-color: var(--color-secondary);
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 10px 10px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+}
+
+table thead td {
+    font-weight: bold;
+    color: var(--color-primary);
+    text-align: center;
+    padding-bottom: 5px;
+    padding-top: 5px;
+
+}
+
+table thead tr{
+    box-shadow: unset;
+}
+
+
+table td{
+    text-align: center;
+}
+
+.ura {
+    padding-left: 5px;
+}
+
+table td a{
+    color: white;
+    text-decoration: none;
+    background-color: var(--color-third);
+    border: 0.1rem solid var(--color-third);
+    border-radius: 1rem;
+    width: 60%;
+    padding: 0.1rem 1rem;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-block-end: 10px;
+    margin-block-start: 10px;
+    display:inline-block;
+    font-size: 0.6rem;
+
+}
+
+table td a:hover{
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+}
+
+table tr{
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    border-color: white;
+
+}
+
+/*Popup styling*/
+
+.leaflet-popup-content-wrapper {
+    width:90vw;
+}
+
+
+.popup_route {
+    color:var(--color-primary) !important;
+    text-decoration: none !important;
+    display:block;
+    width: 90vw !important;
+    font-size: 1rem;
+}
+
+.popup_id{
+    text-emphasis: italic !important;
+}
+
+.popup_zamuda_button{
+    background-color: var(--color-third) !important;
+    color:white;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
+    border-color: white;
+    border-radius: 1rem;
+    width:fit-content;
+    padding: 0.5rem 1rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+
+    display:inline-block;
+    font-size: 0.8rem;
+    z-index: 10;
+}
+
+.popup_zamuda{
+    background-color: white;
+}
+
+
+.zamudice{
+    padding-left: 15px;
+}
+
+ul{
+    list-style: none;
+    padding-left: 0px;
+    margin-top:0;
+}
+
+
+li{
+    padding-left: 0.75rem;
+}
+
+.info-container{
+    position: fixed;
+    width: 60px;
+    height: 120px;
+    top:0;
+    right:0;
+    background-color: white;
+    border-radius: 0 0 0 1.5rem;
+
+}
+
+.info-panel{
+    position: fixed;
+    width: 90vw;
+    height: 300px;
+    top:50%;
+    left: 5vw;
+    transform: translate(0, -50%);
+    background-color: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    z-index: 1;
 }
