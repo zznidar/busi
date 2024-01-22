@@ -133,6 +133,7 @@ footer {
     position: absolute;
     top:calc(100dvh - 120px);
     background-color: white;
+    padding-bottom: 80px;
 
     z-index: 0;
 }
@@ -369,4 +370,8 @@ li{
     border-radius: 1.5rem;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
     z-index: 1;
+}
+
+.rotated-marker{
+    transform-origin: center;
 }

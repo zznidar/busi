@@ -3,6 +3,7 @@ const ZAPADLOST = 1000 * 3600; // Kako stare avtobuse skrijemo (v milisekundah)
 x = 46.051;
 y = 14.505;
 m2 = {}; // Markerji bodo zdaj kot key: value, kjer je key = vehicleId in value = marker
+m3 = {}; //Marjerki za orientacijo
 
 
 /* IKONE */
@@ -37,6 +38,13 @@ var myIconlocation = L.icon({
 	iconSize: [16, 16],
     iconAnchor: [8, 8],
     popupAnchor: [-3, -76]
+});
+
+var busDirection = L.icon({
+    iconUrl: 'bus_arrow.svg',
+	iconSize: [45, 45],
+    iconAnchor: [22.5, 37.5],
+    popupAnchor: [0, -30]
 });
 
 /* ZEMLJEVID */
@@ -95,13 +103,35 @@ animiraj = function(enMarker, newx, newy) {
     var pr = setInterval(function() {
         if (p < 1) {
             enMarker.setLatLng(new L.LatLng(cosp(x, newx, p), cosp(y, newy, p)));
-            p += 0.01;
+            p += 0.1;
         } else {
             x = newx;
             y = newy;
             clearInterval(pr);
         }
     }, 0);
+}
+
+update_smer = function(enMarker, newx, newy, newbear) {
+    var p = 0; // potek interpolacije
+
+    var x = enMarker.getLatLng().lat;
+    var y = enMarker.getLatLng().lng;
+    var pr = setInterval(function() {
+        if (p < 1) {
+            enMarker.setLatLng(new L.LatLng(cosp(x, newx, p), cosp(y, newy, p)));
+            p += 0.1;
+            var oldTransform = enMarker._icon.style.transform;
+            enMarker._icon.style.transform = `${oldTransform} rotate(${newbear}deg)`;
+        } else {
+            x = newx;
+            y = newy;
+            clearInterval(pr);
+        }
+    }, 0);
+    
+    
+    console.log(enMarker._icon.style.transform);
 }
 
 rotirajPopup = function() {
@@ -158,6 +188,10 @@ brisiMarkerje = function() {
         mymap.removeLayer(m2[key]);
         delete m2[key];
     }
+    for (const [key, value] of Object.entries(m3)) {
+        mymap.removeLayer(m3[key]);
+        delete m3[key];
+    }
     busi = {};
 }
 
@@ -176,6 +210,7 @@ function izrisi_OJPP(odg) {
         var x = odg["lat"];
         var y = odg["long"];
         var vozilo = odg["vehicle_id"];
+        var bear = odg["direction"];
 
         if(x === undefined || y === undefined) {
             // Bus nima koordinat, le izpišemo registrsko
@@ -183,11 +218,23 @@ function izrisi_OJPP(odg) {
             continue;
         }
 
+        
+        if (!m3[vozilo]) {
+            m3[vozilo] = L.marker([x, y], {
+                icon: busDirection,
+            }).addTo(mymap);
+
+            m3[vozilo]._icon.classList.add("rotated-marker");
+            var oldTransform = m3[vozilo]._icon.style.transform;
+            m3[vozilo]._icon.style.transform = `${oldTransform} rotate(${bear}deg)`;
+            
+        }
         if (!m2[vozilo]) {
             m2[vozilo] = L.marker([x, y], {
                 icon: myIcon
             }).addTo(mymap);
         }
+        
 
         // Tukaj preverimo, katere stare buse bomo skrili z mape.
         busTstamp = new Date(odg["time"]);
@@ -213,7 +260,7 @@ function izrisi_OJPP(odg) {
             content +="<div class=''>"
             content += `<a href="https://ojpp.si/trips/${odg?.["trip_id"]}" target="_blank" class="popup_route">${odg?.["route_name"]}</a>`; //LINIJA
             content += ("<span class='popup_id' >Številka avtobusa: " + vid + "</span>"); //ID
-            content += `<br>Pričakovan prihod na cilj: ${odg?.["time_departure"]}–${odg?.["prihodNaCilj"]}`; //ODO
+            content += `<br>Urnik za relacijo: ${odg?.["time_departure"]}–${odg?.["prihodNaCilj"]}`; //ODO
             content += ("<br><b>" + odg["plate"] + "</b>"); //REGISTRSKA
 
 
@@ -224,8 +271,10 @@ function izrisi_OJPP(odg) {
             m2[vozilo].bindPopup(content);
 
             m2[vozilo]["busTstamp"] = busTstamp;
+            m3[vozilo]["busTstamp"] = busTstamp;
 
             animiraj(m2[vozilo], lat, lng);
+            update_smer(m3[vozilo], lat, lng, bear);
             outdejtajBus(vozilo);
 
         }
@@ -238,6 +287,9 @@ function izrisi_OJPP(odg) {
 
 function outdejtajBuse() {
     for(let m in m2) {
+        outdejtajBus(m);
+    }
+    for(let m in m3) {
         outdejtajBus(m);
     }
 }
