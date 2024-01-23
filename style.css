@@ -160,7 +160,7 @@ footer {
 
 }
 
-.tool_icon:hover{
+.tool_icon:active{
     color: var(--color-secondary);
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 50%;
@@ -206,7 +206,7 @@ h2{
     font-size: 0.8rem;
 }
 
-.btn_busstop:hover{
+.btn_busstop:active{
     background-color: var(--color-beige);
 }
 
@@ -226,7 +226,7 @@ h2{
     font-size: 0.8rem;
 }
 
-.btn_busline:hover{
+.btn_busline:active{
     background-color: var(--color-secondary);
 }
 
@@ -280,7 +280,7 @@ table td a{
 
 }
 
-table td a:hover{
+table td a:active{
     background-color: var(--color-secondary);
     border-color: var(--color-secondary);
 }
@@ -290,6 +290,16 @@ table tr{
     border-radius: 10px;
     border-color: white;
 
+}
+
+/*Missed bus styling*/
+.missed {
+    opacity: 0.5;
+}
+
+.on_route {
+    opacity: 0.8;
+    border: 2px solid var(--color-secondary) !important;
 }
 
 /*Popup styling*/
@@ -374,4 +384,51 @@ li{
 
 .rotated-marker{
     transform-origin: center;
+}
+
+.non_existent_container{
+    position: fixed;
+    width: 80vw;
+    height: fit-content;
+    top:25%;
+    left: 10vw;
+    transform: translate(0, -50%);
+    color:white;
+    background-color: #820300;
+    opacity: 0;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    z-index: 1;
+
+}
+
+.bus_stop_input_container{
+    position: fixed;
+    width: 90vw;
+    height: 220px;
+    top:50%;
+    left: 5vw;
+    transform: translate(0, -50%);
+    background-color: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    z-index: 1;
+}
+
+
+input[type='text']{
+    text-align: center;
+    border:none;
+    border-bottom: 2px solid var(--color-primary);
+    width: 60%;
+    padding: 0.5rem 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-block-end: 10px;
+    margin-block-start: 10px;
+    display:inline-block;
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    outline:none;
+
 }

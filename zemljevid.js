@@ -203,7 +203,16 @@ function izrisi_OJPP(odg) {
 	d = new Date(); // Uporabimo kasneje za skrivanje starih busov
 
     if(Object.keys(busi).length === 0) {
-        alert("Ni takih busov, vsaj ne na OJPP");
+        //alert("Ni takih busov, vsaj ne na OJPP");
+        //Get element with id 'non_existing'
+        var errorPopup = document.getElementById("non_existing");
+
+        //Increase opacity to 0.8 for 3 seconds with animation
+        errorPopup.style.opacity = 0.8;
+        errorPopup.style.transition = "opacity 1s ease-in-out";
+        setTimeout(function(){errorPopup.style.opacity = 0;}, 3000);
+        return;
+
     }
 	
     for (const [busId, odg] of Object.entries(busi)) {
@@ -260,8 +269,14 @@ function izrisi_OJPP(odg) {
             content +="<div class=''>"
             content += `<a href="https://ojpp.si/trips/${odg?.["trip_id"]}" target="_blank" class="popup_route">${odg?.["route_name"]}</a>`; //LINIJA
             content += ("<span class='popup_id' >Številka avtobusa: " + vid + "</span>"); //ID
-            content += `<br>Urnik za relacijo: ${odg?.["time_departure"]}–${odg?.["prihodNaCilj"]}`; //ODO
-            content += ("<br><b>" + odg["plate"] + "</b>"); //REGISTRSKA
+
+            //Do not display if undefined
+            timeDeparture = odg?.["time_departure"] ?? "";
+            timeArrival = odg?.["prihodNaCilj"] ?? "";
+            if (timeDeparture != "" || timeArrival != "") {
+                content += `<br>Urnik za relacijo: ${timeDeparture}–${timeArrival}`; //ODO
+                content += ("<br><b>" + odg["plate"] + "</b>"); //REGISTRSKA
+            }
 
 
 

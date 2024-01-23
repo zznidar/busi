@@ -48,10 +48,25 @@
 		</div>
 	</div>
 
+	<div class="non_existent_container" id="non_existing">
+		<div class="center">
+			<p>Na tej relaciji trenutno ni busa.</p>
+		</div>
+	</div>
+
+	<div class="bus_stop_input_container no">
+		<div class="center">
+			<h2 style="padding-top: 15px;">Išči postajo</h2>
+			<p style="margin-top: -15px;">Vnesi vsaj 3 črke za iskanje postaje!</p>
+			<input type="text" id="bus_stop_input" style="padding-bottom: 5px; margin-bottom: 25px;" placeholder=""> <br>
+			<span class="btn_general">Išči postaje</span>
+		</div>
+	</div>
+
 
 	<div class = "tool_container">
 		<div style="padding-top: 5px; padding-bottom: 5px;">
-			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="izrisi_OJPP();">sync</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="refresh();">sync</span>
 			<span class= "tool_item" style="left:37.5%">Ozveži</span>
 
 			<span class="material-symbols-outlined tool_icon" style="left: 12.5%;" onclick="toggleFavorite()">favorite</span>

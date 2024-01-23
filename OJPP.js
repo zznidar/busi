@@ -185,10 +185,30 @@ TIMETABLE = document.getElementById("timetable");
 function izpisi_urnik(trips) {
     TIMETABLE.innerHTML = "<thead><tr><td>Ura</td><td>Linija</td><td>Trajanje</td><td>Prevoznik</td></tr></thead>";
     for(let t of trips) {
+
+        //Check if the trip is older than 15 minutes
+        date = new Date;
+        hour = date.getHours();
+        minute = date.getMinutes();
+
+        
+
         let tr = document.createElement("tr");
         let td = document.createElement("td");
         td.innerText = `${(t.time_departure ?? t.time_arrival).slice(0, 5)}–${t.prihodNaCilj.slice(0, 5)}`;
         td.classList.add("ura");
+
+        //Bus departure hour and minute
+        let busHour = parseInt(t.time_departure.slice(0, 2));
+        let busMinute = parseInt(t.time_departure.slice(3, 5));
+
+        if(busHour < hour - 1) {
+            tr.classList.add("missed");
+        }
+        else if(busHour === hour - 1 && busMinute < minute) {
+            tr.classList.add("missed");
+        }
+        
         tr.appendChild(td);
         td = document.createElement("td");
         let a = document.createElement("a");
@@ -219,6 +239,7 @@ async function godusModus() {
     }
 
     izrisi_OJPP(busi);
+    allBuses = true;
 }
 
 postajalisca = {}
@@ -270,14 +291,37 @@ async function dodajPostaje() {
                     console.log(vstopnaPostaja, izstopnaPostaja);
                     zahtevaj_relacijo_vsi_peroni(vstopnaPostaja, izstopnaPostaja);
                     shraniRelacijo(vstopnaPostaja, izstopnaPostaja, `${imeVstopnePostaje}–${imeIzstopnePostaje}`)
+                    //Delete bus stop buttons after the relation has been added
+                    document.getElementById("dodajanjePostajContainer").innerHTML = "";
                 }
                 document.getElementById("dodajanjePostajContainer").appendChild(button);
+                
             }
             
         }
         document.getElementById("dodajanjePostajContainer").appendChild(button);
     }
+
+    
 }
+
+//Marko implementation of refresh
+lastRelation = [];
+allBuses = false;
+async function refresh() {
+    if(allBuses) {
+        return godusModus();
+    }
+    else if(lastRelation.length === 0) {
+        return;
+    }
+    else {
+        zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
+    }
+}
+
+
+
 
 gumbiZaRelacije = document.getElementById("gumbiZaRelacije");
 function izrisiRelacijskeGumbe(gumbi) {
@@ -289,6 +333,9 @@ function izrisiRelacijskeGumbe(gumbi) {
         btn.type = "span";
         btn.onclick = () => {
             zahtevaj_relacijo_vsi_peroni(start=relacija.start, cilj=relacija.cilj);
+            lastRelation = [relacija.start, relacija.cilj];
+            allBuses = false;
+            brisiMarkerje();
         }
         btn.innerText = ime;
         btn.classList.add("btn_busline");
@@ -319,3 +366,4 @@ function exportPresets() {
     a.download = `busi_${(new Date()).getTime()}.json`;
     a.click();
 }
+
