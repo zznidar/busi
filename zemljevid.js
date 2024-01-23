@@ -71,7 +71,7 @@ mymap.locate({
 });
 function onLocationFound(e) {
     var radius = e.accuracy / 2;
-    var color = '#3a4d39';
+    var color = 'var(--color-primary';
     if (!myLocation) {
         myLocation = L.marker(e.latlng, {
             icon: myIconlocation

@@ -208,7 +208,7 @@ function izpisi_urnik(trips) {
         else if(busHour === hour - 1 && busMinute < minute) {
             tr.classList.add("missed");
         }
-        
+
         tr.appendChild(td);
         td = document.createElement("td");
         let a = document.createElement("a");
@@ -336,6 +336,7 @@ function izrisiRelacijskeGumbe(gumbi) {
             lastRelation = [relacija.start, relacija.cilj];
             allBuses = false;
             brisiMarkerje();
+            menuClose();
         }
         btn.innerText = ime;
         btn.classList.add("btn_busline");

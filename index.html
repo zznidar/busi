@@ -81,9 +81,9 @@
 		
 	</div>
 
-	<div class = "site_container">
+	<div class = "site_container" id="menu">
 		<hr class="line">
-		<div id="favorites" style="padding-left: 5px; padding-right: 5px; margin-top: 20px;" class="center no">
+		<div id="favorites" style="padding-left: 5px; padding-right: 5px; margin-top: 20px;" class="center">
 			
 			<h2>Priljubljene relacije</h2>
 			<p style="margin-top: -15px;">Novo relacijo dodaš z gumbom "Dodaj relacijo"</p>
@@ -97,8 +97,12 @@
 		</div>
 			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center">
 				<h2>Urnik za izbrano relacijo</h2>
+				<div class="warning center">
+					<span class="material-symbols-outlined" style="left:50%; color:var(--color-warning); padding-top: 7.5px; font-size:2rem">warning</span>
+					<p style="margin-top: 2.5px;">Urnik prikazuje tudi linije, ki niso več aktivne (npr. izpred 10 let). Preverite vozni red pri svojem prevozniku!</p>
+				</div>
+
 				<div id="urnik">
-					<p>Opomba: Urnik prikazuje tudi linije, ki niso več aktivne (npr. izpred 10 let). Preverite vozni red pri svojem prevozniku!</p>
 					<!-- Timetable -->
 					<table id="timetable">
 						
@@ -106,14 +110,8 @@
 				</div>
 			</div>
 	 	
-	<p id="log" style="display:none">Log: <br></p>
-	<input type="checkbox" name="prikazujStareBuse" id="prikazujStareBuse" style="display: none;"><label for="prikazujStareBuse"></input></label>
-
-
-<br>
-
-
-<br>
+			<p id="log" style="display:none">Log: <br></p>
+			<input type="checkbox" name="prikazujStareBuse" id="prikazujStareBuse" style="display: none;"><label for="prikazujStareBuse"></input></label>
 
 		</div>
 
@@ -144,14 +142,39 @@ var plusminus = (p) => (Math.random() < p) ? -1 : 1; // Negate number or not (pr
 
 var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between a and b
 
-function toggleVisibility() {
-        var element = document.getElementById('info');
-        element.classList.toggle('no');
-    }
+	function toggleVisibility() {
+		var element = document.getElementById('info');
+		element.classList.toggle('no');
+	}
+
+
+	function menuClose(){
+		setTimeout(function() {
+			var element = document.getElementById('menu');
+			window.scrollTo({top: 0, behavior: 'smooth'});
+		}, 100); // Adjust the delay (in milliseconds) to make it slower
+	}
+
+	function menuOpen(){
+		setTimeout(function() {
+			var element = document.getElementById('menu');
+			element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+		}, 100); // Adjust the delay (in milliseconds) to make it slower
+	
+	}
 
 	function toggleFavorite() {
-        var element = document.getElementById('favorites');
-        element.classList.toggle('no');
+        var element = document.getElementById('menu');
+        element.classList.toggle('opened');
+
+		if (!element.classList.contains('opened')) {
+			menuOpen();
+			
+		}
+		else{
+			//Scroll to the top with animation
+			menuClose();
+		}
     }
 </script>
 

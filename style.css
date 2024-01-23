@@ -432,3 +432,23 @@ input[type='text']{
     outline:none;
 
 }
+
+#menu{
+    scroll-margin:20dvh;
+}
+
+.warning{
+    --color-warning: grey;
+    border: 2px solid var(--color-warning);
+    color:var(--color-warning);
+    font-size: 0.7rem;
+    padding: 0.5rem 1rem;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    margin-block-end: 5px;
+    margin-block-start: 5px;
+    display:inline-block;
+    border-radius: 1rem;
+    opacity: 0.5;
+
+}
