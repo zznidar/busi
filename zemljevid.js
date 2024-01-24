@@ -281,6 +281,8 @@ function izrisi_OJPP(odg) {
 
 
             content += (`<div class="popup_zamuda"><span class='popup_zamuda_button' onclick='izpisi_zamudo(this, \"${vid}\");'>Kolikšna je zamuda?</span><details class="zamudice"><summary>Zamuda</summary></details></div>`); //ZAMUDA
+            content += ("<br><span style='color: gray;font-size: 80%;bottom: 10%;right: 10%;' id='stamp_" + vid + "'><i>Nazadnje posodobljeno " + busTstamp + "</i></span><br>"); //TIMESTAMP (kmalu depreciated, ko bo STAROST)
+            content += ("<img id='eksekuter' src='' onerror='console.log(\"test\"); for(let i = 0; i < odstevalci.length; i++) {clearInterval(odstevalci.pop());} odstevalci.push(setInterval(starost, 1000, \"" + busTstamp + "\", \"" + vid + "\")); document.getElementById(\"stamp_" + vid + "\").style.position = \"absolute\"; starost(\"" + busTstamp + "\", \"" + vid + "\"); this.remove();'/>");
             content += "</div>"
 
             m2[vozilo].bindPopup(content);

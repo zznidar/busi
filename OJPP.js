@@ -338,11 +338,33 @@ function izrisiRelacijskeGumbe(gumbi) {
             brisiMarkerje();
             menuClose();
         }
+
+
+        // For touch devices - delte button after 2 seconds
+        btn.ontouchstart = () => {
+            let timeout = setTimeout(() => {
+                btn.remove();
+                data.delete(ime);
+                st.setItem(SAVENAME, JSON.stringify([...data]));
+            }, 2000);
+    
+            btn.ontouchend = () => {
+                clearTimeout(timeout);
+            }
+        }
+    
+        
+        
+
+
         btn.innerText = ime;
         btn.classList.add("btn_busline");
         gumbiZaRelacije.appendChild(btn);
     }
 }
+    
+
+
 
 const SAVENAME = "busi_shranjene-relacije";
 

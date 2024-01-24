@@ -452,3 +452,18 @@ input[type='text']{
     opacity: 0.5;
 
 }
+
+.button-remove{
+    position: relative;
+    font-size: 1rem;
+    top:0.25rem;
+    right: -5px;
+}
+
+
+.button-remove:active{
+    color: var(--color-secondary);
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    opacity: 0.8;
+}
