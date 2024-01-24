@@ -122,7 +122,7 @@ update_smer = function(enMarker, newx, newy, newbear) {
             enMarker.setLatLng(new L.LatLng(cosp(x, newx, p), cosp(y, newy, p)));
             p += 0.1;
             var oldTransform = enMarker._icon.style.transform;
-            enMarker._icon.style.transform = `${oldTransform} rotate(${newbear}deg)`;
+            enMarker["_icon"].dataset.orientacija = newbear;
         } else {
             x = newx;
             y = newy;
@@ -235,7 +235,7 @@ function izrisi_OJPP(odg) {
 
             m3[vozilo]._icon.classList.add("rotated-marker");
             var oldTransform = m3[vozilo]._icon.style.transform;
-            m3[vozilo]._icon.style.transform = `${oldTransform} rotate(${bear}deg)`;
+            m3[vozilo]["_icon"].dataset.orientacija = bear;
             
         }
         if (!m2[vozilo]) {
