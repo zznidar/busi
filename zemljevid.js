@@ -10,8 +10,8 @@ m3 = {}; //Marjerki za orientacijo
 var busIcon = L.icon({
     iconUrl: 'bus.svg',
     iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -30]
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16]
 });
 var busIconLpp = L.icon({
     iconUrl: 'lpp_bus.svg',
@@ -43,8 +43,8 @@ var myIconlocation = L.icon({
 var busDirection = L.icon({
     iconUrl: 'bus_arrow.svg',
 	iconSize: [45, 45],
-    iconAnchor: [22.5, 37.5],
-    popupAnchor: [0, -30]
+    iconAnchor: [22.5, 22.5],
+    popupAnchor: [0, -14]
 });
 
 /* ZEMLJEVID */
