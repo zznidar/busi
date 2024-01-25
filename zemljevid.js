@@ -173,12 +173,12 @@ function starost(tstamp, vid) {
 	output += (Math.floor(razmak/1000) + "s");
 	razmak %= (1000);
 
-    //Skip if null
+    // Remove odštevalec if the popup is not open anymore
     try {
         document.getElementById("stamp_" + vid).innerText = output;
     } catch (e) {
         console.log("Napaka pri izpisu starosti: ", e);
-    
+        clearInterval(odstevalci.pop());    
     }
 	return output;
 }
