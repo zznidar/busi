@@ -208,9 +208,13 @@ function izrisi_OJPP(odg) {
         var errorPopup = document.getElementById("non_existing");
 
         //Increase opacity to 0.8 for 3 seconds with animation
-        errorPopup.style.opacity = 0.8;
+        //Also remove the "no" class so display: none is removed and then add it back after 3 seconds
+        errorPopup.style.opacity = 0;
         errorPopup.style.transition = "opacity 1s ease-in-out";
+        errorPopup.classList.remove("no");
+        setTimeout(function(){errorPopup.style.opacity = 0.8;}, 100);
         setTimeout(function(){errorPopup.style.opacity = 0;}, 3000);
+        setTimeout(function(){errorPopup.classList.add("no");}, 4000);
         return;
 
     }
