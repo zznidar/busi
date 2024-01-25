@@ -173,7 +173,13 @@ function starost(tstamp, vid) {
 	output += (Math.floor(razmak/1000) + "s");
 	razmak %= (1000);
 
-	document.getElementById("stamp_" + vid).innerText = output;
+    //Skip if null
+    try {
+        document.getElementById("stamp_" + vid).innerText = output;
+    } catch (e) {
+        console.log("Napaka pri izpisu starosti: ", e);
+    
+    }
 	return output;
 }
 
