@@ -339,21 +339,7 @@ function izrisiRelacijskeGumbe(gumbi) {
             menuClose();
         }
 
-        
-
-        // For touch devices - delte button after 2 seconds
-        ontouchstart = () => {
-            let timeout = setTimeout(() => {
-                btn.remove();
-                data.delete(ime);
-                st.setItem(SAVENAME, JSON.stringify([...data]));
-            }, 2000);
     
-            btn.ontouchend = () => {
-                clearTimeout(timeout);
-            }
-        }
-
 
         //Use eventListener so touch computer can use it
         btn.addEventListener('touchstart', startTouch);
