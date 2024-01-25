@@ -339,9 +339,10 @@ function izrisiRelacijskeGumbe(gumbi) {
             menuClose();
         }
 
+        
 
         // For touch devices - delte button after 2 seconds
-        btn.ontouchstart = () => {
+        ontouchstart = () => {
             let timeout = setTimeout(() => {
                 btn.remove();
                 data.delete(ime);
@@ -351,6 +352,28 @@ function izrisiRelacijskeGumbe(gumbi) {
             btn.ontouchend = () => {
                 clearTimeout(timeout);
             }
+        }
+
+
+        //Use eventListener so touch computer can use it
+        btn.addEventListener('touchstart', startTouch);
+        btn.addEventListener('touchend', endTouch);
+
+        //For non-touch devices
+        btn.addEventListener('mousedown', startTouch);
+        btn.addEventListener('mouseup', endTouch);
+
+        var timeout;
+        function startTouch(){
+            timeout = setTimeout(() => {
+                btn.remove();
+                data.delete(ime);
+                st.setItem(SAVENAME, JSON.stringify([...data]));
+            }, 2000);    
+        }
+        
+        function endTouch(){
+            clearTimeout(timeout);
         }
     
         
