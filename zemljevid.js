@@ -328,3 +328,9 @@ function outdejtajBus(m) {
 }
 
 let outdejtanje = setInterval(outdejtajBuse, 20000);
+
+var zadnjiIskaniBusId = "";
+function iskalnikBusId() {
+    zadnjiIskaniBusId = prompt("Vnesi ID avtobusa", zadnjiIskaniBusId);
+    m2[zadnjiIskaniBusId].openPopup();
+}
