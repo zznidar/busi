@@ -147,24 +147,68 @@ async function izpisi_zamudo(gumb, busId) {
     console.log(zamude);
     let zamudeHTML = "";
     for(let z of zamude) {
-        let barva = z.zamuda <= 0 ? "darkgreen" : "darkred";
+        let barva = z.zamuda <= 0 ? "#3a4d39" : "#820300";
+
+        //Izpišemo le 5 zamud
+        if(zamudeHTML.split("<li>").length > 5) {
+            break;
+        }
+        
         if(zamudeHTML === "") {
-            zamudeHTML += `<summary>${z.postaja}: <b style="color: ${barva}">${z.zamuda}</b> min${(z.zamuda > 3 || z.zamuda < -1) ? ` <button type="button" class="pritozba">Pritoži se na tramvaj komando</button>` : ""}</summary>`;
+            zamudeHTML += `<summary><span style='
+            color: ${barva};
+            padding: 1px 8px 1px 8px;
+            margin-right:0.2rem;
+            border: 2px solid ${barva};
+            border-radius: 1rem;
+            width: fit-content;
+            display: inline-block;'">${z.zamuda} min</span>&nbsp${z.postaja} ${(z.zamuda > 3 || z.zamuda < -1) ? ` <span class="pritozba">Pritoži se na tramvaj komando</span>` : ""}</summary><ul>`;
             // Če je zamuda > 3 min ali spelje prej kot –1 min, dodamo gumb za pritožbo na tramvaj komando (https://fran.si/iskanje?View=1&=&Query=tramvaj)
             continue;
         }
-        zamudeHTML += `<li>${z.postaja}: <b style="color: ${barva}">${z.zamuda}</b> min</li>`;
+        zamudeHTML += `<li><span style="
+        color: ${barva};
+        padding: 1px 8px 1px 8px;
+        margin-top:0.2rem;
+        margin-right:0.2rem;
+        border: 1px solid ${barva};
+        border-radius: 1rem;
+        width: fit-content;
+        display: inline-block;
+        opacity: 0.7">${z.zamuda} min</span>&nbsp${z.postaja}</li>`;
     }
+    zamudeHTML += "</ul>";
     zamudiceContainer.innerHTML = zamudeHTML;
 }
 
 TIMETABLE = document.getElementById("timetable");
 function izpisi_urnik(trips) {
-    TIMETABLE.innerHTML = "<tr><th>Ura</th><th>Linija</th><th>Trajanje</th><th>Prevoznik</th></tr>";
+    TIMETABLE.innerHTML = "<thead><tr><td>Ura</td><td>Linija</td><td>Trajanje</td><td>Prevoznik</td></tr></thead>";
     for(let t of trips) {
+
+        //Check if the trip is older than 15 minutes
+        date = new Date;
+        hour = date.getHours();
+        minute = date.getMinutes();
+
+        
+
         let tr = document.createElement("tr");
         let td = document.createElement("td");
         td.innerText = `${(t.time_departure ?? t.time_arrival).slice(0, 5)}–${t.prihodNaCilj.slice(0, 5)}`;
+        td.classList.add("ura");
+
+        //Bus departure hour and minute
+        let busHour = parseInt(t.time_departure.slice(0, 2));
+        let busMinute = parseInt(t.time_departure.slice(3, 5));
+
+        if(busHour < hour - 1) {
+            tr.classList.add("missed");
+        }
+        else if(busHour === hour - 1 && busMinute < minute) {
+            tr.classList.add("missed");
+        }
+
         tr.appendChild(td);
         td = document.createElement("td");
         let a = document.createElement("a");
@@ -195,6 +239,7 @@ async function godusModus() {
     }
 
     izrisi_OJPP(busi);
+    allBuses = true;
 }
 
 postajalisca = {}
@@ -223,7 +268,8 @@ async function dodajPostaje() {
 
     let postaje = Object.keys(postajalisca).filter(p => p.toLowerCase().includes(query.toLowerCase()));
     for(let p of postaje) {
-        let button = document.createElement("button");
+        let button = document.createElement("span");
+        button.classList.add("btn_busstop");
         button.innerText = p;
         button.onclick = () => {
             vstopnaPostaja = postajalisca[p];
@@ -236,7 +282,8 @@ async function dodajPostaje() {
             document.getElementById("dodajanjePostajContainer").innerHTML = "";
             let postaje = Object.keys(postajalisca).filter(p => p.toLowerCase().includes(cilj.toLowerCase()));
             for(let p of postaje) {
-                let button = document.createElement("button");
+                let button = document.createElement("span");
+                button.classList.add("btn_busstop");
                 button.innerText = p;
                 button.onclick = () => {
                     izstopnaPostaja = postajalisca[p];
@@ -244,14 +291,37 @@ async function dodajPostaje() {
                     console.log(vstopnaPostaja, izstopnaPostaja);
                     zahtevaj_relacijo_vsi_peroni(vstopnaPostaja, izstopnaPostaja);
                     shraniRelacijo(vstopnaPostaja, izstopnaPostaja, `${imeVstopnePostaje}–${imeIzstopnePostaje}`)
+                    //Delete bus stop buttons after the relation has been added
+                    document.getElementById("dodajanjePostajContainer").innerHTML = "";
                 }
                 document.getElementById("dodajanjePostajContainer").appendChild(button);
+                
             }
             
         }
         document.getElementById("dodajanjePostajContainer").appendChild(button);
     }
+
+    
 }
+
+//Marko implementation of refresh
+lastRelation = [];
+allBuses = false;
+async function refresh() {
+    if(allBuses) {
+        return godusModus();
+    }
+    else if(lastRelation.length === 0) {
+        return;
+    }
+    else {
+        zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
+    }
+}
+
+
+
 
 gumbiZaRelacije = document.getElementById("gumbiZaRelacije");
 function izrisiRelacijskeGumbe(gumbi) {
@@ -259,15 +329,51 @@ function izrisiRelacijskeGumbe(gumbi) {
     // <button type="button" style="height:2em; width:fit" onclick="zahtevaj_relacijo_vsi_peroni(start=[11, 121, 500], cilj=[30001, 6642]);">OJPP Geoss–Lj</button>
 
     for(let [ime, relacija] of gumbi) {
-        let btn = document.createElement("button");
-        btn.type = "button";
+        let btn = document.createElement("span");
+        btn.type = "span";
         btn.onclick = () => {
             zahtevaj_relacijo_vsi_peroni(start=relacija.start, cilj=relacija.cilj);
+            lastRelation = [relacija.start, relacija.cilj];
+            allBuses = false;
+            brisiMarkerje();
+            menuClose();
         }
+
+    
+
+        //Use eventListener so touch computer can use it
+        btn.addEventListener('touchstart', startTouch);
+        btn.addEventListener('touchend', endTouch);
+
+        //For non-touch devices
+        btn.addEventListener('mousedown', startTouch);
+        btn.addEventListener('mouseup', endTouch);
+
+        var timeout;
+        function startTouch(){
+            timeout = setTimeout(() => {
+                btn.remove();
+                data.delete(ime);
+                st.setItem(SAVENAME, JSON.stringify([...data]));
+            }, 2000);    
+        }
+        
+        function endTouch(){
+            clearTimeout(timeout);
+        }
+    
+        
+        
+
+
         btn.innerText = ime;
+        btn.classList.add("btn_busline");
         gumbiZaRelacije.appendChild(btn);
     }
 }
+    
+
+
 
 const SAVENAME = "busi_shranjene-relacije";
 
@@ -292,3 +398,4 @@ function exportPresets() {
     a.download = `busi_${(new Date()).getTime()}.json`;
     a.click();
 }
+
