@@ -306,6 +306,9 @@ table tr{
 
 .leaflet-popup-content-wrapper {
     width:90vw;
+    @media (orientation: landscape) {
+        max-width: fit-content;
+    }
 }
 
 
