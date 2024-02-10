@@ -139,7 +139,7 @@ async function zahtevaj_zamudo(busId) {
     return zamude;
 }
 
-async function izpisi_zamudo(gumb, busId) {
+async function izpisi_zamudo(gumb, busId, stPostaj = 5) {
     console.log("This", gumb);
     let zamudiceContainer = gumb.nextElementSibling;
     console.log(zamudiceContainer);
@@ -149,8 +149,12 @@ async function izpisi_zamudo(gumb, busId) {
     for(let z of zamude) {
         let barva = z.zamuda <= 0 ? "#3a4d39" : "#820300";
 
+        
+        if(stPostaj === 0) {
+        }
+
         //Izpišemo le 5 zamud
-        if(zamudeHTML.split("<li>").length > 5) {
+        else if(zamudeHTML.split("<li>").length > stPostaj) {
             break;
         }
         
@@ -178,13 +182,28 @@ async function izpisi_zamudo(gumb, busId) {
         opacity: 0.7">${z.zamuda} min</span>&nbsp${z.postaja}</li>`;
     }
     zamudeHTML += "</ul>";
+
+    //Update the button text
+    gumb.innerText = "Pokaži vse zamude";
+    gumb.onclick = () => {
+        izpisi_zamudo(gumb, busId, 0);
+    }
     zamudiceContainer.innerHTML = zamudeHTML;
+
 }
 
 TIMETABLE = document.getElementById("timetable");
-function izpisi_urnik(trips) {
+async function izpisi_urnik(trips) {
     TIMETABLE.innerHTML = "<thead><tr><td>Ura</td><td>Linija</td><td>Trajanje</td><td>Prevoznik</td></tr></thead>";
     for(let t of trips) {
+
+        console.log(t);
+        
+        var res;
+        result = await checkForDeletedElement(`https://ojpp.si/trips/${t?.["trip_id"]}`);
+        if (result === 1) {
+            continue;
+        }
 
         //Check if the trip is older than 15 minutes
         date = new Date;
@@ -229,6 +248,31 @@ function izpisi_urnik(trips) {
     }
 
 }
+
+//Check if bus is deleted
+// Function to check if the element with ID "DELETED" exists on the target website
+async function checkForDeletedElement(url) {
+    // Make an HTTP GET request to the target website
+    return fetch(url)
+    .then(response => response.text())
+    .then(html => {
+        // Create a temporary element to parse the HTML content
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = html;
+
+        // Check if an element with ID "DELETED" exists
+        deletedElement = tempElement.getElementsByClassName('is-danger');
+        return deletedElement.length;
+    })
+    .then(dolzina => {
+        return dolzina;
+    });
+    
+}
+
+
+
+
 
 async function godusModus() {
     buses = (await zahtevaj_buse())["features"];
