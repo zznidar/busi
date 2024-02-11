@@ -330,12 +330,10 @@ function outdejtajBus(m) {
 let outdejtanje = setInterval(outdejtajBuse, 20000);
 
 var zadnjiIskaniBusId = "";
-function iskalnikBusId() {
+async function iskalnikBusId() {
     zadnjiIskaniBusId = prompt("Vnesi ID avtobusa", zadnjiIskaniBusId);
 
     //Wait for busses to load
-    godusModus();
-    setTimeout(function() {
-        m2[zadnjiIskaniBusId].openPopup();
-    }, 1000);
+    await godusModus();
+    m2[zadnjiIskaniBusId].openPopup();
 }
