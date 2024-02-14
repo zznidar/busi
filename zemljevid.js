@@ -278,14 +278,14 @@ function izrisi_OJPP(odg) {
             content=""
             content +="<div class=''>"
             content += `<a href="https://ojpp.si/trips/${odg?.["trip_id"]}" target="_blank" class="popup_route">${odg?.["route_name"]}</a>`; //LINIJA
-            content += ("<span class='popup_id' >Številka avtobusa: " + vid + "</span>"); //ID
+            content += ("<span class='popup_id' style='user-select: text'>Številka avtobusa: " + vid + "</span>"); //ID
 
             //Do not display if undefined
             timeDeparture = odg?.["time_departure"] ?? "";
             timeArrival = odg?.["prihodNaCilj"] ?? "";
             if (timeDeparture != "" || timeArrival != "") {
                 content += `<br>Urnik za relacijo: ${timeDeparture}–${timeArrival}`; //ODO
-                content += ("<br><b>" + odg["plate"] + "</b>"); //REGISTRSKA
+                content += ("<br><b style='user-select: text'>" + odg["plate"] + "</b>"); //REGISTRSKA
             }
 
 
