@@ -149,10 +149,6 @@ async function izpisi_zamudo(gumb, busId, stPostaj = 5) {
     let items = 0;
     for(let z of zamude) {
         let barva = z.zamuda <= 0 ? "#3a4d39" : "#820300";
-
-        //Izpišemo le X zamud
-        if(zamudeHTML.split("<li>").length > stPostaj) {
-        }
         
         if(zamudeHTML === "") {
             zamudeHTML += `<summary><span style='
@@ -183,9 +179,6 @@ async function izpisi_zamudo(gumb, busId, stPostaj = 5) {
 
     //Update the button text
     gumb.innerText = "Osveži zamude";
-    gumb.onclick = () => {
-        izpisi_zamudo(gumb, busId, 0);
-    }
     zamudiceContainer.innerHTML = zamudeHTML;
 
 }
@@ -193,9 +186,11 @@ async function izpisi_zamudo(gumb, busId, stPostaj = 5) {
 
 async function pokaziVse() {
     //Search for all elements with class no zamude inside the zamudiceContainer
-    elements = await document.getElementsByClassName("no zamude");
+    let elements = [...document.getElementsByClassName("no zamude")];
+    console.log(elements);
     for(let e of elements) {
         e.classList.remove("no");
+        console.log(elements);
     }
 }
 
