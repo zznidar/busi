@@ -139,20 +139,16 @@ async function zahtevaj_zamudo(busId) {
     return zamude;
 }
 
-async function izpisi_zamudo(gumb, busId) {
+async function izpisi_zamudo(gumb, busId, stPostaj = 5) {
     console.log("This", gumb);
     let zamudiceContainer = gumb.nextElementSibling;
     console.log(zamudiceContainer);
     let zamude = await zahtevaj_zamudo(busId);
     console.log(zamude);
     let zamudeHTML = "";
+    let items = 0;
     for(let z of zamude) {
         let barva = z.zamuda <= 0 ? "#3a4d39" : "#820300";
-
-        //Izpišemo le 5 zamud
-        if(zamudeHTML.split("<li>").length > 5) {
-            break;
-        }
         
         if(zamudeHTML === "") {
             zamudeHTML += `<summary><span style='
@@ -162,11 +158,12 @@ async function izpisi_zamudo(gumb, busId) {
             border: 2px solid ${barva};
             border-radius: 1rem;
             width: fit-content;
-            display: inline-block;'">${z.zamuda} min</span>&nbsp${z.postaja} ${(z.zamuda > 3 || z.zamuda < -1) ? ` <span class="pritozba">Pritoži se na tramvaj komando</span>` : ""}</summary><ul>`;
+            display: inline-block;'>${z.zamuda} min</span>&nbsp${z.postaja} ${(z.zamuda > 3 || z.zamuda < -1) ? ' <span class="pritozba">Pritoži se na tramvaj komando</span>' : ""}</summary><ul>`;
             // Če je zamuda > 3 min ali spelje prej kot –1 min, dodamo gumb za pritožbo na tramvaj komando (https://fran.si/iskanje?View=1&=&Query=tramvaj)
             continue;
         }
-        zamudeHTML += `<li><span style="
+        items++;
+        zamudeHTML += `<li class=" ${(items > stPostaj) ? 'no zamude' : ''} "><span style="
         color: ${barva};
         padding: 1px 8px 1px 8px;
         margin-top:0.2rem;
@@ -178,13 +175,32 @@ async function izpisi_zamudo(gumb, busId) {
         opacity: 0.7">${z.zamuda} min</span>&nbsp${z.postaja}</li>`;
     }
     zamudeHTML += "</ul>";
+    zamudeHTML += "<a onclick = 'pokaziVse()' style='color:grey'>Pokaži vse postaje</a>"
+
+    //Update the button text
+    gumb.innerText = "Osveži zamude";
     zamudiceContainer.innerHTML = zamudeHTML;
+
+}
+
+
+async function pokaziVse() {
+    //Search for all elements with class no zamude inside the zamudiceContainer
+    let elements = [...document.getElementsByClassName("no zamude")];
+    console.log(elements);
+    for(let e of elements) {
+        e.classList.remove("no");
+        console.log(elements);
+    }
 }
 
 TIMETABLE = document.getElementById("timetable");
-function izpisi_urnik(trips) {
+async function izpisi_urnik(trips) {
     TIMETABLE.innerHTML = "<thead><tr><td>Ura</td><td>Linija</td><td>Trajanje</td><td>Prevoznik</td></tr></thead>";
     for(let t of trips) {
+
+        console.log(t);
+        
 
         //Check if the trip is older than 15 minutes
         date = new Date;
@@ -194,6 +210,10 @@ function izpisi_urnik(trips) {
         
 
         let tr = document.createElement("tr");
+
+        //Unique id for the row
+        tr.id = t.trip_id;
+
         let td = document.createElement("td");
         td.innerText = `${(t.time_departure ?? t.time_arrival).slice(0, 5)}–${t.prihodNaCilj.slice(0, 5)}`;
         td.classList.add("ura");
@@ -228,7 +248,35 @@ function izpisi_urnik(trips) {
         TIMETABLE.appendChild(tr);
     }
 
+    //We will hide them later when entries are already in the table
+    for(let t of trips) {
+        result = await checkForDeletedElement(`https://ojpp.si/trips/${t?.["trip_id"]}`);
+        if (result) {
+            //Add class hidden to the row
+            document.getElementById(t.trip_id).classList.add("no");
+
+        }
+    }
+
 }
+
+//Check if bus is deleted
+// Function to check if the element with ID "DELETED" exists on the target website
+
+async function checkForDeletedElement(url) {
+    // Make an HTTP GET request to the target website
+    return fetch(url)
+    .then(response => response.text())
+    .then(html => {
+        // Check if the response text includes the string 'is-danger'
+        return html.includes('is-danger');
+    });
+}
+
+
+
+
+
 
 async function godusModus() {
     buses = (await zahtevaj_buse())["features"];
