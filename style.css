@@ -439,9 +439,34 @@ input[type='text']{
 }
 
 .warning{
-    --color-warning: grey;
+    --color-warning: #B67352;
     border: 2px solid var(--color-warning);
     color:var(--color-warning);
+    font-size: 0.7rem;
+    padding: 0.5rem 1rem;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    margin-block-end: 5px;
+    margin-block-start: 5px;
+    display:inline-block;
+    border-radius: 1rem;
+    opacity: 0.5;
+
+}
+
+.spinning {
+    animation: spin 3s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite !important;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+.info{
+    --color-info: grey;
+    border: 2px solid var(--color-info);
+    color:var(--color-info);
     font-size: 0.7rem;
     padding: 0.5rem 1rem;
     margin-left: 10vw;

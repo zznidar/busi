@@ -249,6 +249,7 @@ async function izpisi_urnik(trips) {
     }
 
     //We will hide them later when entries are already in the table
+    document.getElementById("timetable_sync_warning").classList.remove("no");
     for(let t of trips) {
         result = await checkForDeletedElement(`https://ojpp.si/trips/${t?.["trip_id"]}`);
         if (result) {
@@ -257,6 +258,7 @@ async function izpisi_urnik(trips) {
 
         }
     }
+    document.getElementById("timetable_sync_warning").classList.add("no");
 
 }
 

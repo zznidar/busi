@@ -105,9 +105,14 @@
 		</div>
 			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center">
 				<h2>Urnik za izbrano relacijo</h2>
-				<div class="warning center">
-					<span class="material-symbols-outlined" style="left:50%; color:var(--color-warning); padding-top: 7.5px; font-size:2rem">warning</span>
-					<p style="margin-top: 2.5px;">Urnik prikazuje tudi linije, ki niso več aktivne (npr. izpred 10 let). Preverite vozni red pri svojem prevozniku!</p>
+				<div class="info center">
+					<span class="material-symbols-outlined" style="left:50%; color:var(--color-warning); padding-top: 7.5px; font-size:1.5rem">warning</span>
+					<p style="margin-top: 2.5px;">Urniki so lahko zastareli. <br> Preverite vozni red pri svojem prevozniku!</p>
+				</div>
+
+				<div class="warning center no" id="timetable_sync_warning">
+					<span class="material-symbols-outlined spinning" style="left:50%; color:var(--color-warning); margin-top: 7.5px; font-size:1.5rem">Sync</span>
+					<p style="margin-top: 2.5px;">Poteka brisanje zastarelih linij iz urnika. <br> Počakajte trenutek...</p>
 				</div>
 
 				<div id="urnik">
