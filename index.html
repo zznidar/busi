@@ -32,7 +32,6 @@
 
 	</div>
 
-	
 
 	<div class="info-panel no" id="info">
 		<div class ="center" style="width:75%">
@@ -84,6 +83,18 @@
 
 	<div class = "site_container" id="menu">
 		<hr class="line">
+
+		
+		<div id="delay_container" style="padding-left: 15px; padding-right: 15px; margin-top: 30px;" class="no">
+			
+			<h2 class="center" id="delay_relation" style="margin-left: 15px; margin-right: 15px;">Relacija</h2>
+			<p style="margin-top: 10px; width:80vw" class="center">Prikazanih je samo zadnjih 5 postaj. Za vse postaje klikni na spodnji gumb.</p>
+
+			<div id = "delay_content">
+			</div>
+
+		</div>
+
 
 		<!-- Just a demo button with an X-->
 		<span class="btn_general no">
@@ -177,6 +188,7 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 	}
 
 	function toggleFavorite() {
+		
         var element = document.getElementById('menu');
         element.classList.toggle('opened');
 

@@ -273,29 +273,44 @@ function izrisi_OJPP(odg) {
             bear = odg["direction"];
             speed = odg?.["vehicleSpeed"] ?? `<span style="font-size: xx-small;">${odg?.["operator_name"]}</span>` ?? "🤷🏻‍♀️";
             vid = odg["vehicle_id"];
-
-
-            content=""
-            content +="<div class=''>"
-            content += `<a href="https://ojpp.si/trips/${odg?.["trip_id"]}" target="_blank" class="popup_route">${odg?.["route_name"]}</a>`; //LINIJA
-            content += ("<span class='popup_id' style='user-select: text'>Številka avtobusa: " + vid + "</span>"); //ID
-
-            //Do not display if undefined
             timeDeparture = odg?.["time_departure"] ?? "";
             timeArrival = odg?.["prihodNaCilj"] ?? "";
+
+
+            vsebina = "";
+            vsebina += `
+                <div style="padding-left: 10px; padding-top: 10px;">
+                <span class="material-symbols-outlined" style="font-size: 2em; transform:translate(0,0.25em); z-index:100; color:var(--color-primary)" onclick="mymap.closePopup()">arrow_back</span>
+                <span class="popup-relacija">${odg?.["route_name"]}</span>
+                <div style="position:relative; left: 40px;">
+                    <span class="bus_info"><span class='popup_id' style='user-select: text'>Številka avtobusa: ${vid} </span></span>
+                
+            `;
+
+            //Do not display if undefined
+            
             if (timeDeparture != "" || timeArrival != "") {
-                content += `<br>Urnik za relacijo: ${timeDeparture}–${timeArrival}`; //ODO
-                content += ("<br><b style='user-select: text'>" + odg["plate"] + "</b>"); //REGISTRSKA
+                vsebina += `<br><span class="bus_info">Urnik za relacijo: ${timeDeparture}–${timeArrival}</span>`;
+                vsebina += `<br><span class="bus_info"><b style='user-select: text'>${odg["plate"]}</b></span>`;
+
             }
 
+            vsebina += (`<div class="popup_zamuda" style="width:fit-content;"><span class='popup_zamuda_button' onclick='izpisi_zamudo2(this,${vid})' style="width:fit-content; margin-left:-10px">Kolikšna je zamuda?</span></div>`); //ZAMUDA
+
+            vsebina +=` 
+                </div>
+            </div>`;
+            vsebina += ("<br><span style='color: gray;font-size: 80%;bottom: 10%;right: 10%;' id='stamp_" + vid + "'><i>Nazadnje posodobljeno " + busTstamp + "</i></span><br>"); //TIMESTAMP (kmalu depreciated, ko bo STAROST)
+            vsebina += ("<img id='eksekuter' src='' onerror='console.log(\"test\"); for(let i = 0; i < odstevalci.length; i++) {clearInterval(odstevalci.pop());} odstevalci.push(setInterval(starost, 1000, \"" + busTstamp + "\", \"" + vid + "\")); document.getElementById(\"stamp_" + vid + "\").style.position = \"absolute\"; starost(\"" + busTstamp + "\", \"" + vid + "\"); this.remove();'/>");
 
 
-            content += (`<div class="popup_zamuda"><span class='popup_zamuda_button' onclick='izpisi_zamudo(this, \"${vid}\");'>Kolikšna je zamuda?</span><details class="zamudice"><summary>Zamuda</summary></details></div>`); //ZAMUDA
-            content += ("<br><span style='color: gray;font-size: 80%;bottom: 10%;right: 10%;' id='stamp_" + vid + "'><i>Nazadnje posodobljeno " + busTstamp + "</i></span><br>"); //TIMESTAMP (kmalu depreciated, ko bo STAROST)
-            content += ("<img id='eksekuter' src='' onerror='console.log(\"test\"); for(let i = 0; i < odstevalci.length; i++) {clearInterval(odstevalci.pop());} odstevalci.push(setInterval(starost, 1000, \"" + busTstamp + "\", \"" + vid + "\")); document.getElementById(\"stamp_" + vid + "\").style.position = \"absolute\"; starost(\"" + busTstamp + "\", \"" + vid + "\"); this.remove();'/>");
-            content += "</div>"
+            m2[vozilo].bindPopup(vsebina);
 
-            m2[vozilo].bindPopup(content);
+            m2[vozilo].on('popupopen', function() {
+                document.getElementById('delay_relation').innerText = "Zamude na relaciji " + odg["route_name"];
+                document.getElementById('delay_container').classList.add('no');
+                menuClose();
+            });
 
             m2[vozilo]["busTstamp"] = busTstamp;
             m3[vozilo]["busTstamp"] = busTstamp;
@@ -311,6 +326,8 @@ function izrisi_OJPP(odg) {
     }
 	
 }
+
+
 
 function outdejtajBuse() {
     for(let m in m2) {

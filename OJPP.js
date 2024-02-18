@@ -183,6 +183,62 @@ async function izpisi_zamudo(gumb, busId, stPostaj = 5) {
 
 }
 
+async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
+    console.log("This", gumb);
+    let zamudiceContainer = document.getElementById("zamudiceContainer");
+    console.log(zamudiceContainer);
+    let zamude = await zahtevaj_zamudo(busId);
+    console.log(zamude);
+    let zamudeHTML = "";
+    let items = 0;
+
+
+    for(let z of zamude) {
+        let barva = z.zamuda <= 0 ? "#3a4d39" : "#820300";
+
+
+
+        
+        if(zamudeHTML === "") {
+            zamudeHTML += `
+                <div class="zamuda_entry_first">
+                    <span class="material-symbols-outlined ${z.zamuda <= 0 ? "green" : "red"}" style="font-size: 1.1em; transform:translate(0.075rem,0.35em); position:absolute; z-index:100; color:var(--color-primary)">directions_bus</span>
+					<span class="zamuda_line ${z.zamuda <= 0 ? "green" : "red"}" style="height:2.5rem; margin-top:-0.5rem"></span>
+					<span class="dot big ${z.zamuda <= 0 ? "green" : "red"}"></span>
+					<span class="postaja" style="margin-left:-0.5rem">${z.postaja}</span>
+					<span class="zamuda ${z.zamuda <= 0 ? "green" : "red"}" style="padding-top:0.5rem">${z.zamuda} min</span>
+				</div>
+            `// Če je zamuda > 3 min ali spelje prej kot –1 min, dodamo gumb za pritožbo na tramvaj komando (https://fran.si/iskanje?View=1&=&Query=tramvaj)
+            continue;
+        }
+        items++;
+        zamudeHTML += `<div class="zamuda_entry ${(items > stPostaj) ? 'no zamude' : ''}">
+            <span class="zamuda_line ${z.zamuda <= 0 ? "green" : "red"}"></span>
+            <span class="dot ${z.zamuda <= 0 ? "green" : "red"}"></span>
+            <span class="postaja">${z.postaja}</span>
+            <span class="zamuda ${z.zamuda <= 0 ? "green" : "red"}">${z.zamuda} min</span>
+        </div>`;
+    }
+    zamudeHTML += "<span class='btn_delay_more center' onclick = 'pokaziVse()'>Pokaži vse postaje</span>"
+
+    //Update the button text
+    //zamudiceContainer.innerHTML = zamudeHTML;
+
+
+    //Display delays in the page continer rather
+    let delay_container = document.getElementById("delay_container");
+    let delay_content = document.getElementById("delay_content");
+
+    delay_content.innerHTML = zamudeHTML;
+    delay_container.classList.remove("no");
+    menuOpen();
+
+
+
+
+}
+
+
 
 async function pokaziVse() {
     //Search for all elements with class no zamude inside the zamudiceContainer
@@ -289,6 +345,7 @@ async function godusModus() {
     }
 
     izrisi_OJPP(busi);
+    menuClose();
     allBuses = true;
 }
 

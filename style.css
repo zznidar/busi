@@ -3,7 +3,8 @@
     --color-beige: #ECE3CE;
     --color-third: #739072;
     --color-secondary: #4f6f52;
-    --color-primary: #3a4d39;    
+    --color-primary: #3a4d39;
+    --color-delay: #820300;    
 }
 
 
@@ -139,6 +140,20 @@ footer {
     z-index: 0;
 }
 
+.delay_container{
+    min-height: 100vh;
+    left:0;
+    right:0;
+    border-radius: 1.5rem 1.5rem 0 0;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    position: fixed;
+    top: 0;
+    background-color: white;
+    padding-bottom: 80px;
+
+    z-index: 0;
+}
+
 .tool_item{
     font-size: 0.8em;
     position: absolute;
@@ -190,6 +205,116 @@ h2{
     font-weight: 100;
     color: var(--color-primary);
 }
+
+
+.popup-relacija{
+    position: relative;
+    padding-left: 10px;
+    font-family: "Open Sans", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 100;
+    color: var(--color-primary);
+}
+
+.zamuda_entry{
+    position: relative;
+    left: 35%;
+    height:1.5rem;
+}
+.zamuda_entry_first{
+    margin-top: 15px;
+    position: relative;
+    left:35%;
+    height:2rem;
+
+}
+
+.postaja{
+    position: relative;
+    left: 10px;
+    height:1.5rem;
+    font-size: 0.8rem;
+    font-weight: 100;
+    color: black;
+
+}
+.leaflet-popup-close-button{
+    display: none;
+
+}
+
+#delay_content{
+    padding-top: 15px;
+}
+
+.btn_delay_more{
+    background-color: white;
+    color:black;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.1);
+    border-color: white;
+    border-radius: 1rem;
+    width:fit-content;
+
+    margin-top: 15px;
+    padding: 0.5rem 1rem;
+
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.8rem;
+}
+
+.btn_delay_more:active{
+    filter:brightness(0.9);
+}
+
+.zamuda{
+    position: absolute;
+    left: -65px;
+    width:50px;
+    text-align: right;;
+    font-size: 0.8rem;
+    font-weight: 100;
+    color: var(--color-primary);
+
+}
+
+.bus_info{
+    height: 1.2rem;
+    margin-top:-0.2rem ;
+}
+
+.dot {
+    position: relative;
+    height: 0.6rem;
+    width: 0.6rem;
+    background-color: white;
+    border: 0.2rem solid var(--color-secondary);
+    border-radius: 100%;
+    display: inline-block;
+    z-index: 1;
+  }
+
+.big{
+    transform: translate(-0.2rem);
+    height: 1rem;
+    width: 1rem;
+
+}
+
+.red{
+    color: #820300 !important;
+    border-color: #820300 !important;
+}
+
+.zamuda_line{
+    position: absolute;
+    margin-left: 0.5rem;
+    transform: translate(-50%);
+    z-index: 0;
+    border-left: 4px solid var(--color-secondary);
+    display: inline-block;
+    height: 1.5rem;
+}
+
 
 .btn_busstop{
     background-color: white;
