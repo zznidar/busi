@@ -201,7 +201,7 @@ async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
         
         if(zamudeHTML === "") {
             zamudeHTML += `
-                <div class="zamuda_entry_first">
+                <div class="zamuda_entry first">
                     <span class="material-symbols-outlined ${z.zamuda <= 0 ? "green" : "red"}" style="font-size: 1.1em; transform:translate(0.075rem,0.35em); position:absolute; z-index:100; color:var(--color-primary)">directions_bus</span>
 					<span class="zamuda_line ${z.zamuda <= 0 ? "green" : "red"}" style="height:2.5rem; margin-top:-0.5rem"></span>
 					<span class="dot big ${z.zamuda <= 0 ? "green" : "red"}"></span>

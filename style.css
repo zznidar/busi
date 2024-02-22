@@ -48,6 +48,102 @@ button:not(.zamudas button) {
     height: 2em; 
 }
 
+
+/*Containers*/
+.site_container{
+    min-height: 100vh;
+    left:0;
+    right:0;
+    border-radius: 1.5rem 1.5rem 0 0;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    position: absolute;
+    top:calc(100dvh - 120px);
+    background-color: white;
+    padding-bottom: 80px;
+    z-index: 0;
+}
+
+.tool_container{
+    height: 85px;
+    position: fixed;
+    left:0;
+    right:0;
+    bottom: 0%;
+    border-radius: 1.5rem 1.5rem 0 0;
+    background-color: white;
+    opacity: 1;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    display: block;
+    z-index: 1;
+}
+
+
+.delay_container{
+    min-height: 100vh;
+    left:0;
+    right:0;
+    border-radius: 1.5rem 1.5rem 0 0;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    position: fixed;
+    top: 0;
+    background-color: white;
+    padding-bottom: 80px;
+    z-index: 0;
+}
+
+.non_existent_container{
+    position: fixed;
+    width: 80vw;
+    height: fit-content;
+    top:25%;
+    left: 10vw;
+    transform: translate(0, -50%);
+    color:white;
+    background-color: #820300;
+    opacity: 0;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    z-index: 1;
+
+}
+
+.info-container{
+    position: fixed;
+    width: 60px;
+    height: 120px;
+    top:0;
+    right:0;
+    background-color: white;
+    border-radius: 0 0 0 1.5rem;
+
+}
+
+.info-panel{
+    position: fixed;
+    width: 90vw;
+    height: 300px;
+    top:50%;
+    left: 5vw;
+    transform: translate(0, -50%);
+    background-color: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    z-index: 1;
+}
+
+.tool_item{
+    font-size: 0.8em;
+    position: absolute;
+    transform:translateX(-50%);
+    bottom: 10px;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    color: var(--color-primary);
+
+}š
+
+
+
 .pritozba {
     background-color: white;
     color:black;
@@ -66,19 +162,7 @@ button:not(.zamudas button) {
 
 
 
-.btn_general{
-    background-color: var(--color-secondary);
-    color:white;
-    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.1);
-    border-color: white;
-    border-radius: 1rem;
-    width:fit-content;
 
-    padding: 0.5rem 1rem;
-
-    font-family: 'Open Sans', sans-serif;
-    font-size: 0.8rem;
-}
 
 .map{
     height: calc(100dvh - 150px);
@@ -92,29 +176,12 @@ button:not(.zamudas button) {
 }
 
 
-
-
 footer {
     font-size: small;
     color: gray; 
     padding-bottom: 1.5rem;
     padding-top: 1.5rem;
     text-align: center;
-}
-
-
-.tool_container{
-    height: 85px;
-    position: fixed;
-    left:0;
-    right:0;
-    bottom: 0%;
-    border-radius: 1.5rem 1.5rem 0 0;
-    background-color: white;
-    opacity: 1;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
-    display: block;
-    z-index: 1;
 }
 
 .line{
@@ -126,44 +193,9 @@ footer {
     top: 5px
 }
 
-.site_container{
-    min-height: 100vh;
-    left:0;
-    right:0;
-    border-radius: 1.5rem 1.5rem 0 0;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
-    position: absolute;
-    top:calc(100dvh - 120px);
-    background-color: white;
-    padding-bottom: 80px;
 
-    z-index: 0;
-}
 
-.delay_container{
-    min-height: 100vh;
-    left:0;
-    right:0;
-    border-radius: 1.5rem 1.5rem 0 0;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
-    position: fixed;
-    top: 0;
-    background-color: white;
-    padding-bottom: 80px;
-
-    z-index: 0;
-}
-
-.tool_item{
-    font-size: 0.8em;
-    position: absolute;
-    transform:translateX(-50%);
-    bottom: 10px;
-    text-align: center;
-    font-family: 'Open Sans', sans-serif;
-    color: var(--color-primary);
-
-}
+/*Icons*/
 
 .tool_icon{
     font-size: 2.5em;
@@ -172,8 +204,6 @@ footer {
     padding: 0.5rem;
     position: absolute; 
     transform:translateX(-50%);
-
-
 }
 
 .tool_icon:active{
@@ -192,59 +222,19 @@ footer {
   'opsz' 48
 }
 
-.center{
-    text-align: center;
-    display:table;
-    margin: 0 auto;
+/*Buttons*/
+.btn_general{
+    background-color: var(--color-secondary);
+    color:white;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.1);
+    border-color: white;
+    border-radius: 1rem;
+    width:fit-content;
 
-}
+    padding: 0.5rem 1rem;
 
-h2{
-    font-family: "Open Sans", sans-serif;
-    font-size: 1.5rem;
-    font-weight: 100;
-    color: var(--color-primary);
-}
-
-
-.popup-relacija{
-    position: relative;
-    padding-left: 10px;
-    font-family: "Open Sans", sans-serif;
-    font-size: 1.1rem;
-    font-weight: 100;
-    color: var(--color-primary);
-}
-
-.zamuda_entry{
-    position: relative;
-    left: 35%;
-    height:1.5rem;
-}
-.zamuda_entry_first{
-    margin-top: 15px;
-    position: relative;
-    left:35%;
-    height:2rem;
-
-}
-
-.postaja{
-    position: relative;
-    left: 10px;
-    height:1.5rem;
+    font-family: 'Open Sans', sans-serif;
     font-size: 0.8rem;
-    font-weight: 100;
-    color: black;
-
-}
-.leaflet-popup-close-button{
-    display: none;
-
-}
-
-#delay_content{
-    padding-top: 15px;
 }
 
 .btn_delay_more{
@@ -265,56 +255,6 @@ h2{
 .btn_delay_more:active{
     filter:brightness(0.9);
 }
-
-.zamuda{
-    position: absolute;
-    left: -65px;
-    width:50px;
-    text-align: right;;
-    font-size: 0.8rem;
-    font-weight: 100;
-    color: var(--color-primary);
-
-}
-
-.bus_info{
-    height: 1.2rem;
-    margin-top:-0.2rem ;
-}
-
-.dot {
-    position: relative;
-    height: 0.6rem;
-    width: 0.6rem;
-    background-color: white;
-    border: 0.2rem solid var(--color-secondary);
-    border-radius: 100%;
-    display: inline-block;
-    z-index: 1;
-  }
-
-.big{
-    transform: translate(-0.2rem);
-    height: 1rem;
-    width: 1rem;
-
-}
-
-.red{
-    color: #820300 !important;
-    border-color: #820300 !important;
-}
-
-.zamuda_line{
-    position: absolute;
-    margin-left: 0.5rem;
-    transform: translate(-50%);
-    z-index: 0;
-    border-left: 4px solid var(--color-secondary);
-    display: inline-block;
-    height: 1.5rem;
-}
-
 
 .btn_busstop{
     background-color: white;
@@ -356,6 +296,129 @@ h2{
     background-color: var(--color-secondary);
 }
 
+/*BEGIN Menu elements*/
+#menu{
+    scroll-margin:20dvh;
+}
+/* END Menu elements*/
+
+/*BEGIN Delay elements*/
+.zamuda_entry{
+    position: relative;
+    left: 35%;
+    height:1.5rem;
+}
+.zamuda_entry.first{
+    margin-top: 15px;
+    height:2rem;
+}
+
+.postaja{
+    position: relative;
+    left: 10px;
+    font-size: 0.8rem;
+    color: black;
+
+}
+
+.zamuda{
+    position: absolute;
+    left: -65px;
+    width:50px;
+    text-align: right;;
+    font-size: 0.8rem;
+}
+
+.dot {
+    position: relative;
+    height: 0.6rem;
+    width: 0.6rem;
+    background-color: white;
+    border: 0.2rem solid var(--color-secondary);
+    border-radius: 100%;
+    display: inline-block;
+  }
+
+.big{
+    transform: translate(-0.2rem);
+    height: 1rem;
+    width: 1rem;
+}
+
+.red{
+    color: #820300 !important;
+    border-color: #820300 !important;
+}.red{
+    color: #820300 !important;
+    border-color: #820300 !important;
+}
+
+#delay_content{
+    padding-top: 15px;
+}
+
+.zamuda_line{
+    position: absolute;
+    margin-left: 0.5rem;
+    transform: translate(-50%);
+    z-index: 0;
+    border-left: 4px solid var(--color-secondary);
+    display: inline-block;
+    height: 1.5rem;
+}
+
+/*END Delay elements*/
+
+/*BEGIN Popup elements*/
+.leaflet-popup-close-button{
+    display: none;
+}
+
+.popup-relacija{
+    padding-left: 10px;
+    font-family: "Open Sans", sans-serif;
+    font-size: 1.1rem;
+    color: var(--color-primary);
+}
+
+.bus_info{
+    height: 1.2rem;
+    margin-top:-0.2rem ;
+}
+
+.leaflet-popup-content-wrapper {
+    width:90vw;
+}
+
+.popup_route {
+    color:var(--color-primary) !important;
+    text-decoration: none !important;
+    display:block;
+    width: 90vw !important;
+    font-size: 1rem;
+}
+
+.popup_id{
+    text-emphasis: italic !important;
+}
+
+.popup_zamuda_button{
+    background-color: var(--color-third) !important;
+    color:white;
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
+    border-color: white;
+    border-radius: 1rem;
+    width:fit-content;
+    padding: 0.5rem 1rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display:inline-block;
+    font-size: 0.8rem;
+    z-index: 10;
+}
+/*END Popup elements*/
+
+/*BEGIN Schedule elements*/
 table {
     border-collapse: separate;
     border-spacing: 10px 10px;
@@ -373,13 +436,11 @@ table thead td {
     text-align: center;
     padding-bottom: 5px;
     padding-top: 5px;
-
 }
 
 table thead tr{
     box-shadow: unset;
 }
-
 
 table td{
     text-align: center;
@@ -427,120 +488,66 @@ table tr{
     opacity: 0.8;
     border: 2px solid var(--color-secondary) !important;
 }
-
-/*Popup styling*/
-
-.leaflet-popup-content-wrapper {
-    width:90vw;
-}
+/*END Schedule elements*/
 
 
-.popup_route {
-    color:var(--color-primary) !important;
-    text-decoration: none !important;
-    display:block;
-    width: 90vw !important;
-    font-size: 1rem;
-}
-
-.popup_id{
-    text-emphasis: italic !important;
-}
-
-.popup_zamuda_button{
-    background-color: var(--color-third) !important;
-    color:white;
-    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
-    border-color: white;
-    border-radius: 1rem;
-    width:fit-content;
+/*BEGIN Schedule information elements*/
+.bubble{
+    border: 2px solid black;
+    font-size: 0.7rem;
     padding: 0.5rem 1rem;
-    margin-top: 10px;
-    margin-bottom: 10px;
-
-
+    margin-left: 10vw;
+    margin-right: 10vw;
+    margin-block-end: 5px;
+    margin-block-start: 5px;
     display:inline-block;
-    font-size: 0.8rem;
-    z-index: 10;
+    border-radius: 1rem;
+    opacity: 0.5;
 }
 
-.popup_zamuda{
-    background-color: white;
+.warning{
+    --color-warning: #B67352;
+    color:var(--color-warning);
+    border-color: var(--color-warning);
 }
 
-
-.zamudice{
-    padding-left: 15px;
+.spinning {
+    animation: sync_spin 3s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite !important;
 }
 
-ul{
-    list-style: none;
-    padding-left: 0px;
-    margin-top:0;
+@keyframes sync_spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
 }
 
-
-li{
-    padding-left: 0.75rem;
-}
-
-.info-container{
-    position: fixed;
-    width: 60px;
-    height: 120px;
-    top:0;
-    right:0;
-    background-color: white;
-    border-radius: 0 0 0 1.5rem;
+.info{
+    --color-info: grey;
+    border-color: var(--color-info);
+    color:var(--color-info);
 
 }
 
-.info-panel{
-    position: fixed;
-    width: 90vw;
-    height: 300px;
-    top:50%;
-    left: 5vw;
-    transform: translate(0, -50%);
-    background-color: white;
-    border-radius: 1.5rem;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
-    z-index: 1;
+/*END Schedule information elements*/
+
+
+
+.center{
+    text-align: center;
+    display:table;
+    margin: 0 auto;
+
+}
+
+h2{
+    font-family: "Open Sans", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 100;
+    color: var(--color-primary);
 }
 
 .rotated-marker{
     transform-origin: center;
 }
-
-.non_existent_container{
-    position: fixed;
-    width: 80vw;
-    height: fit-content;
-    top:25%;
-    left: 10vw;
-    transform: translate(0, -50%);
-    color:white;
-    background-color: #820300;
-    opacity: 0;
-    border-radius: 1.5rem;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
-    z-index: 1;
-
-}
-
-.bus_stop_input_container{
-    position: fixed;
-    width: 90vw;
-    height: 220px;
-    top:50%;
-    left: 5vw;
-    transform: translate(0, -50%);
-    background-color: white;
-    border-radius: 1.5rem;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
-    z-index: 1;
-}
-
 
 input[type='text']{
     text-align: center;
@@ -559,62 +566,7 @@ input[type='text']{
 
 }
 
-#menu{
-    scroll-margin:20dvh;
-}
-
-.warning{
-    --color-warning: #B67352;
-    border: 2px solid var(--color-warning);
-    color:var(--color-warning);
-    font-size: 0.7rem;
-    padding: 0.5rem 1rem;
-    margin-left: 10vw;
-    margin-right: 10vw;
-    margin-block-end: 5px;
-    margin-block-start: 5px;
-    display:inline-block;
-    border-radius: 1rem;
-    opacity: 0.5;
-
-}
-
-.spinning {
-    animation: spin 3s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite !important;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(-360deg); }
-}
-
-.info{
-    --color-info: grey;
-    border: 2px solid var(--color-info);
-    color:var(--color-info);
-    font-size: 0.7rem;
-    padding: 0.5rem 1rem;
-    margin-left: 10vw;
-    margin-right: 10vw;
-    margin-block-end: 5px;
-    margin-block-start: 5px;
-    display:inline-block;
-    border-radius: 1rem;
-    opacity: 0.5;
-
-}
-
-.button-remove{
-    position: relative;
-    font-size: 1rem;
-    top:0.25rem;
-    right: -5px;
-}
 
 
-.button-remove:active{
-    color: var(--color-secondary);
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 50%;
-    opacity: 0.8;
-}
+
+

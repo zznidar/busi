@@ -54,15 +54,6 @@
 		</div>
 	</div>
 
-	<div class="bus_stop_input_container no">
-		<div class="center">
-			<h2 style="padding-top: 15px;">Išči postajo</h2>
-			<p style="margin-top: -15px;">Vnesi vsaj 3 črke za iskanje postaje!</p>
-			<input type="text" id="bus_stop_input" style="padding-bottom: 5px; margin-bottom: 25px;" placeholder=""> <br>
-			<span class="btn_general">Išči postaje</span>
-		</div>
-	</div>
-
 
 	<div class = "tool_container">
 		<div style="padding-top: 5px; padding-bottom: 5px;">
@@ -96,12 +87,6 @@
 		</div>
 
 
-		<!-- Just a demo button with an X-->
-		<span class="btn_general no">
-			Relacija
-			<span class="material-symbols-outlined button-remove" style="color:white">close</span>
-		</span>
-
 		<div id="favorites" style="padding-left: 5px; padding-right: 5px; margin-top: 20px;" class="center">
 			
 			<h2>Priljubljene relacije</h2>
@@ -116,12 +101,12 @@
 		</div>
 			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center">
 				<h2>Urnik za izbrano relacijo</h2>
-				<div class="info center">
+				<div class="bubble info center">
 					<span class="material-symbols-outlined" style="left:50%; color:var(--color-warning); padding-top: 7.5px; font-size:1.5rem">warning</span>
 					<p style="margin-top: 2.5px;">Urniki so lahko zastareli. <br> Preverite vozni red pri svojem prevozniku!</p>
 				</div>
 
-				<div class="warning center no" id="timetable_sync_warning">
+				<div class="bubble warning center no" style="margin-top: 10px;" id="timetable_sync_warning">
 					<span class="material-symbols-outlined spinning" style="left:50%; color:var(--color-warning); margin-top: 7.5px; font-size:1.5rem">Sync</span>
 					<p style="margin-top: 2.5px;">Poteka brisanje zastarelih linij iz urnika. <br> Počakajte trenutek...</p>
 				</div>
