@@ -354,8 +354,10 @@ async function godusModus() {
     }
 
     izrisi_OJPP(busi);
+    centerCurrentBus();
     hideDelays();
     allBuses = true;
+    return;
 }
 
 postajalisca = {}
@@ -368,6 +370,7 @@ async function zahtevaj_vsa_postajalisca() {
         postajalisca?.[name]?.push(p.properties.id) ?? (postajalisca[name] = [p.properties.id]);
     }
     //dodajPostaje();
+    return;
 }
 
 async function dodajPostaje() {
@@ -425,14 +428,32 @@ async function dodajPostaje() {
 lastRelation = [];
 allBuses = false;
 async function refresh() {
-    if(allBuses) {
-        return godusModus();
+
+    
+    
+    if(allBuses) {  
+        await godusModus();
+        setTimeout(centerCurrentBus, 50);
+        
     }
     else if(lastRelation.length === 0) {
         return;
     }
     else {
-        zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
+        await zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
+        setTimeout(centerCurrentBus, 50);
+    }
+    //Get coordinates of current bus
+
+
+    
+}
+
+function centerCurrentBus(){
+    if (currentBusId){
+        let currentBus = busi[currentBusId];
+        let currentBusCoordinates = [currentBus.lat, currentBus.long];
+        mymap.flyTo(currentBusCoordinates);
     }
 }
 

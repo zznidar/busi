@@ -5,6 +5,8 @@ y = 14.505;
 m2 = {}; // Markerji bodo zdaj kot key: value, kjer je key = vehicleId in value = marker
 m3 = {}; //Marjerki za orientacijo
 
+currentBusId = 0;
+
 
 /* IKONE */
 var busIcon = L.icon({
@@ -282,7 +284,7 @@ function izrisi_OJPP(odg) {
                 <div style="padding-left: 10px; padding-top: 10px;">
                 <span class="material-symbols-outlined" style="font-size: 2em; transform:translate(0,0.25em); z-index:100; color:var(--color-primary)" onclick="mymap.closePopup()">arrow_back</span>
                 <span class="popup-relacija">${odg?.["route_name"]}</span>
-                <div style="position:relative; left: 40px;">
+                <div style="position:relative; left: 40px; max-width: calc(100% - 50px)">
                     <span class="bus_info"><span class='popup_id' style='user-select: text'>Številka avtobusa: ${vid} </span></span>
                 
             `;
@@ -313,6 +315,7 @@ function izrisi_OJPP(odg) {
                 
                 //Zoom in on bus location
                 mymap.flyTo([odg["lat"],odg["long"]], 15 );
+                currentBusId = odg["vehicle_id"];
 
             });
 
@@ -320,6 +323,7 @@ function izrisi_OJPP(odg) {
                 hideDelays();
                 //Zoom out
                 mymap.flyTo([odg["lat"],odg["long"]], 12);
+                currentBusId = 0;
             });
 
             m2[vozilo]["busTstamp"] = busTstamp;
