@@ -238,6 +238,15 @@ async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
 
 }
 
+function hideDelays(){
+    menuClose();
+    //Wait for the animation to finish
+    setTimeout(() => {
+        document.getElementById("delay_container").classList.add("no");
+    }, 500);
+    
+}
+
 
 
 async function pokaziVse() {
@@ -345,7 +354,7 @@ async function godusModus() {
     }
 
     izrisi_OJPP(busi);
-    menuClose();
+    hideDelays();
     allBuses = true;
 }
 

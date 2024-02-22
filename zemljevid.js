@@ -307,9 +307,13 @@ function izrisi_OJPP(odg) {
             m2[vozilo].bindPopup(vsebina);
 
             m2[vozilo].on('popupopen', function() {
-                document.getElementById('delay_relation').innerText = "Zamude na relaciji " + odg["route_name"];
+                document.getElementById('delay_relation').innerText = odg["route_name"];
                 document.getElementById('delay_container').classList.add('no');
                 menuClose();
+            });
+
+            m2[vozilo].on('popupclose', function() {
+                hideDelays();
             });
 
             m2[vozilo]["busTstamp"] = busTstamp;

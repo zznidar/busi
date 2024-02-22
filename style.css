@@ -87,7 +87,7 @@ button:not(.zamudas button) {
     position: fixed;
     top: 0;
     background-color: white;
-    padding-bottom: 80px;
+    margin-bottom: 80px;
     z-index: 0;
 }
 
@@ -140,7 +140,7 @@ button:not(.zamudas button) {
     font-family: 'Open Sans', sans-serif;
     color: var(--color-primary);
 
-}š
+}
 
 
 
@@ -195,6 +195,7 @@ footer {
 
 
 
+
 /*Icons*/
 
 .tool_icon{
@@ -245,7 +246,7 @@ footer {
     border-radius: 1rem;
     width:fit-content;
 
-    margin-top: 15px;
+    margin-top: 15px !important;
     padding: 0.5rem 1rem;
 
     font-family: 'Open Sans', sans-serif;
@@ -355,6 +356,7 @@ footer {
 
 #delay_content{
     padding-top: 15px;
+    padding-bottom: 20px;
 }
 
 .zamuda_line{
