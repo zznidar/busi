@@ -310,10 +310,16 @@ function izrisi_OJPP(odg) {
                 document.getElementById('delay_relation').innerText = odg["route_name"];
                 document.getElementById('delay_container').classList.add('no');
                 menuClose();
+                
+                //Zoom in on bus location
+                mymap.flyTo([odg["lat"],odg["long"]], 15 );
+
             });
 
             m2[vozilo].on('popupclose', function() {
                 hideDelays();
+                //Zoom out
+                mymap.flyTo([odg["lat"],odg["long"]], 12);
             });
 
             m2[vozilo]["busTstamp"] = busTstamp;
