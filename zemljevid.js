@@ -15,7 +15,7 @@ var busIcon = L.icon({
     iconAnchor: [16, 16],
     popupAnchor: [0, -16]
 });
-var busIconLpp = L.icon({
+/* var busIconLpp = L.icon({
     iconUrl: 'lpp_bus.svg',
     iconSize: [28, 28],
     iconAnchor: [14, 28],
@@ -33,7 +33,7 @@ var busIconKrsiDekret = L.icon({
     iconSize: [36, 36],
     iconAnchor: [18, 36],
     popupAnchor: [0, -34]
-}); 
+});  */
 
 var myIconlocation = L.icon({
     iconUrl: 'location_accent-01.svg',

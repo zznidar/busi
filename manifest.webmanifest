@@ -1,0 +1,15 @@
+{ "name": "Busi",
+  "short_name": "Busi",
+  "theme_color": "#3a4d39",
+  "background_color": "#ECE3CE",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./index.html",
+    "icons": [{
+      "src": "bus_icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }],
+    "orientation": "any"
+}
