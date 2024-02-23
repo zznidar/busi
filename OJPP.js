@@ -346,7 +346,7 @@ async function checkForDeletedElement(url) {
 
 
 
-async function godusModus() {
+async function godusModus(automatic=false) {
     buses = (await zahtevaj_buse())["features"];
     buses = buses.filter(bus => bus.properties.operator_name !== "Javno podjetje Ljubljanski potniški promet d.o.o."); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
     for(let b of buses) {
@@ -357,7 +357,7 @@ async function godusModus() {
     izrisi_OJPP(busi);
     centerCurrentBus();
 
-    if(!currentBusId){
+    if(!currentBusId && !automatic){
         hideDelays();
     }
     
@@ -433,10 +433,10 @@ async function dodajPostaje() {
 //Marko implementation of refresh
 lastRelation = [];
 allBuses = false;
-async function refresh() {
+async function refresh(automatic=false) {
  
     if(allBuses) {  
-        await godusModus();
+        await godusModus(automatic);
         setTimeout(centerCurrentBus, 50);
         
     }
