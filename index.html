@@ -5,6 +5,12 @@
 	<meta name="author" content="Žan Žnidar">
 	<title>Busi</title>
 	<meta name="description" content="Prikazovalnik lokacij avtobusov in njihovih zamud">
+	<meta name="viewport" content="width=device-width; initial-scale=1; viewport-fit=cover">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+
+	<!-- Favicon -->
+	<link rel="icon" type="image/png" href="bus_icon.png" />
 
 	<link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"  />
@@ -23,8 +29,15 @@
  
  
 <body> 
-	 <div id="mapid" class="map"></div>
+	 <div id="mapid" class="map">
+		<div id="map_attributions" class="">
+			<span>&copy;<a href="https://www.maptiler.com/copyright">MapTiler</a></span>
+			<span> &copy;<a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a></span>
+	 	</div>
+	 </div>
 	 <div class="loader center no" id="loader"></div>
+
+	 
 	
 	<div class="info-container">
 		<span class="material-symbols-outlined tool_icon" style="left: 50%; top:10px;" onclick="toggleVisibility()">info</span>
@@ -32,19 +45,21 @@
 
 	</div>
 
-	
 
 	<div class="info-panel no" id="info">
 		<div class ="center" style="width:75%">
+			
 			<h2>Busi</h2>
+			<img src="bus_icon.png" style="width: 64px; height: 64px; margin-top: -10px; padding-bottom: 5px;">
 			<p>Prikazovalnik lokacije avtobusov in njihovih zamud.</p>
 			<p>Avtorja: <br>
 				Žan&nbsp;Žnidar <br>
 				Marko&nbsp;Zupan<br> ©
-				&nbsp;2023<br>
+				&nbsp;2024<br>
 				<br>
 				<br>
 				Vir podatkov: <a href="https://ojpp.si/about" target="_blank">OJPP</a><br>
+				Leaflet: <a href="https://leafletjs.com/" target="_blank">Leaflet</a><br>
 				Source code is available on <a href="https://github.com/zznidar/busi">GitHub</a></p>
 		</div>
 	</div>
@@ -52,15 +67,6 @@
 	<div class="non_existent_container no" id="non_existing">
 		<div class="center">
 			<p>Na tej relaciji trenutno ni busa.</p>
-		</div>
-	</div>
-
-	<div class="bus_stop_input_container no">
-		<div class="center">
-			<h2 style="padding-top: 15px;">Išči postajo</h2>
-			<p style="margin-top: -15px;">Vnesi vsaj 3 črke za iskanje postaje!</p>
-			<input type="text" id="bus_stop_input" style="padding-bottom: 5px; margin-bottom: 25px;" placeholder=""> <br>
-			<span class="btn_general">Išči postaje</span>
 		</div>
 	</div>
 
@@ -85,11 +91,17 @@
 	<div class = "site_container" id="menu">
 		<hr class="line">
 
-		<!-- Just a demo button with an X-->
-		<span class="btn_general no">
-			Relacija
-			<span class="material-symbols-outlined button-remove" style="color:white">close</span>
-		</span>
+		
+		<div id="delay_container" style="padding-left: 15px; padding-right: 15px; margin-top: 30px;" class="no">
+			<h2 class="center" >Zamude na relaciji</h2>
+			<h2 class="center" id="delay_relation">Relacija</h2>
+			<p style="margin-top: 10px; width:80vw" class="center">Prikazanih je samo zadnjih 5 postaj. Za vse postaje klikni na spodnji gumb.</p>
+
+			<div id = "delay_content">
+			</div>
+
+		</div>
+
 
 		<div id="favorites" style="padding-left: 5px; padding-right: 5px; margin-top: 20px;" class="center">
 			
@@ -105,9 +117,14 @@
 		</div>
 			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center">
 				<h2>Urnik za izbrano relacijo</h2>
-				<div class="warning center">
-					<span class="material-symbols-outlined" style="left:50%; color:var(--color-warning); padding-top: 7.5px; font-size:2rem">warning</span>
-					<p style="margin-top: 2.5px;">Urnik prikazuje tudi linije, ki niso več aktivne (npr. izpred 10 let). Preverite vozni red pri svojem prevozniku!</p>
+				<div class="bubble info center">
+					<span class="material-symbols-outlined" style="left:50%; color:var(--color-warning); padding-top: 7.5px; font-size:1.5rem">warning</span>
+					<p style="margin-top: 2.5px;">Urniki so lahko zastareli. <br> Preverite vozni red pri svojem prevozniku!</p>
+				</div>
+
+				<div class="bubble warning center no" style="margin-top: 10px;" id="timetable_sync_warning">
+					<span class="material-symbols-outlined spinning" style="left:50%; color:var(--color-warning); margin-top: 7.5px; font-size:1.5rem">Sync</span>
+					<p style="margin-top: 2.5px;">Poteka brisanje zastarelih linij z urnika. <br> Počakajte trenutek&nbsp;...</p>
 				</div>
 
 				<div id="urnik">
@@ -133,6 +150,8 @@
 
 
 <script>
+
+
 // Uporabne funkcije, src nekaterih: https://www.scirra.com/manual/126/system-expressions
 
 /*lerp = function(a, b, x) {
@@ -171,7 +190,16 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 	
 	}
 
+	function delayOpen(){
+		setTimeout(function() {
+			var element = document.getElementById('delay_container')
+			element.scrollIntoView({behavior: "smooth", block:"end", inline:"nearest"})
+		}, 100); // Adjust the delay (in milliseconds) to make it slower
+	
+	}
+
 	function toggleFavorite() {
+		
         var element = document.getElementById('menu');
         element.classList.toggle('opened');
 
@@ -186,6 +214,12 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 			menuClose();
 		}
     }
+
+	//Auto refresh every 20 seconds
+	setInterval(function(){
+		refresh(automatic=true);
+	}, 20000);
+
 </script>
 
 

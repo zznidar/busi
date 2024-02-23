@@ -175,13 +175,78 @@ async function izpisi_zamudo(gumb, busId, stPostaj = 5) {
         opacity: 0.7">${z.zamuda} min</span>&nbsp${z.postaja}</li>`;
     }
     zamudeHTML += "</ul>";
-    zamudeHTML += "<a onclick = 'pokaziVse()' style='color:grey'>Pokaži vse postaje</a>"
+    if(items > stPostaj) zamudeHTML += "<a onclick = 'pokaziVse()' style='color:grey'>Pokaži vse postaje</a>"
 
     //Update the button text
     gumb.innerText = "Osveži zamude";
     zamudiceContainer.innerHTML = zamudeHTML;
 
 }
+
+async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
+    console.log("This", gumb);
+    let zamudiceContainer = document.getElementById("zamudiceContainer");
+    console.log(zamudiceContainer);
+    let zamude = await zahtevaj_zamudo(busId);
+    console.log(zamude);
+    let zamudeHTML = "";
+    let items = 0;
+
+
+    for(let z of zamude) {
+        let barva = z.zamuda <= 0 ? "#3a4d39" : "#820300";
+
+
+
+        
+        if(zamudeHTML === "") {
+            zamudeHTML += `
+                <div class="zamuda_entry first">
+                    <span class="material-symbols-outlined ${z.zamuda <= 0 ? "green" : "red"}" style="font-size: 1.1em; transform:translate(0.075rem,0.35em); position:absolute; z-index:100; color:var(--color-primary)">directions_bus</span>
+					<span class="zamuda_line ${z.zamuda <= 0 ? "green" : "red"}" style="height:2.5rem; margin-top:-0.5rem"></span>
+					<span class="dot big ${z.zamuda <= 0 ? "green" : "red"}"></span>
+					<span class="postaja" style="margin-left:-0.5rem">${z.postaja}</span>
+					<span class="zamuda ${z.zamuda <= 0 ? "green" : "red"}" style="padding-top:0.5rem">${z.zamuda} min</span>
+				</div>
+            `// Če je zamuda > 3 min ali spelje prej kot –1 min, dodamo gumb za pritožbo na tramvaj komando (https://fran.si/iskanje?View=1&=&Query=tramvaj)
+            continue;
+        }
+        items++;
+        zamudeHTML += `<div class="zamuda_entry ${(items > stPostaj) ? 'no zamude' : ''}">
+            <span class="zamuda_line ${z.zamuda <= 0 ? "green" : "red"}"></span>
+            <span class="dot ${z.zamuda <= 0 ? "green" : "red"}"></span>
+            <span class="postaja">${z.postaja}</span>
+            <span class="zamuda ${z.zamuda <= 0 ? "green" : "red"}">${z.zamuda} min</span>
+        </div>`;
+    }
+    if(items > stPostaj) zamudeHTML += "<span class='btn_delay_more center' onclick = 'pokaziVse()'>Pokaži vse postaje</span>"
+
+    //Update the button text
+    //zamudiceContainer.innerHTML = zamudeHTML;
+
+
+    //Display delays in the page continer rather
+    let delay_container = document.getElementById("delay_container");
+    let delay_content = document.getElementById("delay_content");
+
+    delay_content.innerHTML = zamudeHTML;
+    delay_container.classList.remove("no");
+    delayOpen();
+
+
+
+
+}
+
+function hideDelays(){
+    menuClose();
+    //Wait for the animation to finish
+    setTimeout(() => {
+        document.getElementById("delay_container").classList.add("no");
+    }, 500);
+    
+}
+
 
 
 async function pokaziVse() {
@@ -192,6 +257,7 @@ async function pokaziVse() {
         e.classList.remove("no");
         console.log(elements);
     }
+    document.getElementsByClassName("btn_delay_more")[0].classList.add("no");
 }
 
 TIMETABLE = document.getElementById("timetable");
@@ -249,6 +315,7 @@ async function izpisi_urnik(trips) {
     }
 
     //We will hide them later when entries are already in the table
+    document.getElementById("timetable_sync_warning").classList.remove("no");
     for(let t of trips) {
         result = await checkForDeletedElement(`https://ojpp.si/trips/${t?.["trip_id"]}`);
         if (result) {
@@ -257,6 +324,7 @@ async function izpisi_urnik(trips) {
 
         }
     }
+    document.getElementById("timetable_sync_warning").classList.add("no");
 
 }
 
@@ -278,7 +346,7 @@ async function checkForDeletedElement(url) {
 
 
 
-async function godusModus() {
+async function godusModus(automatic=false) {
     buses = (await zahtevaj_buse())["features"];
     buses = buses.filter(bus => bus.properties.operator_name !== "Javno podjetje Ljubljanski potniški promet d.o.o."); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
     for(let b of buses) {
@@ -287,12 +355,20 @@ async function godusModus() {
     }
 
     izrisi_OJPP(busi);
+    centerCurrentBus();
+
+    if(!currentBusId && !automatic){
+        hideDelays();
+    }
+    
     allBuses = true;
+    return;
 }
 
 postajalisca = {}
 vstopnaPostaja = [];
 izstopnaPostaja = [];
+
 async function zahtevaj_vsa_postajalisca() {
     let data_postajalisca = (await fp(`https://ojpp.si/api/stop_locations`))["features"];
     for(let p of data_postajalisca) {
@@ -300,6 +376,7 @@ async function zahtevaj_vsa_postajalisca() {
         postajalisca?.[name]?.push(p.properties.id) ?? (postajalisca[name] = [p.properties.id]);
     }
     //dodajPostaje();
+    return;
 }
 
 async function dodajPostaje() {
@@ -356,15 +433,27 @@ async function dodajPostaje() {
 //Marko implementation of refresh
 lastRelation = [];
 allBuses = false;
-async function refresh() {
-    if(allBuses) {
-        return godusModus();
+async function refresh(automatic=false) {
+ 
+    if(allBuses) {  
+        await godusModus(automatic);
+        setTimeout(centerCurrentBus, 50);
+        
     }
     else if(lastRelation.length === 0) {
         return;
     }
     else {
-        zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
+        await zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
+        setTimeout(centerCurrentBus, 50);
+    }  
+}
+
+function centerCurrentBus(){
+    if (currentBusId){
+        let currentBus = busi[currentBusId];
+        let currentBusCoordinates = [currentBus.lat, currentBus.long];
+        mymap.flyTo(currentBusCoordinates);
     }
 }
 
