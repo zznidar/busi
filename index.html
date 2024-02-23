@@ -5,6 +5,9 @@
 	<meta name="author" content="Žan Žnidar">
 	<title>Busi</title>
 	<meta name="description" content="Prikazovalnik lokacij avtobusov in njihovih zamud">
+	<meta name="viewport" content="width=device-width; initial-scale=1; viewport-fit=cover">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
 
 	<!-- Favicon -->
 	<link rel="icon" type="image/png" href="bus_icon.png" />
@@ -26,8 +29,15 @@
  
  
 <body> 
-	 <div id="mapid" class="map"></div>
+	 <div id="mapid" class="map">
+		<div id="map_attributions" class="">
+			<span>&copy;<a href="https://www.maptiler.com/copyright">MapTiler</a></span>
+			<span> &copy;<a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a></span>
+	 	</div>
+	 </div>
 	 <div class="loader center no" id="loader"></div>
+
+	 
 	
 	<div class="info-container">
 		<span class="material-symbols-outlined tool_icon" style="left: 50%; top:10px;" onclick="toggleVisibility()">info</span>
@@ -49,6 +59,7 @@
 				<br>
 				<br>
 				Vir podatkov: <a href="https://ojpp.si/about" target="_blank">OJPP</a><br>
+				Leaflet: <a href="https://leafletjs.com/" target="_blank">Leaflet</a><br>
 				Source code is available on <a href="https://github.com/zznidar/busi">GitHub</a></p>
 		</div>
 	</div>
@@ -139,6 +150,8 @@
 
 
 <script>
+
+
 // Uporabne funkcije, src nekaterih: https://www.scirra.com/manual/126/system-expressions
 
 /*lerp = function(a, b, x) {
@@ -173,6 +186,14 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 		setTimeout(function() {
 			var element = document.getElementById('menu');
 			element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+		}, 100); // Adjust the delay (in milliseconds) to make it slower
+	
+	}
+
+	function delayOpen(){
+		setTimeout(function() {
+			var element = document.getElementById('delay_container')
+			element.scrollIntoView({behavior: "smooth", block:"end", inline:"nearest"})
 		}, 100); // Adjust the delay (in milliseconds) to make it slower
 	
 	}

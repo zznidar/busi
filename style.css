@@ -121,8 +121,8 @@ button:not(.zamudas button) {
 .info-panel{
     position: fixed;
     width: 90vw;
-    height: 300px;
-    top:50%;
+    height: 400px;
+    top:40%;
     left: 5vw;
     transform: translate(0, -50%);
     background-color: white;
@@ -162,18 +162,47 @@ button:not(.zamudas button) {
 
 
 
-
-
+/*BEGIN Map elements*/
 .map{
-    height: calc(100dvh - 150px);
-    border-radius: 1.5rem;
-    margin-top: 10px;
-    left: 2.5vw;
-    width: 95vw;
+    height: calc(100dvh - 100px);
+    border-radius: 0 0 10px 10px;
+    margin-top: 0;
+    left: 0;
+    width: 100vw;
     position:fixed;
     top:0;
     z-index: 0;
 }
+
+#map_attributions{
+    position: absolute;
+    color:black;
+    bottom: 20px;
+    right: 5px;
+    z-index: 1000;
+    padding: 0.5rem;
+    opacity: 0.5;
+    transition: opacity 0.5s;
+
+}
+#map_attributions a{
+    color:black;
+    text-decoration: none;
+}
+
+#map_attributions:hover{
+    opacity: 1;
+}
+#map_attributions:active{
+    opacity: 1;
+}
+
+img[alt*="MapTiler logo"] {
+    margin-bottom:20px;
+    opacity: 0.8;
+ }
+
+ /*END Map elements*/
 
 
 footer {
@@ -359,6 +388,10 @@ footer {
     padding-bottom: 20px;
 }
 
+#delay_container{
+    scroll-margin-bottom: 100px;
+}
+
 .zamuda_line{
     position: absolute;
     margin-left: 0.5rem;
@@ -366,12 +399,20 @@ footer {
     z-index: 0;
     border-left: 4px solid var(--color-secondary);
     display: inline-block;
+    filter: opacity(0.75);
     height: 1.5rem;
 }
 
 /*END Delay elements*/
 
 /*BEGIN Popup elements*/
+
+.leaflet-popup-content-wrapper{
+    min-width: 50vw;
+    width: fit-content;
+    max-width: 90vw;
+}
+
 .leaflet-popup{
     opacity: 0.85 !important;
 }
@@ -392,9 +433,6 @@ footer {
     margin-top:-0.2rem ;
 }
 
-.leaflet-popup-content-wrapper {
-    width:90vw;
-}
 
 .popup_route {
     color:var(--color-primary) !important;

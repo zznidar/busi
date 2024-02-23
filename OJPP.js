@@ -231,7 +231,7 @@ async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
 
     delay_content.innerHTML = zamudeHTML;
     delay_container.classList.remove("no");
-    menuOpen();
+    delayOpen();
 
 
 
@@ -355,7 +355,11 @@ async function godusModus() {
 
     izrisi_OJPP(busi);
     centerCurrentBus();
-    hideDelays();
+
+    if(!currentBusId){
+        hideDelays();
+    }
+    
     allBuses = true;
     return;
 }
@@ -363,6 +367,7 @@ async function godusModus() {
 postajalisca = {}
 vstopnaPostaja = [];
 izstopnaPostaja = [];
+
 async function zahtevaj_vsa_postajalisca() {
     let data_postajalisca = (await fp(`https://ojpp.si/api/stop_locations`))["features"];
     for(let p of data_postajalisca) {
@@ -428,9 +433,7 @@ async function dodajPostaje() {
 lastRelation = [];
 allBuses = false;
 async function refresh() {
-
-    
-    
+ 
     if(allBuses) {  
         await godusModus();
         setTimeout(centerCurrentBus, 50);
@@ -442,11 +445,7 @@ async function refresh() {
     else {
         await zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
         setTimeout(centerCurrentBus, 50);
-    }
-    //Get coordinates of current bus
-
-
-    
+    }  
 }
 
 function centerCurrentBus(){

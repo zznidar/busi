@@ -51,19 +51,24 @@ var busDirection = L.icon({
 
 /* ZEMLJEVID */
 var mymap = L.map('mapid', {
-    zoomControl: false
+    zoomControl: false,
+    preferCanvas: true,
+    attributionControl: true,
 }).setView([x, y], 13);
+
+
 L.maptilerLayer({
     apiKey: "Iz6oqHAlxuXztN4SolAF"
 }).addTo(mymap);
 L.tileLayer("", {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, data from <a href="https://ojpp.si">OJPP (CC BY 4.0)</a>',
+    attribution: '',
     maxZoom: 18,
-}).addTo(mymap);
+}).addTo(mymap);  
+
 /* L.control.attribution({
     position: 'topright'
 }).addTo(mymap);
- */
+
 /* LOKACIJA */
 var radius, myLocation, myAccuracy;
 mymap.locate({
@@ -104,7 +109,10 @@ animiraj = function(enMarker, newx, newy) {
 
     var pr = setInterval(function() {
         if (p < 1) {
-            enMarker.setLatLng(new L.LatLng(cosp(x, newx, p), cosp(y, newy, p)));
+
+            newCoords = new L.LatLng(cosp(x, newx, p), cosp(y, newy, p));
+
+            enMarker.setLatLng(newCoords);
             p += 0.1;
         } else {
             x = newx;
@@ -312,7 +320,7 @@ function izrisi_OJPP(odg) {
                 document.getElementById('delay_relation').innerText = odg["route_name"];
                 document.getElementById('delay_container').classList.add('no');
                 menuClose();
-                
+              
                 //Zoom in on bus location
                 mymap.flyTo([odg["lat"],odg["long"]], 15 );
                 currentBusId = odg["vehicle_id"];
