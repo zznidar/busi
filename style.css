@@ -425,7 +425,8 @@ footer {
     padding-left: 10px;
     font-family: "Open Sans", sans-serif;
     font-size: 1.1rem;
-    color: var(--color-primary);
+    color: var(--color-primary) !important;
+    text-decoration: none;
 }
 
 .bus_info{

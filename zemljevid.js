@@ -291,7 +291,7 @@ function izrisi_OJPP(odg) {
             vsebina += `
                 <div style="padding-left: 10px; padding-top: 10px;">
                 <span class="material-symbols-outlined" style="font-size: 2em; transform:translate(0,0.25em); z-index:100; color:var(--color-primary)" onclick="mymap.closePopup()">arrow_back</span>
-                <span class="popup-relacija">${odg?.["route_name"]}</span>
+                <a href="https://ojpp.si/trips/${odg?.["trip_id"]}" target="_blank" class="popup-relacija">${odg?.["route_name"]}</a>
                 <div style="position:relative; left: 40px; max-width: calc(100% - 50px)">
                     <span class="bus_info"><span class='popup_id' style='user-select: text'>Številka avtobusa: ${vid} </span></span>
                 

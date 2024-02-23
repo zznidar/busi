@@ -175,7 +175,7 @@ async function izpisi_zamudo(gumb, busId, stPostaj = 5) {
         opacity: 0.7">${z.zamuda} min</span>&nbsp${z.postaja}</li>`;
     }
     zamudeHTML += "</ul>";
-    zamudeHTML += "<a onclick = 'pokaziVse()' style='color:grey'>Pokaži vse postaje</a>"
+    if(items > stPostaj) zamudeHTML += "<a onclick = 'pokaziVse()' style='color:grey'>Pokaži vse postaje</a>"
 
     //Update the button text
     gumb.innerText = "Osveži zamude";
@@ -219,7 +219,7 @@ async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
             <span class="zamuda ${z.zamuda <= 0 ? "green" : "red"}">${z.zamuda} min</span>
         </div>`;
     }
-    zamudeHTML += "<span class='btn_delay_more center' onclick = 'pokaziVse()'>Pokaži vse postaje</span>"
+    if(items > stPostaj) zamudeHTML += "<span class='btn_delay_more center' onclick = 'pokaziVse()'>Pokaži vse postaje</span>"
 
     //Update the button text
     //zamudiceContainer.innerHTML = zamudeHTML;
@@ -257,6 +257,7 @@ async function pokaziVse() {
         e.classList.remove("no");
         console.log(elements);
     }
+    document.getElementsByClassName("btn_delay_more")[0].classList.add("no");
 }
 
 TIMETABLE = document.getElementById("timetable");
