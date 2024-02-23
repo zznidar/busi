@@ -408,7 +408,6 @@ footer {
 /*BEGIN Popup elements*/
 
 .leaflet-popup-content-wrapper{
-    min-width: 50vw;
     width: fit-content;
     max-width: 90vw;
 }
@@ -533,7 +532,6 @@ table tr{
     opacity: 0.8;
     border: 2px solid var(--color-secondary) !important;
 }
-/*END Schedule elements*/
 
 
 /*BEGIN Schedule information elements*/
