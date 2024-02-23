@@ -8,7 +8,7 @@
 		"location_accent-01.svg",
 		"OJPP.js",
 		"zemljevid.js",
-		"ZZ_leaflet.js",
+		"ZZ_leaflet.js"
 	],
 	"lazyLoad": [
 	]
