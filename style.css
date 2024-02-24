@@ -9,7 +9,8 @@
     --color-boxshadow: rgba(0, 0, 0, 0.15);
     --color-delay: #820300;
     --color-warning: #B67352;
-    --color-info: grey;    
+    --color-info: grey;   
+    --color-theme-second: rgba(204, 204, 204, 0.69);
 
 
 }
@@ -17,6 +18,7 @@
 @media (prefers-color-scheme: dark) {
     :root{
     --color-theme: rgb(33, 33, 36);
+    --color-theme-second: rgba(74, 74, 74, 0.69);
     --color-font: rgb(220,220,220);
     --color-secondary: #739072;
     --color-primary: var(--color-font);
@@ -138,7 +140,19 @@ button:not(.zamudas button) {
     border-radius: 1.5rem;
     box-shadow: 0 0 20px 0 var(--color-boxshadow);
     z-index: 1;
+}
 
+.offline_warning{
+    position: fixed;
+    background-color: var(--color-theme);
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
+    opacity:0.95;
+    bottom: 150px;
+    left:5vw;
+    width:90vw;
+    height: 130px;
+    z-index: 100;
 }
 
 .info-container{
@@ -348,10 +362,26 @@ footer {
     font-size: 0.8rem;
 }
 
+.btn_offline{
+    background-color: var(--color-theme-second);
+    color: var(--color-font);
+    box-shadow: 0 8px 8px 0 var(--color-boxshadow);
+    border-color: var(--color-theme-second);
+    border-radius: 1rem;
+    width:fit-content;
+
+    margin-top: 15px !important;
+    margin-bottom: 20px !important;
+    padding: 0.5rem 1rem;
+
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.8rem;
+}
+
 .btn_delay_more{
     background-color: white;
     color:black;
-    box-shadow: 0 8px 8px 0 var(--color-boxshadow);
+    box-shadow: 0 0px 8px 0 var(--color-boxshadow);
     border-color: white;
     border-radius: 1rem;
     width:fit-content;

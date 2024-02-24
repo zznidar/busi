@@ -21,7 +21,7 @@
     <!-- <link href="https://cdn.maptiler.com/maptiler-sdk-js/v1.2.0/maptiler-sdk.css" rel="stylesheet" /> -->
     <script src="https://cdn.maptiler.com/leaflet-maptilersdk/v2.0.0/leaflet-maptilersdk.js"></script>
    
-   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=no; viewport-fit=cover" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
    <!-- style.css -->
    <link rel="stylesheet" href="style.css" />
    <link rel="manifest" crossorigin="use-credentials" href="manifest.webmanifest"  />
@@ -83,6 +83,15 @@
 			<p>Na tej relaciji trenutno ni busa.</p>
 		</div>
 	</div>
+
+	<div class="offline_warning no" id="offline">
+		<div class="center" style="width:80%">
+			<span class="material-symbols-outlined" style="left:50%; color:var(--color-info); padding-top: 20px; font-size:1.5rem">wifi_off</span><br>
+			<p>Brez internetne povezave. Busi se dejansko premikajo in ne stojijo!</p>
+
+		</div>
+	</div>
+
 
 
 	<div class = "tool_container">
@@ -234,6 +243,32 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 		refresh(automatic=true);
 	}, 20000);
 
+	//Handle offline situation
+	window.addEventListener('offline', function(event){
+		console.log("offline");
+		showOfflineWarning();
+	});
+
+	//Handle offline situation
+	window.addEventListener('online', function(event){
+		console.log("online");
+		hideOfflineWarning();
+	});
+
+	showOfflineWarning = function(){
+		var errorPopup = document.getElementById("offline");
+		errorPopup.style.transition = "opacity 1s ease-in-out";
+		errorPopup.style.opacity = 0;
+		errorPopup.classList.remove("no");
+		setTimeout(function(){errorPopup.style.opacity = 0.95;}, 1000);
+	}
+
+	hideOfflineWarning = function(){
+		var errorPopup = document.getElementById("offline");
+		setTimeout(function(){errorPopup.style.opacity = 0;}, 1000);
+		setTimeout(function(){errorPopup.classList.add("no");}, 4000);
+	}
+
 </script>
 
 
@@ -241,7 +276,6 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 <script src="OJPP.js"></script>
 
 <script>
-	console.log("Something.");
 	// Caching https://github.com/AshleyScirra/scirra-offline-sw
 	navigator.serviceWorker.register("sw.js", { scope: "./" });
 
