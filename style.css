@@ -93,7 +93,7 @@ button:not(.zamudas button) {
     border-radius: 1.5rem 1.5rem 0 0;
     box-shadow: 0 0 20px 0 var(--color-boxshadow);
     position: absolute;
-    top:calc(100dvh - 120px);
+    top:calc(100dvh - 120px - env(safe-area-inset-bottom));
     background-color: var(--color-theme);
     padding-bottom: 80px;
     z-index: 0;
@@ -111,6 +111,7 @@ button:not(.zamudas button) {
     box-shadow: 0 0 20px 0 var(--color-boxshadow);
     display: block;
     z-index: 1;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 
@@ -184,7 +185,7 @@ button:not(.zamudas button) {
     font-size: 0.8em;
     position: absolute;
     transform:translateX(-50%);
-    bottom: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
     text-align: center;
     font-family: 'Open Sans', sans-serif;
     color: var(--color-primary);
@@ -224,12 +225,12 @@ button:not(.zamudas button) {
 }
 
 .refresh{
-    bottom: 210px;
+    bottom: calc(210px + env(safe-area-inset-bottom));
     right:20px;    
 }
 
 .locate{
-    bottom:150px;
+    bottom: calc(150px + env(safe-area-inset-bottom));
     right: 20px;
 }
 .float_icon{
@@ -272,7 +273,7 @@ button:not(.zamudas button) {
 #map_attributions{
     position: absolute;
     color:grey;
-    bottom: 40px;
+    bottom: calc(40px + env(safe-area-inset-bottom));
     right: 5px;
     z-index: 1000;
     padding: 0.5rem;
@@ -293,7 +294,7 @@ button:not(.zamudas button) {
 }
 
 img[alt*="MapTiler logo"] {
-    margin-bottom:40px;
+    margin-bottom: calc(40px + env(safe-area-inset-bottom));
     opacity: 0.8;
  }
 
