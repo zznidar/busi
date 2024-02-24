@@ -11,10 +11,12 @@ if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').match
     // dark mode
     busIconSrc = "bus_dark.svg";
     busDirectionSrc = "bus_arrow_dark.svg";
-}
-else{
+    mapStyle = "streets-v2-dark";
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#213545'); // Not sure if all browsers support media query in html meta tag
+} else {
     busIconSrc = "bus.svg";
     busDirectionSrc = "bus_arrow.svg";
+    mapStyle = "streets";
 }
 
 
@@ -50,13 +52,6 @@ var mymap = L.map('mapid', {
 }).setView([x, y], 13);
 
 
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    // dark mode
-    mapStyle = "streets-v2-dark";
-}
-else{
-    mapStyle = "streets";
-}
 
 new L.maptilerLayer({
     apiKey:"Iz6oqHAlxuXztN4SolAF", // For live version 
