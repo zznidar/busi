@@ -194,7 +194,7 @@ async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
 
 
     for(let z of zamude) {
-        let barva = z.zamuda <= 0 ? "#3a4d39" : "#820300";
+        let barva = z.zamuda <= 0 ? "var(color-secondary)" : "var(--color-delay)";
 
 
 
@@ -447,6 +447,12 @@ async function refresh(automatic=false) {
         await zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
         setTimeout(centerCurrentBus, 50);
     }  
+    document.getElementById("refresh").classList.add("refresh_animate");
+    setTimeout(() => {
+        document.getElementById("refresh").classList.remove("refresh_animate");
+    }, 1000);
+    
+
 }
 
 function centerCurrentBus(){

@@ -1,11 +1,39 @@
 /*Color variables*/
 :root{
-    --color-beige: #ECE3CE;
+    --color-beige: hsl(42, 44%, 87%);
     --color-third: #739072;
+    --color-theme: white;
+    --color-font: black;
     --color-secondary: #4f6f52;
     --color-primary: #3a4d39;
-    --color-delay: #820300;    
+    --color-boxshadow: rgba(0, 0, 0, 0.15);
+    --color-delay: #820300;
+    --color-warning: #B67352;
+    --color-info: grey;    
+
+
 }
+
+@media (prefers-color-scheme: dark) {
+    :root{
+    --color-theme: rgb(33, 33, 36);
+    --color-font: rgb(220,220,220);
+    --color-secondary: #739072;
+    --color-primary: var(--color-font);
+    --color-boxshadow: rgba(200, 200, 200, 0.15);
+    --color-delay: #c63532;
+
+    --color-warning: #f3986a !important;
+    --color-info: #dadada !important;
+    }
+
+    body{
+        color: var(--color-font);
+    }
+}
+
+
+
 
 
 body{
@@ -55,10 +83,10 @@ button:not(.zamudas button) {
     left:0;
     right:0;
     border-radius: 1.5rem 1.5rem 0 0;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
     position: absolute;
     top:calc(100dvh - 120px);
-    background-color: white;
+    background-color: var(--color-theme);
     padding-bottom: 80px;
     z-index: 0;
 }
@@ -70,9 +98,9 @@ button:not(.zamudas button) {
     right:0;
     bottom: 0%;
     border-radius: 1.5rem 1.5rem 0 0;
-    background-color: white;
+    background-color: var(--color-theme);
     opacity: 1;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
     display: block;
     z-index: 1;
 }
@@ -83,10 +111,10 @@ button:not(.zamudas button) {
     left:0;
     right:0;
     border-radius: 1.5rem 1.5rem 0 0;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
     position: fixed;
     top: 0;
-    background-color: white;
+    background-color: var(--color-theme);
     margin-bottom: 80px;
     z-index: 0;
 }
@@ -102,7 +130,7 @@ button:not(.zamudas button) {
     background-color: #820300;
     opacity: 0;
     border-radius: 1.5rem;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
     z-index: 1;
 
 }
@@ -113,7 +141,7 @@ button:not(.zamudas button) {
     height: 120px;
     top:0;
     right:0;
-    background-color: white;
+    background-color: var(--color-theme);
     border-radius: 0 0 0 1.5rem;
 
 }
@@ -121,13 +149,13 @@ button:not(.zamudas button) {
 .info-panel{
     position: fixed;
     width: 90vw;
-    height: 400px;
+    height: 415px;
     top:40%;
     left: 5vw;
     transform: translate(0, -50%);
-    background-color: white;
+    background-color: var(--color-theme);
     border-radius: 1.5rem;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
     z-index: 1;
 }
 
@@ -145,7 +173,7 @@ button:not(.zamudas button) {
 
 
 .pritozba {
-    background-color: white;
+    background-color: var(--color);
     color:black;
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
     border-color: white;
@@ -158,6 +186,46 @@ button:not(.zamudas button) {
     font-size: 0.5rem;
     position: absolute;
     display: none;
+}
+
+
+/*BEGIN Float button elements */
+.float{
+    position:fixed;
+    width:50px;
+    height:50px;
+    border-radius: 100%;
+    background-color: var(--color-theme);
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+    padding: 0 0 0 0;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.refresh{
+    bottom: 210px;
+    right:20px;    
+}
+
+.locate{
+    bottom:150px;
+    right: 20px;
+}
+.float_icon{
+    color: var(--color-primary);
+    font-size: 30px;
+    position: relative;
+    top:10px;
+
+}
+
+.locate_float:active{
+    opacity: 0.5;
+}
+
+.refresh_animate{
+    animation: sync_spin 1s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+
 }
 
 
@@ -176,7 +244,7 @@ button:not(.zamudas button) {
 
 #map_attributions{
     position: absolute;
-    color:black;
+    color:grey;
     bottom: 20px;
     right: 5px;
     z-index: 1000;
@@ -186,7 +254,7 @@ button:not(.zamudas button) {
 
 }
 #map_attributions a{
-    color:black;
+    color:grey;
     text-decoration: none;
 }
 
@@ -347,7 +415,7 @@ footer {
     position: relative;
     left: 10px;
     font-size: 0.8rem;
-    color: black;
+    color: var(--color-font);
 
 }
 
@@ -363,7 +431,7 @@ footer {
     position: relative;
     height: 0.6rem;
     width: 0.6rem;
-    background-color: white;
+    background-color: var(--color-theme);
     border: 0.2rem solid var(--color-secondary);
     border-radius: 100%;
     display: inline-block;
@@ -376,11 +444,13 @@ footer {
 }
 
 .red{
-    color: #820300 !important;
-    border-color: #820300 !important;
-}.red{
-    color: #820300 !important;
-    border-color: #820300 !important;
+    color: var(--color-delay) !important;
+    border-color: var(--color-delay) !important;
+}
+
+.green{
+    color: var(--color-secondary) !important;
+    border-color: var(--color-secondary) !important;
 }
 
 #delay_content{
@@ -410,6 +480,7 @@ footer {
 .leaflet-popup-content-wrapper{
     width: fit-content;
     max-width: 90vw;
+    background-color: var(--color-theme);
 }
 
 .leaflet-popup{
@@ -444,12 +515,13 @@ footer {
 
 .popup_id{
     text-emphasis: italic !important;
+    color: var(--color-font);
 }
 
 .popup_zamuda_button{
     background-color: var(--color-third) !important;
     color:white;
-    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0px 8px 0 var(--color-boxshadow);
     border-color: white;
     border-radius: 1rem;
     width:fit-content;
@@ -517,7 +589,7 @@ table td a:active{
 }
 
 table tr{
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 4px 0 var(--color-boxshadow);
     border-radius: 10px;
     border-color: white;
 
@@ -549,7 +621,7 @@ table tr{
 }
 
 .warning{
-    --color-warning: #B67352;
+
     color:var(--color-warning);
     border-color: var(--color-warning);
 }
@@ -564,7 +636,6 @@ table tr{
 }
 
 .info{
-    --color-info: grey;
     border-color: var(--color-info);
     color:var(--color-info);
 

@@ -39,15 +39,26 @@
 
 	 
 	
-	<div class="info-container">
+	<div class="info-container no">
 		<span class="material-symbols-outlined tool_icon" style="left: 50%; top:10px;" onclick="toggleVisibility()">info</span>
 		<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="mymap.flyTo(xy, 13);">my_location</span>
 
 	</div>
 
 
+	<div class="refresh float">
+		<span id = "refresh" class="material-symbols-outlined float_icon center refresh_icon" onclick="refresh()">sync</span>
+	</div>
+	<div class="locate float" onclick="mymap.flyTo(xy, 13);">
+		<span class="material-symbols-outlined float_icon center" onclick="mymap.flyTo(xy, 13);">my_location</span>
+	</div>
+
+
 	<div class="info-panel no" id="info">
 		<div class ="center" style="width:75%">
+
+			<!--Close button-->
+			<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="toggleVisibility()">cancel</span>
 			
 			<h2>Busi</h2>
 			<img src="bus_icon.png" style="width: 64px; height: 64px; margin-top: -10px; padding-bottom: 5px;">
@@ -73,14 +84,14 @@
 
 	<div class = "tool_container">
 		<div style="padding-top: 5px; padding-bottom: 5px;">
-			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="refresh();">sync</span>
-			<span class= "tool_item" style="left:37.5%">Osveži</span>
-
 			<span class="material-symbols-outlined tool_icon" style="left: 12.5%;" onclick="toggleFavorite()">favorite</span>
 			<span class= "tool_item" style="left:12.5%">Priljubljene</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="iskalnikBusId()">search</span>
-			<span class= "tool_item" style="left:87.5%">Išči</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="toggleVisibility();">info</span>
+			<span class= "tool_item" style="left:87.5%">Info</span>
+
+			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="iskalnikBusId()">search</span>
+			<span class= "tool_item" style="left:37.5%">Išči</span>
 
 			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="godusModus()">directions_bus</span>
 			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span>
@@ -118,7 +129,7 @@
 			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center">
 				<h2>Urnik za izbrano relacijo</h2>
 				<div class="bubble info center">
-					<span class="material-symbols-outlined" style="left:50%; color:var(--color-warning); padding-top: 7.5px; font-size:1.5rem">warning</span>
+					<span class="material-symbols-outlined" style="left:50%; color:var(--color-info); padding-top: 7.5px; font-size:1.5rem">warning</span>
 					<p style="margin-top: 2.5px;">Urniki so lahko zastareli. <br> Preverite vozni red pri svojem prevozniku!</p>
 				</div>
 
