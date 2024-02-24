@@ -5,9 +5,9 @@
 	<meta name="author" content="Žan Žnidar">
 	<title>Busi</title>
 	<meta name="description" content="Prikazovalnik lokacij avtobusov in njihovih zamud">
-	<meta name="viewport" content="width=device-width; initial-scale=1; viewport-fit=cover">
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 	<!-- Favicon -->
 	<link rel="icon" type="image/png" href="bus_icon.png" />
@@ -21,10 +21,9 @@
     <!-- <link href="https://cdn.maptiler.com/maptiler-sdk-js/v1.2.0/maptiler-sdk.css" rel="stylesheet" /> -->
     <script src="https://cdn.maptiler.com/leaflet-maptilersdk/v2.0.0/leaflet-maptilersdk.js"></script>
    
-   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
    <!-- style.css -->
    <link rel="stylesheet" href="style.css" />
-
    <link rel="manifest" href="manifest.webmanifest" />
 </head> 
  
@@ -40,15 +39,26 @@
 
 	 
 	
-	<div class="info-container">
+	<div class="info-container no">
 		<span class="material-symbols-outlined tool_icon" style="left: 50%; top:10px;" onclick="toggleVisibility()">info</span>
 		<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="mymap.flyTo(xy, 13);">my_location</span>
 
 	</div>
 
 
+	<div class="refresh float">
+		<span id = "refresh" class="material-symbols-outlined float_icon center refresh_icon" onclick="refresh()">sync</span>
+	</div>
+	<div class="locate float" onclick="mymap.flyTo(xy, 13);">
+		<span class="material-symbols-outlined float_icon center" onclick="mymap.flyTo(xy, 13);">my_location</span>
+	</div>
+
+
 	<div class="info-panel no" id="info">
 		<div class ="center" style="width:75%">
+
+			<!--Close button-->
+			<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="toggleVisibility()">cancel</span>
 			
 			<h2>Busi</h2>
 			<img src="bus_icon.png" style="width: 64px; height: 64px; margin-top: -10px; padding-bottom: 5px;">
@@ -72,17 +82,26 @@
 		</div>
 	</div>
 
+	<div class="offline_warning no" id="offline">
+		<div class="center" style="width:80%">
+			<span class="material-symbols-outlined" style="left:50%; color:var(--color-info); padding-top: 20px; font-size:1.5rem">wifi_off</span><br>
+			<p>Brez internetne povezave. Busi se dejansko premikajo in ne stojijo!</p>
+
+		</div>
+	</div>
+
+
 
 	<div class = "tool_container">
 		<div style="padding-top: 5px; padding-bottom: 5px;">
-			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="refresh();">sync</span>
-			<span class= "tool_item" style="left:37.5%">Osveži</span>
-
 			<span class="material-symbols-outlined tool_icon" style="left: 12.5%;" onclick="toggleFavorite()">favorite</span>
 			<span class= "tool_item" style="left:12.5%">Priljubljene</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="iskalnikBusId()">search</span>
-			<span class= "tool_item" style="left:87.5%">Išči</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="toggleVisibility();">info</span>
+			<span class= "tool_item" style="left:87.5%">Info</span>
+
+			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="iskalnikBusId()">search</span>
+			<span class= "tool_item" style="left:37.5%">Išči</span>
 
 			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="godusModus()">directions_bus</span>
 			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span>
@@ -97,7 +116,6 @@
 		<div id="delay_container" style="padding-left: 15px; padding-right: 15px; margin-top: 30px;" class="no">
 			<h2 class="center" >Zamude na relaciji</h2>
 			<h2 class="center" id="delay_relation">Relacija</h2>
-			<p style="margin-top: 10px; width:80vw" class="center">Prikazanih je samo zadnjih 5 postaj. Za vse postaje klikni na spodnji gumb.</p>
 
 			<div id = "delay_content">
 			</div>
@@ -120,7 +138,7 @@
 			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center">
 				<h2>Urnik za izbrano relacijo</h2>
 				<div class="bubble info center">
-					<span class="material-symbols-outlined" style="left:50%; color:var(--color-warning); padding-top: 7.5px; font-size:1.5rem">warning</span>
+					<span class="material-symbols-outlined" style="left:50%; color:var(--color-info); padding-top: 7.5px; font-size:1.5rem">warning</span>
 					<p style="margin-top: 2.5px;">Urniki so lahko zastareli. <br> Preverite vozni red pri svojem prevozniku!</p>
 				</div>
 
@@ -221,6 +239,32 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 	setInterval(function(){
 		refresh(automatic=true);
 	}, 20000);
+
+	//Handle offline situation
+	window.addEventListener('offline', function(event){
+		console.log("offline");
+		showOfflineWarning();
+	});
+
+	//Handle offline situation
+	window.addEventListener('online', function(event){
+		console.log("online");
+		hideOfflineWarning();
+	});
+
+	showOfflineWarning = function(){
+		var errorPopup = document.getElementById("offline");
+		errorPopup.style.transition = "opacity 1s ease-in-out";
+		errorPopup.style.opacity = 0;
+		errorPopup.classList.remove("no");
+		setTimeout(function(){errorPopup.style.opacity = 0.95;}, 1000);
+	}
+
+	hideOfflineWarning = function(){
+		var errorPopup = document.getElementById("offline");
+		setTimeout(function(){errorPopup.style.opacity = 0;}, 1000);
+		setTimeout(function(){errorPopup.classList.add("no");}, 2000);
+	}
 
 </script>
 

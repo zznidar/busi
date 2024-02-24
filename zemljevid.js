@@ -7,33 +7,26 @@ m3 = {}; //Marjerki za orientacijo
 
 currentBusId = 0;
 
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    // dark mode
+    busIconSrc = "bus_dark.svg";
+    busDirectionSrc = "bus_arrow_dark.svg";
+}
+else{
+    busIconSrc = "bus.svg";
+    busDirectionSrc = "bus_arrow.svg";
+}
+
 
 /* IKONE */
 var busIcon = L.icon({
-    iconUrl: 'bus.svg',
+    
+    iconUrl: busIconSrc,
     iconSize: [32, 32],
     iconAnchor: [16, 16],
     popupAnchor: [0, -16]
 });
-/* var busIconLpp = L.icon({
-    iconUrl: 'lpp_bus.svg',
-    iconSize: [28, 28],
-    iconAnchor: [14, 28],
-    popupAnchor: [0, -26]
-});
-var busIconGood = L.icon({
-    iconUrl: 'bus_good2.svg',
-    iconSize: [36, 36],
-    iconAnchor: [18, 36],
-    popupAnchor: [0, -34]
-}); 
 
-var busIconKrsiDekret = L.icon({
-    iconUrl: 'bus_krsiDekret.svg',
-    iconSize: [36, 36],
-    iconAnchor: [18, 36],
-    popupAnchor: [0, -34]
-});  */
 
 var myIconlocation = L.icon({
     iconUrl: 'location_accent-01.svg',
@@ -43,7 +36,7 @@ var myIconlocation = L.icon({
 });
 
 var busDirection = L.icon({
-    iconUrl: 'bus_arrow.svg',
+    iconUrl: busDirectionSrc,
 	iconSize: [45, 45],
     iconAnchor: [22.5, 22.5],
     popupAnchor: [0, -14]
@@ -57,9 +50,21 @@ var mymap = L.map('mapid', {
 }).setView([x, y], 13);
 
 
-L.maptilerLayer({
-    apiKey: "Iz6oqHAlxuXztN4SolAF"
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    // dark mode
+    mapStyle = "streets-v2-dark";
+}
+else{
+    mapStyle = "streets";
+}
+
+new L.maptilerLayer({
+    //apiKey:"Iz6oqHAlxuXztN4SolAF", // For live version 
+    apiKey: "Bid81QPElcfo4iUZ8tF2", //For testing -- more permissions
+    style: mapStyle,
 }).addTo(mymap);
+
+
 L.tileLayer("", {
     attribution: '',
     maxZoom: 18,
