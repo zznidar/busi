@@ -172,7 +172,7 @@ button:not(.zamudas button) {
     max-width: 400px;
     height: 450px;
     top:40%;
-    left: 5vw;
+    left: calc((100vw - min(400px, 90vw))/2);
     transform: translate(0, -50%);
     background-color: var(--color-theme);
     border-radius: 1.5rem;
