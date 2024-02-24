@@ -97,6 +97,7 @@ button:not(.zamudas button) {
     background-color: var(--color-theme);
     padding-bottom: 80px;
     z-index: 0;
+
 }
 
 .tool_container{
@@ -449,6 +450,7 @@ footer {
     position: relative;
     left: 35%;
     height:1.5rem;
+    width: fit-content;
 }
 .zamuda_entry.first{
     margin-top: 15px;
