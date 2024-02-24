@@ -548,7 +548,8 @@ footer {
 
 .bus_info{
     height: 1.2rem;
-    margin-top:-0.2rem ;
+    margin-top:-0.2rem;
+    color: var(--color-font);
 }
 
 
