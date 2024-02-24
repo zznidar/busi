@@ -24,9 +24,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
    <!-- style.css -->
    <link rel="stylesheet" href="style.css" />
-   <link rel="manifest" crossorigin="use-credentials" href="manifest.webmanifest"  />
-
-   
+   <link rel="manifest" href="manifest.webmanifest" />
 </head> 
  
  
@@ -67,8 +65,8 @@
 			<p>Prikazovalnik lokacije avtobusov in njihovih zamud.</p>
 			<p>Avtorja: <br>
 				Žan&nbsp;Žnidar <br>
-				Marko&nbsp;Zupan<br> ©
-				&nbsp;2024<br>
+				Marko&nbsp;Zupan<br> 
+				©&nbsp;2024<br>
 				<br>
 				<br>
 				Vir podatkov: <a href="https://ojpp.si/about" target="_blank">OJPP</a><br>
@@ -276,28 +274,27 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 <script src="OJPP.js"></script>
 
 <script>
-	// Caching https://github.com/AshleyScirra/scirra-offline-sw
-	navigator.serviceWorker.register("sw.js", { scope: "./" });
+	console.log("Something.");
+// Caching https://github.com/AshleyScirra/scirra-offline-sw
+navigator.serviceWorker.register("sw.js", { scope: "./" });
 
-	let broadcastChannel = new BroadcastChannel("busi-offline");
-	broadcastChannel.onmessage = function (e) {
-	const data = e.data;
-	const messageType = data.type;
+let broadcastChannel = new BroadcastChannel("busi-offline");
+broadcastChannel.onmessage = function (e) {
+  const data = e.data;
+  const messageType = data.type;
 
-	console.log(data, messageType);
-	document.getElementById("update-info").innerText = `${messageType} v${data?.version ?? ""}`;
+  console.log(data, messageType);
+  document.getElementById("update-info").innerText = `${messageType} v${data?.version ?? ""}`;
 
-	// messageType can be:
-	// "downloading-update": has started downloading a new version in the background
-	//     (data.version indicates which)
-	// "update-ready": an update has finished downloading in the background and is
-	//     now ready to use after a reload (data.version indicates which)
-	// "update-pending": an update is available but needs a reload to start using it
-	// "up-to-date": identified that the latest version is already in use
-	// "downloading": started first-time caching of the current version for offline use
-	// "offline-ready": finished first-time caching, so app can now work offline
-	};
+  // messageType can be:
+  // "downloading-update": has started downloading a new version in the background
+  //     (data.version indicates which)
+  // "update-ready": an update has finished downloading in the background and is
+  //     now ready to use after a reload (data.version indicates which)
+  // "update-pending": an update is available but needs a reload to start using it
+  // "up-to-date": identified that the latest version is already in use
+  // "downloading": started first-time caching of the current version for offline use
+  // "offline-ready": finished first-time caching, so app can now work offline
+};
 </script>
-
-
 </html>

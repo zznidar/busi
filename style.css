@@ -737,3 +737,8 @@ input[type='text']{
 
 
 
+#update-info {
+    font-size: xx-small;
+    color: gray;
+    text-align: center;
+}

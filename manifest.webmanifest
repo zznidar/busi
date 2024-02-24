@@ -11,10 +11,10 @@
       "type": "image/png",
       "purpose": "maskable any"
     }],
-    "orientation": "portrait",
+  "orientation": "portrait",
 
 
-"screenshots": [
+  "screenshots": [
     {
         "src": "images/1.png",
         "sizes": "1080x1920",
@@ -36,6 +36,6 @@
         "form_factor": "narrow",
         "label": "Urniki"
     }
-],
+  ],
     "description": "Busi je aplikacija, ki omogoča enostavno sledenje avtobusom in prikazuje urnike in zamude."
 }
