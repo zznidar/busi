@@ -12,7 +12,7 @@
     --color-info: grey;   
     --color-theme-second: rgba(204, 204, 204, 0.69);
 
-
+    overscroll-behavior: none;
 }
 
 @media (prefers-color-scheme: dark) {
