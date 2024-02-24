@@ -26,25 +26,7 @@ var busIcon = L.icon({
     iconAnchor: [16, 16],
     popupAnchor: [0, -16]
 });
-var busIconLpp = L.icon({
-    iconUrl: 'lpp_bus.svg',
-    iconSize: [28, 28],
-    iconAnchor: [14, 28],
-    popupAnchor: [0, -26]
-});
-var busIconGood = L.icon({
-    iconUrl: 'bus_good2.svg',
-    iconSize: [36, 36],
-    iconAnchor: [18, 36],
-    popupAnchor: [0, -34]
-}); 
 
-var busIconKrsiDekret = L.icon({
-    iconUrl: 'bus_krsiDekret.svg',
-    iconSize: [36, 36],
-    iconAnchor: [18, 36],
-    popupAnchor: [0, -34]
-}); 
 
 var myIconlocation = L.icon({
     iconUrl: 'location_accent-01.svg',

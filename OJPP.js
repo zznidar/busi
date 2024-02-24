@@ -77,7 +77,10 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
     }
 
     izrisi_OJPP(busi);
-    izpisi_urnik(trips);
+
+    if(!currentBusId){
+        izpisi_urnik(trips);
+    }
 }
 
 

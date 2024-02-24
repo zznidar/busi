@@ -42,6 +42,7 @@ body{
     user-select: none;
     font-family: "Open Sans", sans-serif;
     font-size: 0.8rem;
+    height:100%;
 }
 
 
@@ -83,7 +84,7 @@ button:not(.zamudas button) {
     left:0;
     right:0;
     border-radius: 1.5rem 1.5rem 0 0;
-    box-shadow: 0 0 20px 0 var(--color-boxshadow);
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
     position: absolute;
     top:calc(100dvh - 120px);
     background-color: var(--color-theme);
@@ -175,7 +176,7 @@ button:not(.zamudas button) {
 .pritozba {
     background-color: var(--color);
     color:black;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 8px 0 var(--color-boxshadow);
     border-color: white;
     border-radius: 1rem;
     width:fit-content;
@@ -196,7 +197,7 @@ button:not(.zamudas button) {
     height:50px;
     border-radius: 100%;
     background-color: var(--color-theme);
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
     padding: 0 0 0 0;
     opacity: 1;
     transition: opacity 0.5s;
@@ -312,7 +313,7 @@ footer {
 
 .tool_icon:active{
     color: var(--color-secondary);
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--color-boxshadow);
     border-radius: 50%;
     padding: 0.5rem;
     opacity: 0.9;
@@ -330,7 +331,7 @@ footer {
 .btn_general{
     background-color: var(--color-secondary);
     color:white;
-    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 8px 0 var(--color-boxshadow);
     border-color: white;
     border-radius: 1rem;
     width:fit-content;
@@ -344,7 +345,7 @@ footer {
 .btn_delay_more{
     background-color: white;
     color:black;
-    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 8px 0 var(--color-boxshadow);
     border-color: white;
     border-radius: 1rem;
     width:fit-content;
@@ -363,7 +364,7 @@ footer {
 .btn_busstop{
     background-color: white;
     color:black;
-    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 8px 0 var(--color-boxshadow);
     border-color: white;
     border-radius: 1rem;
     width:fit-content;
@@ -383,7 +384,7 @@ footer {
 .btn_busline{
     background-color: var(--color-third);
     color:white;
-    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 8px 0 var(--color-boxshadow);
     border-color: white;
     border-radius: 1rem;
     width:fit-content;
@@ -688,6 +689,12 @@ input[type='text']{
     color: var(--color-primary);
     outline:none;
 
+}
+
+#update-info {
+    font-size: xx-small;
+    color: gray;
+    text-align: center;
 }
 
 
