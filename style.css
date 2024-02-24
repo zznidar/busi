@@ -20,7 +20,7 @@
     --color-font: rgb(220,220,220);
     --color-secondary: #739072;
     --color-primary: var(--color-font);
-    --color-boxshadow: rgba(200, 200, 200, 0.15);
+    --color-boxshadow: rgba(200, 200, 200, 0.08);
     --color-delay: #a85150;
 
     --color-warning: #f3986a !important;
@@ -29,6 +29,11 @@
 
     body{
         color: var(--color-font);
+    }
+
+    a{
+        text-decoration: none;
+        color: var(--color-secondary);
     }
 }
 
@@ -84,7 +89,7 @@ button:not(.zamudas button) {
     left:0;
     right:0;
     border-radius: 1.5rem 1.5rem 0 0;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
     position: absolute;
     top:calc(100dvh - 120px);
     background-color: var(--color-theme);
@@ -150,7 +155,8 @@ button:not(.zamudas button) {
 .info-panel{
     position: fixed;
     width: 90vw;
-    height: 415px;
+    max-width: 400px;
+    height: 450px;
     top:40%;
     left: 5vw;
     transform: translate(0, -50%);
