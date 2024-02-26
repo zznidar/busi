@@ -59,8 +59,10 @@
 	<div class="info-panel no" id="info">
 		<div class ="center" style="width:75%">
 
-			<!--Close button-->
-			<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="toggleVisibility()">cancel</span>
+	
+
+			<span class="material-symbols-outlined tool_icon" style="left:50%; bottom: 10px; font-size:1.5rem" onclick="iskalnikBusId()">search</span><br>
+
 			
 			<h2>Busi</h2>
 			<img src="bus_icon.png" style="width: 64px; height: 64px; margin-top: -10px; padding-bottom: 5px;">
@@ -102,8 +104,9 @@
 			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="toggleVisibility();">info</span>
 			<span class= "tool_item" style="left:87.5%">Info</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="iskalnikBusId()">search</span>
-			<span class= "tool_item" style="left:37.5%">Išči</span>
+			<!--<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="iskalnikBusId()">search</span>-->
+			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="toggleTimetable()">calendar_month</span>
+			<span class= "tool_item" style="left:37.5%">Vozni red</span>
 
 			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="godusModus()">directions_bus</span>
 			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span>
@@ -137,11 +140,12 @@
 			<span class="btn_general center" id="dodajPostajeBtn" onclick="dodajPostaje();">Dodaj relacijo</span>
 
 		</div>
-			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center">
+			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center no" id="timetable_container">
 				<h2>Urnik za izbrano relacijo</h2>
+				<p class="center" style="padding-top: 5px; padding-bottom: 20px;" id="timetable_no_line">Trenutno ni izbrane nobene linije.</p>
 				<div class="bubble info center">
 					<span class="material-symbols-outlined" style="left:50%; color:var(--color-info); padding-top: 7.5px; font-size:1.5rem">warning</span>
-					<p style="margin-top: 2.5px;">Urniki so lahko zastareli. <br> Preverite vozni red pri svojem prevozniku!</p>
+					<p style="margin-top: 2.5px;">Urniki so lahko napačni ali pomanjklivi. <br> Preverite vozni red pri svojem prevozniku!</p>
 				</div>
 
 				<div class="bubble warning center no" style="margin-top: 10px;" id="timetable_sync_warning">
@@ -150,6 +154,7 @@
 				</div>
 
 				<div id="urnik">
+					
 					<!-- Timetable -->
 					<table id="timetable">
 						
@@ -209,26 +214,63 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 			var element = document.getElementById('menu');
 			element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
 		}, 100); // Adjust the delay (in milliseconds) to make it slower
-	
+		return;
 	}
 
 	function delayOpen(){
 		setTimeout(function() {
 			var element = document.getElementById('delay_container')
+			var elementTimetable = document.getElementById("timetable_container");
+			var elementFavorite = document.getElementById("favorites");
+
+			elementTimetable.classList.add("no");
+			elementFavorite.classList.add("no");
 			element.scrollIntoView({behavior: "smooth", block:"end", inline:"nearest"})
 		}, 100); // Adjust the delay (in milliseconds) to make it slower
 	
 	}
 
 	function toggleFavorite() {
+		var elementFavorite = document.getElementById("favorites");
+		var elementTimetable = document.getElementById("timetable_container");
+		var elementMenu = document.getElementById("menu");
+		var elementDelay = document.getElementById("delay_container");
+
+		//If favorite is visible, close menus, change visibilites and toggle menu
+		if (elementFavorite.classList.contains("no")) {
+			if (!elementMenu.classList.contains("closed")){
+				menuClose();
+				setTimeout(function() {
+				elementFavorite.classList.remove("no");
+				elementTimetable.classList.add("no");
+				elementDelay.classList.add("no");
+				}, 800);
+			}
+			else{
+				elementFavorite.classList.remove("no");
+				elementTimetable.classList.add("no");
+				elementDelay.classList.add("no");
+			}
+
+			setTimeout(() => {
+				menuOpen();
+			}, 1000);
+			
+		}
+		else{toggleMenu();}
+		
+	}
+	
+
+	function toggleMenu() {
 		
         var element = document.getElementById('menu');
-        element.classList.toggle('opened');
+        element.classList.toggle('closed');
 
-		if (!element.classList.contains('opened') ){
+		if (!element.classList.contains('closed') ){
 			menuOpen();
 		}
-		else if (element.classList.contains('opened') && document.getElementById('menu').getBoundingClientRect().top == window.innerHeight - 120){
+		else if (element.classList.contains('closed') && document.getElementById('menu').getBoundingClientRect().top == window.innerHeight - 120){
 			menuOpen();
 		}
 		else{

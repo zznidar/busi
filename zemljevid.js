@@ -332,6 +332,7 @@ function izrisi_OJPP(odg) {
                 //Zoom out
                 mymap.flyTo([odg["lat"],odg["long"]], 12);
                 currentBusId = 0;
+                document.getElementById("timetable_no_line").classList.remove("no");
             });
 
             m2[vozilo]["busTstamp"] = busTstamp;

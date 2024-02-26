@@ -44,11 +44,7 @@ async function zahtevaj_voznje(postajalisca) {
 }
 
 async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
-    [trips_start, trips_cilj, data_buses] = await Promise.all([
-        zahtevaj_voznje(start),
-        zahtevaj_voznje(cilj),
-        (await zahtevaj_buse())["features"]
-    ]);
+    
 
     console.log(trips_start, trips_cilj, data_buses);
 
@@ -317,6 +313,9 @@ async function izpisi_urnik(trips) {
         TIMETABLE.appendChild(tr);
     }
 
+    //Hide no line warning
+    document.getElementById("timetable_no_line").classList.add("no");
+
     //We will hide them later when entries are already in the table
     document.getElementById("timetable_sync_warning").classList.remove("no");
     for(let t of trips) {
@@ -330,6 +329,39 @@ async function izpisi_urnik(trips) {
     document.getElementById("timetable_sync_warning").classList.add("no");
 
 }
+function toggleTimetable() {
+		
+    var elementFavorite = document.getElementById("favorites");
+    var elementTimetable = document.getElementById("timetable_container");
+    var elementMenu = document.getElementById("menu");
+    var elementDelay = document.getElementById("delay_container");
+
+    //If favorite is visible, close menus, change visibilites and toggle menu
+    if (elementTimetable.classList.contains("no")) {
+        console.log("Showing timetable");
+        if (!elementMenu.classList.contains("closed")) {
+            menuClose();
+            setTimeout(() => {
+                elementTimetable.classList.remove("no");
+                elementFavorite.classList.add("no");
+                elementDelay.classList.add("no");
+            }, 800);
+        }
+        else{
+            elementTimetable.classList.remove("no");
+            elementFavorite.classList.add("no");
+            elementDelay.classList.add("no");
+        }
+        setTimeout(() => {
+            menuOpen();
+        }, 1000);
+    }
+    else{
+    toggleMenu();
+    }
+}
+
+
 
 //Check if bus is deleted
 // Function to check if the element with ID "DELETED" exists on the target website
