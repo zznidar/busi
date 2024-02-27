@@ -44,8 +44,13 @@ async function zahtevaj_voznje(postajalisca) {
 }
 
 async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
-    
+    [trips_start, trips_cilj, data_buses] = await Promise.all([
+        zahtevaj_voznje(start),
+        zahtevaj_voznje(cilj),
+        (await zahtevaj_buse())["features"]
+    ]);
 
+    console.log(start, cilj)
     console.log(trips_start, trips_cilj, data_buses);
 
     trips = trips_start.filter(trip => trips_cilj.some(trip2 => trip.trip_id === trip2?.trip_id && (trip.time_departure ?? trip.time_arrival) < (trip2?.time_departure ?? trip2?.time_arrival)
