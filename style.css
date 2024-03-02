@@ -97,7 +97,7 @@ button:not(.zamudas button) {
     position: absolute;
     top:calc(100dvh - 120px - env(safe-area-inset-bottom));
     background-color: var(--color-theme);
-    padding-bottom: 80px;
+    padding-bottom: calc(85px + env(safe-area-inset-bottom));
     z-index: 0;
 
 }
