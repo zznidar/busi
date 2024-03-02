@@ -39,6 +39,15 @@
 	 </div>
 	 <div class="loader center no" id="loader"></div>
 
+
+	 <div class="search_container no" id="search_container">
+		<div style="margin-top:-2px">
+			<input type="text" id="search_field" class="search_field" placeholder="Išči po postajah" >
+			<span class="material-symbols-outlined" id="search_logo" style="right: 10px; top: 10px;">search</span>
+		</div>
+		
+	</div>
+
 	 
 	
 	<div class="info-container no">
@@ -108,8 +117,8 @@
 			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="toggleTimetable()">calendar_month</span>
 			<span class= "tool_item" style="left:37.5%">Vozni red</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="godusModus()">directions_bus</span>
-			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="fadeIn('search_container', 1000)">search</span>
+			<span class= "tool_item" style="left:62.5%">Iskanje</span>
 		</div>
 		
 	</div>
@@ -297,17 +306,28 @@ var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between 
 	});
 
 	showOfflineWarning = function(){
-		var errorPopup = document.getElementById("offline");
-		errorPopup.style.transition = "opacity 1s ease-in-out";
-		errorPopup.style.opacity = 0;
-		errorPopup.classList.remove("no");
-		setTimeout(function(){errorPopup.style.opacity = 0.95;}, 1000);
+		fadeIn("offline", 1000);
 	}
 
 	hideOfflineWarning = function(){
-		var errorPopup = document.getElementById("offline");
-		setTimeout(function(){errorPopup.style.opacity = 0;}, 1000);
-		setTimeout(function(){errorPopup.classList.add("no");}, 2000);
+		fadeOut("offline", 1000);
+	}
+
+
+	//Fade in and out functions
+
+	function fadeIn(elementID, time){
+		var element = document.getElementById(elementID);
+		element.style.transition = "opacity 1s ease-in-out";
+		element.style.opacity = 0;
+		element.classList.remove("no");
+		setTimeout(function(){element.style.opacity = 0.95;}, time);
+	}
+
+	function fadeOut(elementID, time){
+		var element = document.getElementById(elementID);
+		element.style.opacity = 0;
+		setTimeout(function(){element.classList.add("no");}, time);
 	}
 
 </script>
