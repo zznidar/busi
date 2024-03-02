@@ -59,6 +59,8 @@ new L.maptilerLayer({
     style: mapStyle,
 }).addTo(mymap);
 
+// All external links should be opened in a new tab
+[...mapid.getElementsByTagName("a")].forEach(a => a.target != "_blank" ? a.target = "_blank" : undefined)
 
 L.tileLayer("", {
     attribution: '',
