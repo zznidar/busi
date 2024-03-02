@@ -3,10 +3,10 @@ function toggleInfo() {
     element.classList.toggle('closed');
 
     if (element.classList.contains('closed')){
-        fadeIn('info', 500);
+        fadeIn('info', 100);
     }
     else{
-        fadeOut('info', 500);
+        fadeOut('info', 100);
     }
 
 }
@@ -76,10 +76,10 @@ function toggleSearch(){
     element.classList.toggle("closed");
 
     if (element.classList.contains("closed")){
-        fadeIn('search_container', 1000);
+        fadeIn('search_container', 100);
     }
     else{
-        fadeOut('search_container', 1000);
+        fadeOut('search_container', 100);
     }
 
 }
@@ -135,7 +135,7 @@ function fadeIn(elementID, time){
     element.style.transition = `opacity ${time/1000}s ease-in-out`;
     element.style.opacity = 0;
     element.classList.remove("no");
-    setTimeout(function(){element.style.opacity = 0.95;}, 100);
+    setTimeout(function(){element.style.opacity = 0.95;}, 34);
 }
 
 function fadeOut(elementID, time){
