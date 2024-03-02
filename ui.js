@@ -1,20 +1,3 @@
-// Uporabne funkcije, src nekaterih: https://www.scirra.com/manual/126/system-expressions
-
-/*lerp = function(a, b, x) {
-return(a + x * (b - a));
-}*/
-var lerp = (a, b, x) => (a + x * (b - a)); // Linear interpolation
-
-var qarp = (a, b, c, x) => (lerp(lerp(a, b, x), lerp(b, c, x), x)); // Quadratic interpolation
-
-var cubic = (a, b, c, d, x) => (lerp(qarp(a, b, c, x), qarp(b, c, d, x), x)); // Cubic interpolation
-
-var cosp = (a, b, x) => ((a + b + (a - b) * Math.cos(x * Math.PI)) / 2); // Cosine interpolation
-
-var plusminus = (p) => (Math.random() < p) ? -1 : 1; // Negate number or not (probability of negation)
-
-var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between a and b
-
 function toggleInfo() {
     var element = document.getElementById('info');
     element.classList.toggle('closed');
