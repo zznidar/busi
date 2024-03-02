@@ -587,3 +587,68 @@ function exportPresets() {
     a.click();
 }
 
+
+async function tripsOnStop(stop_id, period){
+    trips = await fp(`https://ojpp.si/api/stop_locations/${stop_id}/arrivals`);
+
+    //return trips;
+    //Log just trips that are comming in the next hour
+    filtered  = (trips.filter(trip => (new getTimeAsDate(trip.time_departure) - new Date()) < period*60*1000 && (new getTimeAsDate(trip.time_departure) - new Date()) > 0));
+    return filtered;
+
+}
+
+async function displayTripsOnStop(stopid, period = 60){
+    filtered = await tripsOnStop(stopid, period);
+
+    //Display the trips
+    TIMETABLE.innerHTML = "<thead><tr><td>Linija</td><td>Prihod</td></tr></thead>";
+    for(let i in filtered){ 
+
+        t = filtered[i];
+        console.log(t);
+        
+
+        //Check if the trip is older than 15 minutes
+        date = new Date;
+        hour = date.getHours();
+        minute = date.getMinutes();
+
+        
+
+        let tr = document.createElement("tr");
+
+        //Unique id for the row
+        tr.id = t.trip_id;
+
+      
+        let td = document.createElement("td");
+        let a = document.createElement("a");
+        a.href = `https://ojpp.si/trips/${t?.["trip_id"]}`;
+        a.target = "_blank";
+        a.innerText = t.route_name.trim();
+        td.appendChild(a);
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.innerText = `${((new Date(`${danes}T${t.time_departure ?? t.time_arrival}`) - new Date()) / 60000).toFixed(0)} min`;
+        tr.appendChild(td);
+        TIMETABLE.appendChild(tr);
+    }
+
+    //Hide no line warning
+    document.getElementById("timetable_no_line").classList.add("no");
+}
+
+
+function getTimeAsDate(timeString) {
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    const currentDate = new Date();
+    return new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate(),
+        hours,
+        minutes,
+        seconds
+    );
+}
