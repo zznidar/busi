@@ -397,10 +397,12 @@ async function checkForDeletedElement(url) {
 
 
 
-
+var trips;
 async function godusModus(automatic=false) {
     buses = (await zahtevaj_buse())["features"];
     buses = buses.filter(bus => bus.properties.operator_name !== "Javno podjetje Ljubljanski potniški promet d.o.o."); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
+
+    if(automatic && trips) buses = buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
     for(let b of buses) {
         let id = b.properties.vehicle_id;
         busi[id] = {...busi[id], ...b.properties, long: b.geometry.coordinates[0], lat: b.geometry.coordinates[1]};
@@ -487,18 +489,9 @@ lastRelation = [];
 allBuses = false;
 async function refresh(automatic=false) {
  
-    if(allBuses) {  
-        await godusModus(automatic);
-        setTimeout(centerCurrentBus, 50);
-        
-    }
-    else if(lastRelation.length === 0) {
-        return;
-    }
-    else {
-        await zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
-        setTimeout(centerCurrentBus, 50);
-    }  
+    await godusModus(automatic);
+    setTimeout(centerCurrentBus, 50);
+ 
     document.getElementById("refresh").classList.add("refresh_animate");
     setTimeout(() => {
         document.getElementById("refresh").classList.remove("refresh_animate");
