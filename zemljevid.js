@@ -54,8 +54,8 @@ var mymap = L.map('mapid', {
 
 
 new L.maptilerLayer({
-    //apiKey:"Iz6oqHAlxuXztN4SolAF", // For live version 
-    apiKey: "Bid81QPElcfo4iUZ8tF2", //For testing -- more permissions
+    apiKey:"Iz6oqHAlxuXztN4SolAF", // For live version 
+    //apiKey: "Bid81QPElcfo4iUZ8tF2", //For testing -- more permissions
     style: mapStyle,
 }).addTo(mymap);
 
