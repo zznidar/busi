@@ -22,9 +22,12 @@
     <script src="https://cdn.maptiler.com/leaflet-maptilersdk/v2.0.0/leaflet-maptilersdk.js"></script>
    
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+   
+	
    <!-- style.css -->
-   <link rel="stylesheet" href="style.css" />
-   <link rel="manifest" href="manifest.webmanifest" />
+   	<link rel="stylesheet" href="style.css" />
+   	<link rel="manifest" href="manifest.webmanifest" />
 	<meta name="theme-color" content="#3a4d39" />
 	<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#213545" />
 </head> 
@@ -38,6 +41,15 @@
 	 	</div>
 	 </div>
 	 <div class="loader center no" id="loader"></div>
+
+
+	 <div class="search_container no" id="search_container">
+		<div style="margin-top:-2px">
+			<input type="text" id="search_field" class="search_field" placeholder="Išči po postajah" >
+			<span class="material-symbols-outlined" id="search_logo" style="right: 10px; top: 10px;">search</span>
+		</div>
+		
+	</div>
 
 	 
 	
@@ -59,10 +71,13 @@
 	<div class="info-panel no" id="info">
 		<div class ="center" style="width:75%">
 
-			<!--Close button-->
-			<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="toggleVisibility()">cancel</span>
+	
+
+			<span class="material-symbols-outlined tool_icon" style="left:40%; bottom: 10px; font-size:1.5rem" onclick="iskalnikBusId(); toggleInfo()">search</span><br>
+			<span class="material-symbols-outlined tool_icon" style="left:60%; bottom: 10px; font-size:1.5rem" onclick="trips = undefined; godusModus(); toggleInfo()">directions_bus</span><br>
+
 			
-			<h2>Busi</h2>
+			<h2 style="margin-top: -10px;">Busi</h2>
 			<img src="bus_icon.png" style="width: 64px; height: 64px; margin-top: -10px; padding-bottom: 5px;">
 			<p>Prikazovalnik lokacije avtobusov in njihovih zamud.</p>
 			<p>Avtorja: <br>
@@ -99,19 +114,23 @@
 			<span class="material-symbols-outlined tool_icon" style="left: 12.5%;" onclick="toggleFavorite()">favorite</span>
 			<span class= "tool_item" style="left:12.5%">Priljubljene</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="toggleVisibility();">info</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="toggleInfo();">info</span>
 			<span class= "tool_item" style="left:87.5%">Info</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="iskalnikBusId()">search</span>
-			<span class= "tool_item" style="left:37.5%">Išči</span>
+			<!--<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="iskalnikBusId()">search</span>-->
+			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="toggleTimetable()">calendar_month</span>
+			<span class= "tool_item" style="left:37.5%">Vozni red</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="godusModus()">directions_bus</span>
+			<!-- <span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="toggleSearch()">search</span>
+			<span class= "tool_item" style="left:62.5%">Iskanje</span> -->
+
+			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="trips = undefined; godusModus()">directions_bus</span>
 			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span>
 		</div>
 		
 	</div>
 
-	<div class = "site_container" id="menu">
+	<div class = "site_container closed" id="menu">
 		<hr class="line">
 
 		
@@ -137,11 +156,12 @@
 			<span class="btn_general center" id="dodajPostajeBtn" onclick="dodajPostaje();">Dodaj relacijo</span>
 
 		</div>
-			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center">
+			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center no" id="timetable_container">
 				<h2>Urnik za izbrano relacijo</h2>
+				<p class="center" style="padding-top: 5px; padding-bottom: 20px;" id="timetable_no_line">Trenutno ni izbrane nobene linije.</p>
 				<div class="bubble info center">
 					<span class="material-symbols-outlined" style="left:50%; color:var(--color-info); padding-top: 7.5px; font-size:1.5rem">warning</span>
-					<p style="margin-top: 2.5px;">Urniki so lahko zastareli. <br> Preverite vozni red pri svojem prevozniku!</p>
+					<p style="margin-top: 2.5px;">Urniki so lahko napačni ali pomanjklivi. <br> Preverite vozni red pri svojem prevozniku!</p>
 				</div>
 
 				<div class="bubble warning center no" style="margin-top: 10px;" id="timetable_sync_warning">
@@ -150,6 +170,7 @@
 				</div>
 
 				<div id="urnik">
+					
 					<!-- Timetable -->
 					<table id="timetable">
 						
@@ -170,109 +191,23 @@
 	 
 </body>
 
-
 <script>
+	// Uporabne funkcije, src nekaterih: https://www.scirra.com/manual/126/system-expressions
+	var lerp = (a, b, x) => (a + x * (b - a)); // Linear interpolation
 
+	var qarp = (a, b, c, x) => (lerp(lerp(a, b, x), lerp(b, c, x), x)); // Quadratic interpolation
 
-// Uporabne funkcije, src nekaterih: https://www.scirra.com/manual/126/system-expressions
+	var cubic = (a, b, c, d, x) => (lerp(qarp(a, b, c, x), qarp(b, c, d, x), x)); // Cubic interpolation
 
-/*lerp = function(a, b, x) {
-	return(a + x * (b - a));
-}*/
-var lerp = (a, b, x) => (a + x * (b - a)); // Linear interpolation
+	var cosp = (a, b, x) => ((a + b + (a - b) * Math.cos(x * Math.PI)) / 2); // Cosine interpolation
 
-var qarp = (a, b, c, x) => (lerp(lerp(a, b, x), lerp(b, c, x), x)); // Quadratic interpolation
+	var plusminus = (p) => (Math.random() < p) ? -1 : 1; // Negate number or not (probability of negation)
 
-var cubic = (a, b, c, d, x) => (lerp(qarp(a, b, c, x), qarp(b, c, d, x), x)); // Cubic interpolation
-;
-var cosp = (a, b, x) => ((a + b + (a - b) * Math.cos(x * Math.PI)) / 2); // Cosine interpolation
-
-var plusminus = (p) => (Math.random() < p) ? -1 : 1; // Negate number or not (probability of negation)
-
-var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between a and b
-
-	function toggleVisibility() {
-		var element = document.getElementById('info');
-		element.classList.toggle('no');
-	}
-
-
-	function menuClose(){
-		setTimeout(function() {
-			var element = document.getElementById('menu');
-			window.scrollTo({top: 0, behavior: 'smooth'});
-		}, 100); // Adjust the delay (in milliseconds) to make it slower
-	}
-
-	function menuOpen(){
-		setTimeout(function() {
-			var element = document.getElementById('menu');
-			element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-		}, 100); // Adjust the delay (in milliseconds) to make it slower
-	
-	}
-
-	function delayOpen(){
-		setTimeout(function() {
-			var element = document.getElementById('delay_container')
-			element.scrollIntoView({behavior: "smooth", block:"end", inline:"nearest"})
-		}, 100); // Adjust the delay (in milliseconds) to make it slower
-	
-	}
-
-	function toggleFavorite() {
-		
-        var element = document.getElementById('menu');
-        element.classList.toggle('opened');
-
-		if (!element.classList.contains('opened') ){
-			menuOpen();
-		}
-		else if (element.classList.contains('opened') && document.getElementById('menu').getBoundingClientRect().top == window.innerHeight - 120){
-			menuOpen();
-		}
-		else{
-			//Scroll to the top with animation
-			menuClose();
-		}
-    }
-
-	//Auto refresh every 20 seconds
-	setInterval(function(){
-		refresh(automatic=true);
-	}, 20000);
-
-	//Handle offline situation
-	window.addEventListener('offline', function(event){
-		console.log("offline");
-		showOfflineWarning();
-	});
-
-	//Handle offline situation
-	window.addEventListener('online', function(event){
-		console.log("online");
-		hideOfflineWarning();
-	});
-
-	showOfflineWarning = function(){
-		var errorPopup = document.getElementById("offline");
-		errorPopup.style.transition = "opacity 1s ease-in-out";
-		errorPopup.style.opacity = 0;
-		errorPopup.classList.remove("no");
-		setTimeout(function(){errorPopup.style.opacity = 0.95;}, 1000);
-	}
-
-	hideOfflineWarning = function(){
-		var errorPopup = document.getElementById("offline");
-		setTimeout(function(){errorPopup.style.opacity = 0;}, 1000);
-		setTimeout(function(){errorPopup.classList.add("no");}, 2000);
-	}
-
+	var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between a and b
 </script>
-
-
 <script src="zemljevid.js"></script>
 <script src="OJPP.js"></script>
+<script src="ui.js"></script>
 
 <script>
 	console.log("Something.");

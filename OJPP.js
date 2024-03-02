@@ -50,6 +50,7 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
         (await zahtevaj_buse())["features"]
     ]);
 
+    console.log(start, cilj)
     console.log(trips_start, trips_cilj, data_buses);
 
     trips = trips_start.filter(trip => trips_cilj.some(trip2 => trip.trip_id === trip2?.trip_id && (trip.time_departure ?? trip.time_arrival) < (trip2?.time_departure ?? trip2?.time_arrival)
@@ -317,6 +318,9 @@ async function izpisi_urnik(trips) {
         TIMETABLE.appendChild(tr);
     }
 
+    //Hide no line warning
+    document.getElementById("timetable_no_line").classList.add("no");
+
     //We will hide them later when entries are already in the table
     document.getElementById("timetable_sync_warning").classList.remove("no");
     for(let t of trips) {
@@ -330,6 +334,51 @@ async function izpisi_urnik(trips) {
     document.getElementById("timetable_sync_warning").classList.add("no");
 
 }
+function toggleTimetable() {
+		
+    var elementFavorite = document.getElementById("favorites");
+    var elementTimetable = document.getElementById("timetable_container");
+    var elementMenu = document.getElementById("menu");
+    var elementDelay = document.getElementById("delay_container");
+    var delayContent = document.getElementById("delay_content");
+
+    //If favorite is visible, close menus, change visibilites and toggle menu
+    if (elementTimetable.classList.contains("no")) {
+        console.log("Showing timetable");
+        if (!elementMenu.classList.contains("closed")) {
+            menuClose();
+            setTimeout(() => {
+                elementTimetable.classList.remove("no");
+                elementFavorite.classList.add("no");
+
+                if(delayContent.innerHTML!='\n\t\t\t'){
+                    elementDelay.classList.remove("no");
+                }
+
+            }, 800);
+            setTimeout(() => {
+                menuOpen();
+            }, 1000);
+        }
+        else{
+            elementTimetable.classList.remove("no");
+            elementFavorite.classList.add("no");
+            if(delayContent.innerHTML!='\n\t\t\t'){
+                elementDelay.classList.remove("no");
+            }
+            setTimeout(() => {
+                menuOpen();
+            }, 100);
+        }
+        elementMenu.classList.remove("closed");
+        
+    }
+    else{
+    toggleMenu();
+    }
+}
+
+
 
 //Check if bus is deleted
 // Function to check if the element with ID "DELETED" exists on the target website
@@ -348,16 +397,18 @@ async function checkForDeletedElement(url) {
 
 
 
-
+var trips;
 async function godusModus(automatic=false) {
     buses = (await zahtevaj_buse())["features"];
     buses = buses.filter(bus => bus.properties.operator_name !== "Javno podjetje Ljubljanski potniški promet d.o.o."); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
+
+    if(trips) buses = buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
     for(let b of buses) {
         let id = b.properties.vehicle_id;
         busi[id] = {...busi[id], ...b.properties, long: b.geometry.coordinates[0], lat: b.geometry.coordinates[1]};
     }
 
-    izrisi_OJPP(busi);
+    izrisi_OJPP(busi, automatic);
     centerCurrentBus();
 
     if(!currentBusId && !automatic){
@@ -438,18 +489,9 @@ lastRelation = [];
 allBuses = false;
 async function refresh(automatic=false) {
  
-    if(allBuses) {  
-        await godusModus(automatic);
-        setTimeout(centerCurrentBus, 50);
-        
-    }
-    else if(lastRelation.length === 0) {
-        return;
-    }
-    else {
-        await zahtevaj_relacijo_vsi_peroni(lastRelation[0], lastRelation[1]);
-        setTimeout(centerCurrentBus, 50);
-    }  
+    await godusModus(automatic);
+    setTimeout(centerCurrentBus, 50);
+ 
     document.getElementById("refresh").classList.add("refresh_animate");
     setTimeout(() => {
         document.getElementById("refresh").classList.remove("refresh_animate");
@@ -545,3 +587,68 @@ function exportPresets() {
     a.click();
 }
 
+
+async function tripsOnStop(stop_id, period){
+    trips = await fp(`https://ojpp.si/api/stop_locations/${stop_id}/arrivals`);
+
+    //return trips;
+    //Log just trips that are comming in the next hour
+    filtered  = (trips.filter(trip => (new getTimeAsDate(trip.time_departure) - new Date()) < period*60*1000 && (new getTimeAsDate(trip.time_departure) - new Date()) > 0));
+    return filtered;
+
+}
+
+async function displayTripsOnStop(stopid, period = 60){
+    filtered = await tripsOnStop(stopid, period);
+
+    //Display the trips
+    TIMETABLE.innerHTML = "<thead><tr><td>Linija</td><td>Prihod</td></tr></thead>";
+    for(let i in filtered){ 
+
+        t = filtered[i];
+        console.log(t);
+        
+
+        //Check if the trip is older than 15 minutes
+        date = new Date;
+        hour = date.getHours();
+        minute = date.getMinutes();
+
+        
+
+        let tr = document.createElement("tr");
+
+        //Unique id for the row
+        tr.id = t.trip_id;
+
+      
+        let td = document.createElement("td");
+        let a = document.createElement("a");
+        a.href = `https://ojpp.si/trips/${t?.["trip_id"]}`;
+        a.target = "_blank";
+        a.innerText = t.route_name.trim();
+        td.appendChild(a);
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.innerText = `${((new Date(`${danes}T${t.time_departure ?? t.time_arrival}`) - new Date()) / 60000).toFixed(0)} min`;
+        tr.appendChild(td);
+        TIMETABLE.appendChild(tr);
+    }
+
+    //Hide no line warning
+    document.getElementById("timetable_no_line").classList.add("no");
+}
+
+
+function getTimeAsDate(timeString) {
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    const currentDate = new Date();
+    return new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate(),
+        hours,
+        minutes,
+        seconds
+    );
+}
