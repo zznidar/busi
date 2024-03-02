@@ -1,12 +1,14 @@
+var infoTimeout;
 function toggleInfo() {
     var element = document.getElementById('info');
     element.classList.toggle('closed');
-
+    
+    clearTimeout(infoTimeout);
     if (element.classList.contains('closed')){
         fadeIn('info', 100);
     }
     else{
-        fadeOut('info', 100);
+        infoTimeout = fadeOut('info', 100);
     }
 
 }
@@ -71,15 +73,17 @@ function toggleFavorite() {
     
 }
 
+var searchTimeout;
 function toggleSearch(){
     var element = document.getElementById("search_container");
     element.classList.toggle("closed");
 
+    clearTimeout(searchTimeout);
     if (element.classList.contains("closed")){
         fadeIn('search_container', 100);
     }
     else{
-        fadeOut('search_container', 100);
+        searchTimeout = fadeOut('search_container', 100);
     }
 
 }
@@ -141,5 +145,5 @@ function fadeIn(elementID, time){
 function fadeOut(elementID, time){
     var element = document.getElementById(elementID);
     element.style.opacity = 0;
-    setTimeout(function(){element.classList.add("no");}, time);
+    return setTimeout(function(){element.classList.add("no");}, time);
 }
