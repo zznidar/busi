@@ -22,9 +22,12 @@
     <script src="https://cdn.maptiler.com/leaflet-maptilersdk/v2.0.0/leaflet-maptilersdk.js"></script>
    
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+   
+	
    <!-- style.css -->
-   <link rel="stylesheet" href="style.css" />
-   <link rel="manifest" href="manifest.webmanifest" />
+   	<link rel="stylesheet" href="style.css" />
+   	<link rel="manifest" href="manifest.webmanifest" />
 	<meta name="theme-color" content="#3a4d39" />
 	<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#213545" />
 </head> 
@@ -70,10 +73,11 @@
 
 	
 
-			<span class="material-symbols-outlined tool_icon" style="left:50%; bottom: 10px; font-size:1.5rem" onclick="iskalnikBusId()">search</span><br>
+			<span class="material-symbols-outlined tool_icon" style="left:40%; bottom: 10px; font-size:1.5rem" onclick="iskalnikBusId(); toggleInfo()">search</span><br>
+			<span class="material-symbols-outlined tool_icon" style="left:60%; bottom: 10px; font-size:1.5rem" onclick="godusModus(); toggleInfo()">directions_bus</span><br>
 
 			
-			<h2>Busi</h2>
+			<h2 style="margin-top: -10px;">Busi</h2>
 			<img src="bus_icon.png" style="width: 64px; height: 64px; margin-top: -10px; padding-bottom: 5px;">
 			<p>Prikazovalnik lokacije avtobusov in njihovih zamud.</p>
 			<p>Avtorja: <br>
@@ -110,20 +114,20 @@
 			<span class="material-symbols-outlined tool_icon" style="left: 12.5%;" onclick="toggleFavorite()">favorite</span>
 			<span class= "tool_item" style="left:12.5%">Priljubljene</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="toggleVisibility();">info</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="toggleInfo();">info</span>
 			<span class= "tool_item" style="left:87.5%">Info</span>
 
 			<!--<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="iskalnikBusId()">search</span>-->
 			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="toggleTimetable()">calendar_month</span>
 			<span class= "tool_item" style="left:37.5%">Vozni red</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="fadeIn('search_container', 1000)">search</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="toggleSearch()">search</span>
 			<span class= "tool_item" style="left:62.5%">Iskanje</span>
 		</div>
 		
 	</div>
 
-	<div class = "site_container" id="menu">
+	<div class = "site_container closed" id="menu">
 		<hr class="line">
 
 		
@@ -184,155 +188,7 @@
 	 
 </body>
 
-
-<script>
-
-
-// Uporabne funkcije, src nekaterih: https://www.scirra.com/manual/126/system-expressions
-
-/*lerp = function(a, b, x) {
-	return(a + x * (b - a));
-}*/
-var lerp = (a, b, x) => (a + x * (b - a)); // Linear interpolation
-
-var qarp = (a, b, c, x) => (lerp(lerp(a, b, x), lerp(b, c, x), x)); // Quadratic interpolation
-
-var cubic = (a, b, c, d, x) => (lerp(qarp(a, b, c, x), qarp(b, c, d, x), x)); // Cubic interpolation
-;
-var cosp = (a, b, x) => ((a + b + (a - b) * Math.cos(x * Math.PI)) / 2); // Cosine interpolation
-
-var plusminus = (p) => (Math.random() < p) ? -1 : 1; // Negate number or not (probability of negation)
-
-var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between a and b
-
-	function toggleVisibility() {
-		var element = document.getElementById('info');
-		element.classList.toggle('no');
-	}
-
-
-	function menuClose(){
-		setTimeout(function() {
-			var element = document.getElementById('menu');
-			window.scrollTo({top: 0, behavior: 'smooth'});
-		}, 100); // Adjust the delay (in milliseconds) to make it slower
-	}
-
-	function menuOpen(){
-		setTimeout(function() {
-			var element = document.getElementById('menu');
-			element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
-		}, 100); // Adjust the delay (in milliseconds) to make it slower
-		return;
-	}
-
-	function delayOpen(){
-		setTimeout(function() {
-			var element = document.getElementById('delay_container')
-			var elementTimetable = document.getElementById("timetable_container");
-			var elementFavorite = document.getElementById("favorites");
-
-			elementTimetable.classList.add("no");
-			elementFavorite.classList.add("no");
-			element.scrollIntoView({behavior: "smooth", block:"end", inline:"nearest"})
-		}, 100); // Adjust the delay (in milliseconds) to make it slower
-	
-	}
-
-	function toggleFavorite() {
-		var elementFavorite = document.getElementById("favorites");
-		var elementTimetable = document.getElementById("timetable_container");
-		var elementMenu = document.getElementById("menu");
-		var elementDelay = document.getElementById("delay_container");
-
-		//If favorite is visible, close menus, change visibilites and toggle menu
-		if (elementFavorite.classList.contains("no")) {
-			if (!elementMenu.classList.contains("closed")){
-				menuClose();
-				setTimeout(function() {
-				elementFavorite.classList.remove("no");
-				elementTimetable.classList.add("no");
-				elementDelay.classList.add("no");
-				}, 800);
-			}
-			else{
-				elementFavorite.classList.remove("no");
-				elementTimetable.classList.add("no");
-				elementDelay.classList.add("no");
-			}
-
-			setTimeout(() => {
-				menuOpen();
-			}, 1000);
-			
-		}
-		else{toggleMenu();}
-		
-	}
-	
-
-	function toggleMenu() {
-		
-        var element = document.getElementById('menu');
-        element.classList.toggle('closed');
-
-		if (!element.classList.contains('closed') ){
-			menuOpen();
-		}
-		else if (element.classList.contains('closed') && document.getElementById('menu').getBoundingClientRect().top == window.innerHeight - 120){
-			menuOpen();
-		}
-		else{
-			//Scroll to the top with animation
-			menuClose();
-		}
-    }
-
-	//Auto refresh every 20 seconds
-	setInterval(function(){
-		refresh(automatic=true);
-	}, 20000);
-
-	//Handle offline situation
-	window.addEventListener('offline', function(event){
-		console.log("offline");
-		showOfflineWarning();
-	});
-
-	//Handle offline situation
-	window.addEventListener('online', function(event){
-		console.log("online");
-		hideOfflineWarning();
-	});
-
-	showOfflineWarning = function(){
-		fadeIn("offline", 1000);
-	}
-
-	hideOfflineWarning = function(){
-		fadeOut("offline", 1000);
-	}
-
-
-	//Fade in and out functions
-
-	function fadeIn(elementID, time){
-		var element = document.getElementById(elementID);
-		element.style.transition = "opacity 1s ease-in-out";
-		element.style.opacity = 0;
-		element.classList.remove("no");
-		setTimeout(function(){element.style.opacity = 0.95;}, time);
-	}
-
-	function fadeOut(elementID, time){
-		var element = document.getElementById(elementID);
-		element.style.opacity = 0;
-		setTimeout(function(){element.classList.add("no");}, time);
-	}
-
-</script>
-
-
+<script src="ui.js"></script>
 <script src="zemljevid.js"></script>
 <script src="OJPP.js"></script>
 

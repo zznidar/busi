@@ -340,6 +340,7 @@ function toggleTimetable() {
     var elementTimetable = document.getElementById("timetable_container");
     var elementMenu = document.getElementById("menu");
     var elementDelay = document.getElementById("delay_container");
+    var delayContent = document.getElementById("delay_content");
 
     //If favorite is visible, close menus, change visibilites and toggle menu
     if (elementTimetable.classList.contains("no")) {
@@ -349,13 +350,19 @@ function toggleTimetable() {
             setTimeout(() => {
                 elementTimetable.classList.remove("no");
                 elementFavorite.classList.add("no");
-                elementDelay.classList.add("no");
+
+                if(delayContent.innerHTML!='\n\t\t\t'){
+                    elementDelay.classList.remove("no");
+                }
+
             }, 800);
         }
         else{
             elementTimetable.classList.remove("no");
             elementFavorite.classList.add("no");
-            elementDelay.classList.add("no");
+            if(delayContent.innerHTML!='\n\t\t\t'){
+                elementDelay.classList.remove("no");
+            }
         }
         setTimeout(() => {
             menuOpen();
