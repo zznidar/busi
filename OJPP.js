@@ -356,6 +356,9 @@ function toggleTimetable() {
                 }
 
             }, 800);
+            setTimeout(() => {
+                menuOpen();
+            }, 1000);
         }
         else{
             elementTimetable.classList.remove("no");
@@ -363,10 +366,12 @@ function toggleTimetable() {
             if(delayContent.innerHTML!='\n\t\t\t'){
                 elementDelay.classList.remove("no");
             }
+            setTimeout(() => {
+                menuOpen();
+            }, 100);
         }
-        setTimeout(() => {
-            menuOpen();
-        }, 1000);
+        elementMenu.classList.remove("closed");
+        
     }
     else{
     toggleMenu();

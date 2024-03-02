@@ -1,3 +1,7 @@
+//Force close on new load
+menuClose();
+
+
 var infoTimeout;
 function toggleInfo() {
     var element = document.getElementById('info');
@@ -57,16 +61,20 @@ function toggleFavorite() {
             elementTimetable.classList.add("no");
             elementDelay.classList.add("no");
             }, 800);
+            setTimeout(() => {
+                menuOpen();
+            }, 1000);
         }
         else{
             elementFavorite.classList.remove("no");
             elementTimetable.classList.add("no");
             elementDelay.classList.add("no");
+            setTimeout(() => {
+                menuOpen();
+            }, 100);
         }
-
-        setTimeout(() => {
-            menuOpen();
-        }, 1000);
+        elementMenu.classList.remove("closed");
+            
         
     }
     else{toggleMenu();}
