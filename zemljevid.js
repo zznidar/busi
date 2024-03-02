@@ -212,13 +212,13 @@ brisiMarkerje = function() {
 }
 
 
-function izrisi_OJPP(odg) {
+function izrisi_OJPP(odg, automatic=false) {
 	console.log("Risanje OJPP", busi);
     myIcon = busIcon;
 
 	d = new Date(); // Uporabimo kasneje za skrivanje starih busov
 
-    if(Object.keys(busi).length === 0) {
+    if(!automatic && Object.keys(busi).length === 0) {
         //alert("Ni takih busov, vsaj ne na OJPP");
         //Get element with id 'non_existing'
         var errorPopup = document.getElementById("non_existing");
