@@ -105,7 +105,7 @@ var searchTimeout;
  * Toggle search container
  * Enables searching for bus stops. If the search container is already displayed, it will close it.
  */
-function toggleSearch(){
+async function toggleSearch(){
     var element = document.getElementById("search_container");
     element.classList.toggle("closed");
 
@@ -119,7 +119,9 @@ function toggleSearch(){
     }
 
     if(Object.keys(postajalisca).length === 0) {
-        zahtevaj_vsa_postajalisca();
+        await zahtevaj_vsa_postajalisca();
+        const event = new Event("input");
+        document.getElementById("search_field").dispatchEvent(event);
     }
 }
 
