@@ -44,6 +44,13 @@ var busDirection = L.icon({
     popupAnchor: [0, -14]
 });
 
+var peronIcon = L.icon({
+    iconUrl: 'peron.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16]
+});
+
 /* ZEMLJEVID */
 var mymap = L.map('mapid', {
     zoomControl: false,

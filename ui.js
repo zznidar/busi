@@ -94,7 +94,64 @@ function toggleSearch(){
         searchTimeout = fadeOut('search_container', 100);
     }
 
+    if(Object.keys(postajalisca).length === 0) {
+        zahtevaj_vsa_postajalisca();
+    }
 }
+
+var search_results = document.getElementById("search_results");
+function updateSearch(e){
+    console.log(e);
+    let query = e.target.value;
+    console.log(query);
+    search_results.innerHTML = "";
+    if (query.length >= 3){
+        let postaje = Object.keys(postajalisca).filter(p => p.toLowerCase().includes(query.toLowerCase()));
+        for(let p of postaje){
+            let li = document.createElement("li");
+            li.innerHTML = p;
+            li.dataset.imePostaje = p;
+            search_results.appendChild(li);
+        }
+    }
+}
+
+search_results.addEventListener("click", function(e){
+    console.log(e);
+    if (e.target.tagName === "LI"){
+        prikaziPostajiNaZemljevidu(e.target.dataset.imePostaje);
+    }
+});
+
+
+function prikaziPostajiNaZemljevidu(imePostaje) {
+    console.log(imePostaje);
+    idsPostaj = postajalisca[imePostaje];
+    // get object from data_postajalisca which has the same id as the one in idsPostaj
+    for (let i = 0; i < idsPostaj.length; i++) {
+        let postaja = data_postajalisca.find(p => p.properties.id == idsPostaj[i]);
+        console.log(postaja);
+        if (postaja) {
+            let lat = postaja.geometry.coordinates[1];
+            let lon = postaja.geometry.coordinates[0];
+            // Create a new marker with icon peron
+            let marker = L.marker([postaja.geometry.coordinates[1], postaja.geometry.coordinates[0]], {icon: peronIcon}).addTo(mymap);
+
+            let vsebina = `<h3>${postaja.properties.name}</h3>
+            <button onclick="poglejOdhodeSTePostaje(${postaja.properties.id})">Poglej odhode s te postaje!</button>`;
+            marker.bindPopup(vsebina);
+            // Fly to
+            mymap.flyTo([lat, lon], 16);
+        }
+    }
+}
+
+async function poglejOdhodeSTePostaje(id) {
+    console.log(id);
+    let tripsiSPostaje = await displayTripsOnStop(id, 600);
+}
+
+document.getElementById("search_field").addEventListener("input", updateSearch);
 
 
 function toggleMenu() {

@@ -422,9 +422,10 @@ async function godusModus(automatic=false) {
 postajalisca = {}
 vstopnaPostaja = [];
 izstopnaPostaja = [];
+data_postajalisca = [];
 
 async function zahtevaj_vsa_postajalisca() {
-    let data_postajalisca = (await fp(`https://ojpp.si/api/stop_locations`))["features"];
+    data_postajalisca = (await fp(`https://ojpp.si/api/stop_locations`))["features"];
     for(let p of data_postajalisca) {
         let name = p.properties.name;
         postajalisca?.[name]?.push(p.properties.id) ?? (postajalisca[name] = [p.properties.id]);
@@ -593,7 +594,7 @@ async function tripsOnStop(stop_id, period){
 
     //return trips;
     //Log just trips that are comming in the next hour
-    filtered  = (trips.filter(trip => (new getTimeAsDate(trip.time_departure) - new Date()) < period*60*1000 && (new getTimeAsDate(trip.time_departure) - new Date()) > 0));
+    filtered  = (trips.filter(trip => (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) > 0));
     return filtered;
 
 }
