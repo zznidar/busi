@@ -100,6 +100,54 @@ function toggleFavorite() {
     
 }
 
+/**
+ * Toggle timetable container
+ * Switches from any other display onto the timetable container. If the timetable container is already displayed, it will close it.
+ */
+function toggleTimetable() {
+		
+    var elementFavorite = document.getElementById("favorites");
+    var elementTimetable = document.getElementById("timetable_container");
+    var elementMenu = document.getElementById("menu");
+    var elementDelay = document.getElementById("delay_container");
+    var delayContent = document.getElementById("delay_content");
+
+    //If favorite is visible, close menus, change visibilites and toggle menu
+    if (elementTimetable.classList.contains("no")) {
+        console.log("Showing timetable");
+        if (!elementMenu.classList.contains("closed")) {
+            menuClose();
+            setTimeout(() => {
+                elementTimetable.classList.remove("no");
+                elementFavorite.classList.add("no");
+
+                if(delayContent.innerHTML!='\n\t\t\t'){
+                    elementDelay.classList.remove("no");
+                }
+
+            }, 800);
+            setTimeout(() => {
+                menuOpen();
+            }, 1000);
+        }
+        else{
+            elementTimetable.classList.remove("no");
+            elementFavorite.classList.add("no");
+            if(delayContent.innerHTML!='\n\t\t\t'){
+                elementDelay.classList.remove("no");
+            }
+            setTimeout(() => {
+                menuOpen();
+            }, 100);
+        }
+        elementMenu.classList.remove("closed");
+        
+    }
+    else{
+    toggleMenu();
+    }
+}
+
 var searchTimeout;
 /**
  * Toggle search container
@@ -260,6 +308,31 @@ hideOfflineWarning = function(){
     fadeOut("offline", 1000);
 }
 
+/**
+ * Hide delays information
+ */
+function hideDelays(){
+    menuClose();
+    //Wait for the animation to finish
+    setTimeout(() => {
+        document.getElementById("delay_container").classList.add("no");
+    }, 500);
+    
+}
+
+
+/**
+ * Show all delays
+ * Show all delays in the delays container.
+ */
+async function pokaziVse() {
+    //Search for all elements with class no zamude inside the zamudiceContainer
+    let elements = [...document.getElementsByClassName("no zamude")];
+    for(let e of elements) {
+        e.classList.remove("no");
+    }
+    document.getElementsByClassName("btn_delay_more")[0].classList.add("no");
+}
 
 /**
  * Fade in selected element with animation

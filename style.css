@@ -267,18 +267,39 @@ input:-webkit-autofill {
 #search_results{
     font-size: 0.9rem;
     color: var(--color-primary);
+    padding-top: 15px;
     padding-left: 40px;
-    max-height: calc(100dvh - 420px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+    padding-right: 40px;
+    max-height: calc(100dvh - 470px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
     padding-bottom: 10px;
     overflow-y: auto;
     min-height: 3rem;
 }
 
 #search_results li{
+    width: fit-content;
     list-style-type: none;
-    padding-top: 0.4rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
     opacity: 0.8;
 
+}
+
+#search_results li:active{
+    background-color: #00000008;
+    border-radius: 0.45rem;
+}
+
+.busLive{
+    right:calc(5% + 25px);
+    padding-top:3px;
+    position: absolute;
+    color: var(--color-primary);
+    font-size: 0.9rem;
+}
+
+.tripLive{
+    box-shadow: 0 0 4px 0 var(--color-secondary);
 }
 
 /*END Search elements*/
