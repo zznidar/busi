@@ -125,11 +125,11 @@
 			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="toggleTimetable()">calendar_month</span>
 			<span class= "tool_item" style="left:37.5%">Vozni red</span>
 
-			<!-- <span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="toggleSearch()">search</span>
-			<span class= "tool_item" style="left:62.5%">Iskanje</span> -->
+			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="toggleSearch()">search</span>
+			<span class= "tool_item" style="left:62.5%">Iskanje</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="trips = undefined; godusModus()">directions_bus</span>
-			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span>
+			<!-- <span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="trips = undefined; godusModus()">directions_bus</span>
+			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span> -->
 		</div>
 		
 	</div>
@@ -160,10 +160,10 @@
 			<span class="btn_general center" id="dodajPostajeBtn" onclick="dodajPostaje();">Dodaj relacijo</span>
 
 		</div>
-			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px;" class="center no" id="timetable_container">
-				<h2>Urnik za izbrano relacijo</h2>
+			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px; width:80%" class="center no" id="timetable_container">
+				<h2 id="timetable_title">Urnik za izbrano relacijo</h2>
 				<p class="center" style="padding-top: 5px; padding-bottom: 20px;" id="timetable_no_line">Trenutno ni izbrane nobene linije.</p>
-				<div class="bubble info center">
+				<div class="bubble info center" id="timetable_warning">
 					<span class="material-symbols-outlined" style="left:50%; color:var(--color-info); padding-top: 7.5px; font-size:1.5rem">warning</span>
 					<p style="margin-top: 2.5px;">Urniki so lahko napačni ali pomanjkljivi. <br> Preverite vozni red pri svojem prevozniku!</p>
 				</div>

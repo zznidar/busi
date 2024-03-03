@@ -270,6 +270,10 @@ async function izpisi_urnik(trips) {
     for(let t of trips) {
 
         console.log(t);
+
+        //Edit titles and warnings
+        document.getElementById("timetable_title").innerText = "Urnik za izbrano relacijo";
+        document.getElementById("timetable_warning").classList.remove('no');
         
 
         //Check if the trip is older than 15 minutes
@@ -497,6 +501,10 @@ async function refresh(automatic=false) {
     setTimeout(() => {
         document.getElementById("refresh").classList.remove("refresh_animate");
     }, 1000);
+
+    if(selectedStop){
+        displayTripsOnStop(selectedStop, 300);
+    }
     
 
 }
@@ -628,10 +636,12 @@ async function displayTripsOnStop(stopid, period = 60){
         a.href = `https://ojpp.si/trips/${t?.["trip_id"]}`;
         a.target = "_blank";
         a.innerText = t.route_name.trim();
+        td.style.paddingLeft = "15px";
         td.appendChild(a);
         tr.appendChild(td);
         td = document.createElement("td");
         td.innerText = `${((new Date(`${danes}T${t.time_departure ?? t.time_arrival}`) - new Date()) / 60000).toFixed(0)} min`;
+        td.style.paddingRight = "15px";
         tr.appendChild(td);
         TIMETABLE.appendChild(tr);
     }

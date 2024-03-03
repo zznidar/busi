@@ -45,10 +45,10 @@ var busDirection = L.icon({
 });
 
 var peronIcon = L.icon({
-    iconUrl: 'peron.png',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -16]
+    iconUrl: 'postaja.png',
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -12]
 });
 
 /* ZEMLJEVID */
@@ -71,7 +71,7 @@ new L.maptilerLayer({
 
 L.tileLayer("", {
     attribution: '',
-    maxZoom: 18,
+    maxZoom: 19,
 }).addTo(mymap);  
 
 /* L.control.attribution({

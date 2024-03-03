@@ -1,6 +1,9 @@
 //Force close on new load
 menuClose();
 
+//If stop is selected
+selectedStop = 0;
+
 
 var infoTimeout;
 function toggleInfo() {
@@ -89,6 +92,7 @@ function toggleSearch(){
     clearTimeout(searchTimeout);
     if (element.classList.contains("closed")){
         fadeIn('search_container', 100);
+        document.getElementById("search_field").focus();
     }
     else{
         searchTimeout = fadeOut('search_container', 100);
@@ -136,19 +140,39 @@ function prikaziPostajiNaZemljevidu(imePostaje) {
             let lon = postaja.geometry.coordinates[0];
             // Create a new marker with icon peron
             let marker = L.marker([postaja.geometry.coordinates[1], postaja.geometry.coordinates[0]], {icon: peronIcon}).addTo(mymap);
+            let menuElement = document.getElementById('menu');
 
-            let vsebina = `<h3>${postaja.properties.name}</h3>
-            <button onclick="poglejOdhodeSTePostaje(${postaja.properties.id})">Poglej odhode s te postaje!</button>`;
+            //On popup open
+            marker.on('popupopen', function() {
+                selectedStop = postaja.properties.id;
+                poglejOdhodeSTePostaje(postaja.properties.id);
+                menuClose();
+                menuElement.classList.add('closed');
+                toggleTimetable();
+
+                document.getElementById('timetable_title').innerHTML = postaja.properties.name;
+                document.getElementById('timetable_warning').classList.add("no");
+            });
+
+            //On popup close
+            marker.on('popupclose', function() {
+                selectedStop = 0;
+                menuClose();
+                menuElement.classList.add('closed');
+            });
+
+            let vsebina = `<span style="color:var(--color-primary)">${postaja.properties.name}</span>`;
             marker.bindPopup(vsebina);
             // Fly to
-            mymap.flyTo([lat, lon], 16);
+            mymap.flyTo([lat, lon], 19);
+            toggleSearch();
         }
     }
 }
 
 async function poglejOdhodeSTePostaje(id) {
     console.log(id);
-    let tripsiSPostaje = await displayTripsOnStop(id, 600);
+    let tripsiSPostaje = await displayTripsOnStop(id, 300);
 }
 
 document.getElementById("search_field").addEventListener("input", updateSearch);
