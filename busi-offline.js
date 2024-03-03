@@ -1,5 +1,5 @@
 {
-	"version": 5,
+	"version": 6,
 	"fileList": [
 		"index.html",
 		"style.css",
@@ -12,7 +12,8 @@
 		"OJPP.js",
 		"zemljevid.js",
 		"ZZ_leaflet.js",
-		"ui.js"
+		"ui.js",
+		"postaja.png"
 	],
 	"lazyLoad": [
 	]

@@ -45,10 +45,10 @@ var busDirection = L.icon({
 });
 
 var peronIcon = L.icon({
-    iconUrl: 'peron.png',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -16]
+    iconUrl: 'postaja.png',
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -12]
 });
 
 /* ZEMLJEVID */
@@ -85,6 +85,11 @@ mymap.locate({
     maxZoom: 16,
     watch: true
 });
+
+/**
+ * Locate user on the map
+ * @param {*} e map
+ */
 function onLocationFound(e) {
     var radius = e.accuracy / 2;
     var color = 'var(--color-primary';
@@ -93,7 +98,7 @@ function onLocationFound(e) {
             icon: myIconlocation
         }).addTo(mymap);
         myAccuracy = L.circle(e.latlng, radius, {fillColor: color, color:color}).addTo(mymap);
-        mymap.flyTo(e.latlng, 13)
+        mymap.flyTo(e.latlng, 13, {duration: 0.5})
     } else {
         animiraj(myLocation, e.latlng.lat, e.latlng.lng);
         animiraj(myAccuracy, e.latlng.lat, e.latlng.lng);
@@ -110,7 +115,14 @@ mymap.on('locationerror', onLocationError);
 
 /* REQUESTI */
 /* ANIMACIJE */
-animiraj = function(enMarker, newx, newy) {
+
+/**
+ * Animate bus markers
+ * @param {*} enMarker Leaflet marker
+ * @param {*} newx new latitude
+ * @param {*} newy new longitude
+ */
+function animiraj(enMarker, newx, newy) {
     var p = 0; // potek interpolacije
 
     var x = enMarker.getLatLng().lat;
@@ -131,7 +143,14 @@ animiraj = function(enMarker, newx, newy) {
     }, 0);
 }
 
-update_smer = function(enMarker, newx, newy, newbear) {
+/**
+ * Bus direction animation
+ * @param {*} enMarker Leaflet marker
+ * @param {*} newx new latitude
+ * @param {*} newy new longitude
+ * @param {*} newbear new bearing
+ */
+function update_smer(enMarker, newx, newy, newbear) {
     var p = 0; // potek interpolacije
 
     var x = enMarker.getLatLng().lat;
@@ -149,8 +168,7 @@ update_smer = function(enMarker, newx, newy, newbear) {
         }
     }, 0);
     
-    
-    console.log(enMarker._icon.style.transform);
+   
 }
 
 rotirajPopup = function() {
@@ -167,12 +185,17 @@ rotirajPopup = function() {
 
 /* CASOVNIK */
 odstevalci = [];
+
+/**
+ * Calculate how old the bus is
+ * @param {*} tstamp timestamp
+ * @param {*} vid ID of the bus
+ * @returns 
+ */
 function starost(tstamp, vid) {
-	//console.log(tstamp, vid);
 	let d = new Date();
 	let output = "";
 	let razmak = (d - new Date(tstamp));
-	//console.log(razmak);
 	
 	if(razmak >= 1000*3600*24) {
 		output += (Math.floor(razmak/1000/3600/24) + "d ");
@@ -196,7 +219,6 @@ function starost(tstamp, vid) {
     try {
         document.getElementById("stamp_" + vid).innerText = output;
     } catch (e) {
-        console.log("Napaka pri izpisu starosti: ", e);
         clearInterval(odstevalci.pop());    
     }
 	return output;
@@ -208,7 +230,10 @@ odpriMaps = function(bus) {
     window.open("https://www.google.com/maps/dir/?api=1&origin=" + b.lat + "%2C" + b.lng + "&destination=" + dest.lat + "%2C" + dest.lng + "&travelmode=driving");
 }
 
-brisiMarkerje = function() {
+/**
+ * Remove Leaflet markers from map
+ */
+function brisiMarkerje() {
     for (const [key, value] of Object.entries(m2)) {
         mymap.removeLayer(m2[key]);
         delete m2[key];
@@ -221,8 +246,14 @@ brisiMarkerje = function() {
 }
 
 
-function izrisi_OJPP(odg, automatic=false) {
-	console.log("Risanje OJPP", busi);
+/**
+ * Add buses to map
+ * Draws buses as Leaflet markers
+ * @param {*} busi array of buses
+ * @param {*} automatic true if automatic refresh
+ * @returns 
+ */
+function izrisi_OJPP(busi, automatic=false) {
     myIcon = busIcon;
 
 	d = new Date(); // Uporabimo kasneje za skrivanje starih busov
@@ -320,7 +351,7 @@ function izrisi_OJPP(odg, automatic=false) {
                 </div>
             </div>`;
             vsebina += ("<br><span style='color: gray;font-size: 80%;bottom: 10%;right: 10%;' id='stamp_" + vid + "'><i>Nazadnje posodobljeno " + busTstamp + "</i></span><br>"); //TIMESTAMP (kmalu depreciated, ko bo STAROST)
-            vsebina += ("<img id='eksekuter' src='' onerror='console.log(\"test\"); for(let i = 0; i < odstevalci.length; i++) {clearInterval(odstevalci.pop());} odstevalci.push(setInterval(starost, 1000, \"" + busTstamp + "\", \"" + vid + "\")); document.getElementById(\"stamp_" + vid + "\").style.position = \"absolute\"; starost(\"" + busTstamp + "\", \"" + vid + "\"); this.remove();'/>");
+            vsebina += ("<img id='eksekuter' src='' onerror='for(let i = 0; i < odstevalci.length; i++) {clearInterval(odstevalci.pop());} odstevalci.push(setInterval(starost, 1000, \"" + busTstamp + "\", \"" + vid + "\")); document.getElementById(\"stamp_" + vid + "\").style.position = \"absolute\"; starost(\"" + busTstamp + "\", \"" + vid + "\"); this.remove();'/>");
 
 
             m2[vozilo].bindPopup(vsebina);
@@ -331,7 +362,7 @@ function izrisi_OJPP(odg, automatic=false) {
                 menuClose();
               
                 //Zoom in on bus location
-                mymap.flyTo([odg["lat"],odg["long"]], 15 );
+                mymap.flyTo([odg["lat"],odg["long"]], 15, {duration: 0.5});
                 currentBusId = odg["vehicle_id"];
 
             });
@@ -339,7 +370,7 @@ function izrisi_OJPP(odg, automatic=false) {
             m2[vozilo].on('popupclose', function() {
                 hideDelays();
                 //Zoom out
-                mymap.flyTo([odg["lat"],odg["long"]], 12);
+                mymap.flyTo([odg["lat"],odg["long"]], 12, {duration: 0.5});
                 currentBusId = 0;
                 document.getElementById("timetable_no_line").classList.remove("no");
             });
@@ -360,7 +391,10 @@ function izrisi_OJPP(odg, automatic=false) {
 }
 
 
-
+/**
+ * Outdate all buses
+ * Outdates leaflet markers
+ */
 function outdejtajBuse() {
     for(let m in m2) {
         outdejtajBus(m);
@@ -369,16 +403,23 @@ function outdejtajBuse() {
         outdejtajBus(m);
     }
 }
+
+/**
+ * Outdate a bus
+ * Outdates leaflet markers
+ * @param {*} m leaflet marker
+ */
 function outdejtajBus(m) {
     let outdejtanost = clamp((((new Date()) - (new Date(m2[m]["busTstamp"])))/1000 - 90)/300, 0, 1); // New data arrives every 30 seconds, and is 60 seconds old. Fade out the marker slowly for 5 minutes.
-    console.log(outdejtanost);
     m2[m]["_icon"]["style"]["filter"] = `grayscale(${lerp(0, 89, outdejtanost)}%) blur(${lerp(0, 0.07, outdejtanost)}rem) opacity(${lerp(100, 65, outdejtanost)}%)`
-    //m2[m]["_icon"]["style"]["filter"] = `grayscale(${lerp(0, 100, outdejtanost)}%) opacity(${lerp(100, 65, outdejtanost)}%)`
 }
 
 let outdejtanje = setInterval(outdejtajBuse, 20000);
 
 var zadnjiIskaniBusId = "";
+/**
+ * Search for a bus by ID
+ */
 async function iskalnikBusId() {
     zadnjiIskaniBusId = prompt("Vnesi ID avtobusa", zadnjiIskaniBusId);
 
