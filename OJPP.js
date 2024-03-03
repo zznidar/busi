@@ -102,9 +102,11 @@ NA_POSTAJALISCU_THRESHOLD = 100; // metres
  * @param {*} busId Id of the bus
  * @returns Array of delays for each stop
  */
+
+danes = new Date().toISOString().slice(0,10);
 async function zahtevaj_zamudo(busId) {
 
-    danes = new Date().toISOString().slice(0,10);
+    
     location_track = (await fp(`https://ojpp.si/api/vehicles/${busId}/locations_geojson/?date=${danes}`))["features"];
     trip_details = (await fp(`https://ojpp.si/api/trips/${busi[busId]["trip_id"]}/details/`))["stop_times"];
     let odhodSPrvePostaje = new Date(`${danes}T${trip_details[0]["time_departure"]}:00`);
