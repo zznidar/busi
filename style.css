@@ -268,7 +268,7 @@ input:-webkit-autofill {
     color: var(--color-primary);
     padding-left: 40px;
     padding-right: 40px;
-    max-height: calc(100dvh - 470px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+    max-height: calc(100dvh - (10dvh + env(safe-area-inset-top) + 50px + 20px + 110px + env(safe-area-inset-bottom)));
     padding-bottom: 10px;
     overflow-y: auto;
     min-height: 3rem;
