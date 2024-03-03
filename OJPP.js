@@ -613,9 +613,8 @@ async function displayTripsOnStop(stopid, period = 60){
 
     //Display the trips
     TIMETABLE.innerHTML = "<thead><tr><td>Linija</td><td>Prihod</td></tr></thead>";
-    for(let i in filtered){ 
+    for(let t of filtered){ 
 
-        t = filtered[i];
         console.log(t);
         
 
@@ -633,6 +632,19 @@ async function displayTripsOnStop(stopid, period = 60){
 
       
         let td = document.createElement("td");
+
+        if(t?.vehicle?.id) {
+            let p = document.createElement("p");
+            p.innerText = "Live";
+            p.style.color = "blue";
+            td.appendChild(p);
+            tr.dataset.busid = t.vehicle.id;
+            tr.addEventListener("click", function(e) {
+                // only if not a
+                if(e.target.tagName !== "A") m2[t.vehicle.id]?.openPopup();
+            });
+        }
+
         let a = document.createElement("a");
         a.href = `https://ojpp.si/trips/${t?.["trip_id"]}`;
         a.target = "_blank";

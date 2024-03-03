@@ -201,11 +201,15 @@ function prikaziPostajiNaZemljevidu(imePostaje) {
     toggleSearch();
 }
 
+/**
+ * Wrapper function for the correct flow of showing only buses of this stop
+ * @param {int} id id of the bus stop (properties.id)
+ */
 async function poglejOdhodeSTePostaje(id) {
     console.log(id);
     brisiMarkerje(); // We want to hide all other buses
     await displayTripsOnStop(id, 300);
-    refresh();
+    refresh(automatic=true);
 }
 
 document.getElementById("search_field").addEventListener("input", updateSearch);
