@@ -71,7 +71,7 @@ new L.maptilerLayer({
 
 L.tileLayer("", {
     attribution: '',
-    maxZoom: 19,
+    maxZoom: 18,
 }).addTo(mymap);  
 
 /* L.control.attribution({
@@ -93,7 +93,7 @@ function onLocationFound(e) {
             icon: myIconlocation
         }).addTo(mymap);
         myAccuracy = L.circle(e.latlng, radius, {fillColor: color, color:color}).addTo(mymap);
-        mymap.flyTo(e.latlng, 13)
+        mymap.flyTo(e.latlng, 13, {duration: 0.5})
     } else {
         animiraj(myLocation, e.latlng.lat, e.latlng.lng);
         animiraj(myAccuracy, e.latlng.lat, e.latlng.lng);
@@ -331,7 +331,7 @@ function izrisi_OJPP(odg, automatic=false) {
                 menuClose();
               
                 //Zoom in on bus location
-                mymap.flyTo([odg["lat"],odg["long"]], 15 );
+                mymap.flyTo([odg["lat"],odg["long"]], 15, {duration: 0.5});
                 currentBusId = odg["vehicle_id"];
 
             });
@@ -339,7 +339,7 @@ function izrisi_OJPP(odg, automatic=false) {
             m2[vozilo].on('popupclose', function() {
                 hideDelays();
                 //Zoom out
-                mymap.flyTo([odg["lat"],odg["long"]], 12);
+                mymap.flyTo([odg["lat"],odg["long"]], 12, {duration: 0.5});
                 currentBusId = 0;
                 document.getElementById("timetable_no_line").classList.remove("no");
             });

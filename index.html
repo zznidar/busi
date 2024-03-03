@@ -59,7 +59,7 @@
 	
 	<div class="info-container no">
 		<span class="material-symbols-outlined tool_icon" style="left: 50%; top:10px;" onclick="toggleVisibility()">info</span>
-		<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="mymap.flyTo(xy, 13);">my_location</span>
+		<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="mymap.flyTo(xy, 13, {duration: 0.5});">my_location</span>
 
 	</div>
 
@@ -67,8 +67,8 @@
 	<div class="refresh float">
 		<span id = "refresh" class="material-symbols-outlined float_icon center refresh_icon" onclick="refresh()">sync</span>
 	</div>
-	<div class="locate float" onclick="mymap.flyTo(xy, 13);">
-		<span class="material-symbols-outlined float_icon center" onclick="mymap.flyTo(xy, 13);">my_location</span>
+	<div class="locate float" onclick="mymap.flyTo(xy, 13, {duration: 0.5});">
+		<span class="material-symbols-outlined float_icon center" onclick="mymap.flyTo(xy, 13, {duration: 0.5});">my_location</span>
 	</div>
 
 

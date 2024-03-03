@@ -164,10 +164,10 @@ function prikaziPostajiNaZemljevidu(imePostaje) {
             let vsebina = `<span style="color:var(--color-primary)">${postaja.properties.name}</span>`;
             marker.bindPopup(vsebina);
             // Fly to
-            mymap.flyTo([lat, lon], 19);
-            toggleSearch();
+            mymap.flyTo([lat, lon], 18, {duration: 0.5});
         }
     }
+    toggleSearch();
 }
 
 async function poglejOdhodeSTePostaje(id) {
