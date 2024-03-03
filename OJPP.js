@@ -266,15 +266,15 @@ async function pokaziVse() {
 
 TIMETABLE = document.getElementById("timetable");
 async function izpisi_urnik(trips) {
+
+    //Edit titles and warnings
+    document.getElementById("timetable_title").innerText = "Urnik za izbrano relacijo";
+    document.getElementById("timetable_warning").classList.remove('no');
+
     TIMETABLE.innerHTML = "<thead><tr><td>Ura</td><td>Linija</td><td>Trajanje</td><td>Prevoznik</td></tr></thead>";
     for(let t of trips) {
 
         console.log(t);
-
-        //Edit titles and warnings
-        document.getElementById("timetable_title").innerText = "Urnik za izbrano relacijo";
-        document.getElementById("timetable_warning").classList.remove('no');
-        
 
         //Check if the trip is older than 15 minutes
         date = new Date;
