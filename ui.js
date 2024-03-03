@@ -174,7 +174,7 @@ function prikaziPostajiNaZemljevidu(imePostaje) {
             //On popup open
             marker.on('popupopen', function() {
                 selectedStop = postaja.properties.id;
-                displayTripsOnStop(postaja.properties.id, 300);
+                poglejOdhodeSTePostaje(postaja.properties.id);
                 menuClose();
                 menuElement.classList.add('closed');
                 toggleTimetable();
