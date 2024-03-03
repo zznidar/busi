@@ -271,7 +271,10 @@ input:-webkit-autofill {
     max-height: calc(100dvh - 470px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
     padding-bottom: 10px;
     overflow-y: auto;
-    min-height: fit-content;
+    min-height: 3rem;
+}
+#search_results:not(:has(li)) {
+    display:none;
 }
 
 #search_results li{
