@@ -271,7 +271,7 @@ input:-webkit-autofill {
     max-height: calc(100dvh - 420px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
     padding-bottom: 10px;
     overflow-y: auto;
-
+    min-height: 3rem;
 }
 
 #search_results li{
