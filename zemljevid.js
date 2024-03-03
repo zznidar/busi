@@ -221,7 +221,7 @@ brisiMarkerje = function() {
 }
 
 
-function izrisi_OJPP(odg, automatic=false) {
+function izrisi_OJPP(busi, automatic=false) {
 	console.log("Risanje OJPP", busi);
     myIcon = busIcon;
 

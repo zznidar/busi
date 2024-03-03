@@ -494,6 +494,10 @@ lastRelation = [];
 allBuses = false;
 async function refresh(automatic=false) {
  
+    if(selectedStop){
+        await displayTripsOnStop(selectedStop, 300);
+    }
+
     await godusModus(automatic);
     setTimeout(centerCurrentBus, 50);
  
@@ -502,9 +506,6 @@ async function refresh(automatic=false) {
         document.getElementById("refresh").classList.remove("refresh_animate");
     }, 1000);
 
-    if(selectedStop){
-        displayTripsOnStop(selectedStop, 300);
-    }
     
 
 }
@@ -602,8 +603,8 @@ async function tripsOnStop(stop_id, period){
 
     //return trips;
     //Log just trips that are comming in the next hour
-    filtered  = (trips.filter(trip => (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) > 0));
-    return filtered;
+    trips  = (trips.filter(trip => (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) > 0));
+    return trips;
 
 }
 

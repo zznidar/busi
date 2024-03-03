@@ -172,7 +172,9 @@ function prikaziPostajiNaZemljevidu(imePostaje) {
 
 async function poglejOdhodeSTePostaje(id) {
     console.log(id);
-    let tripsiSPostaje = await displayTripsOnStop(id, 300);
+    brisiMarkerje(); // We want to hide all other buses
+    await displayTripsOnStop(id, 300);
+    refresh();
 }
 
 document.getElementById("search_field").addEventListener("input", updateSearch);
