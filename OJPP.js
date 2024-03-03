@@ -1,5 +1,10 @@
 //const ENDPOINT = "../";
 var noLoaders = 0;
+/**
+ * Parse JSON from link
+ * @param {*} link Link (API endpoint)
+ * @returns Parsed JSON
+ */
 async function fp(link) {
     try {
         document.getElementById("loader").classList.remove("no");
@@ -31,7 +36,12 @@ async function fp(link) {
 busi = {};
 test = "KEKEKEKE";
 
-
+/**
+ * Request trips for bus stop
+ * Requests all trips for the selected bus stop with OJPP API
+ * @param {*} postajalisca Array of bus stops
+ * @returns Array of all trips
+ */
 async function zahtevaj_voznje(postajalisca) {
     let requesti = [];
     for(let p of postajalisca) {
@@ -39,7 +49,6 @@ async function zahtevaj_voznje(postajalisca) {
         requesti.push(fp(`https://ojpp.si/api/stop_locations/${p}/arrivals`));
     }
     let tripsi = (await Promise.all(requesti)).flat();
-    console.log("Tripsi", tripsi);
     return tripsi;
 }
 
@@ -50,19 +59,13 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
         (await zahtevaj_buse())["features"]
     ]);
 
-    console.log(start, cilj)
-    console.log(trips_start, trips_cilj, data_buses);
-
     trips = trips_start.filter(trip => trips_cilj.some(trip2 => trip.trip_id === trip2?.trip_id && (trip.time_departure ?? trip.time_arrival) < (trip2?.time_departure ?? trip2?.time_arrival)
     &&
     ((trip.prihodNaCilj = (trip2?.time_arrival ?? trip2?.time_departure)) || true)
     ));
-    // Tale gornja kolobocija je zato, da v trip zapišemo še urnični prihod na ciljno postajo.
-    console.log(trips);
 
-    // Get only buses which share trip_id
     buses = data_buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
-    console.log(buses);
+
 
 
     // Ce je bus trenutno na voznji na tej relaciji, trip vsebuje vehicle -> plate, toda ne lokacije
@@ -84,46 +87,40 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
     }
 }
 
-
+/**
+ * Get all current busses
+ * @returns Array of current buses
+ */
 async function zahtevaj_buse() {
     return fp(`https://ojpp.si/api/vehicle_locations`);
 }
 
-// File test2.js je nujno potreben za izris.
-
-danes = new Date().toISOString().slice(0,10);
 NA_POSTAJALISCU_THRESHOLD = 100; // metres
+/**
+ * Calculate delay
+ * Calculates delay for the selected bus. Resouce heavy task.
+ * @param {*} busId Id of the bus
+ * @returns Array of delays for each stop
+ */
 async function zahtevaj_zamudo(busId) {
-    // https://ojpp.si/api/vehicles/BUSID/locations_geojson/?date=2023-11-18 BUSID
-    // /api/trips/TRIP_ID/details/ TRIP_ID, ki je zapisan v objektu busi
-    /* for i od zadaj:
-        if geometry -> coordinates od location tracka je znotraj posamezne postaje:
-            primerjaj urnik in gps track
-    */
+
     danes = new Date().toISOString().slice(0,10);
     location_track = (await fp(`https://ojpp.si/api/vehicles/${busId}/locations_geojson/?date=${danes}`))["features"];
     trip_details = (await fp(`https://ojpp.si/api/trips/${busi[busId]["trip_id"]}/details/`))["stop_times"];
-    console.log(location_track, trip_details);
     let odhodSPrvePostaje = new Date(`${danes}T${trip_details[0]["time_departure"]}:00`);
     let zamude = [];
     //TODO: Vzamemo samo tracking točke, ki vsebujejo trip_id, za katerega računamo zamudo. Na ta način se losamo raznih "Ljubljana Tivoli: --54 min", ko se je še peljal na šiht.
         // Possible problem: Včasih bus nima pravilno vnesenega trip_id-ja (ampak potem se tudi na zemljevidu ne pojavi. To bi bil problem le v GodModusu)
     for(let t = location_track.length-1; t >= 0; t--) {
         let busLatLng = [location_track[t].geometry.coordinates[1], location_track[t].geometry.coordinates[0]];
-        //console.log("busLatLng", busLatLng);
         for(let p = 0; p < trip_details.length; p++) {
             let stopLatLng = [trip_details[p]["stop"]["location"]["lat"], trip_details[p]["stop"]["location"]["lon"]];
-            //console.log("stopLatLng", stopLatLng, "; ", mymap.distance(busLatLng, stopLatLng));
             if(mymap.distance(busLatLng, stopLatLng) < NA_POSTAJALISCU_THRESHOLD) {
-                console.log("Je blizu postaje", trip_details[p]);
                 let busJeBil = new Date(location_track[t].properties.time);
                 let uraOdhodaISO = `${danes}T${trip_details[p]["time_departure"] ?? trip_details[p]["time_arrival"]}:00`;
                 let busJeMoralBiti = new Date(uraOdhodaISO);
                 let postaja = trip_details[p]["stop"]["name"];
-                console.log(uraOdhodaISO);
-                console.log("busJeBil", busJeBil, "busJeMoralBiti", busJeMoralBiti);
                 let zamuda = Math.round((new Date(location_track[t].properties.time) - new Date(uraOdhodaISO)) / 60000);
-                console.log("Zamuda", zamuda, "na postaji", postaja);
                 zamude.push({postaja: postaja, zamuda: zamuda});
 
                 // Remove this and all next stops from trip_details because zamuda was already calculated
@@ -132,9 +129,7 @@ async function zahtevaj_zamudo(busId) {
                 // Remove this stop from trip_details because zamuda was already calculated
                 //trip_details.splice(p, 1);
 
-                //console.log("trip_details", trip_details);
                 if(busJeBil < odhodSPrvePostaje) {
-                    console.warn("Prehiteli smo samega sebe.", busJeBil, odhodSPrvePostaje);
                     return zamude;
                 }
             }
@@ -143,66 +138,19 @@ async function zahtevaj_zamudo(busId) {
     return zamude;
 }
 
-async function izpisi_zamudo(gumb, busId, stPostaj = 5) {
-    console.log("This", gumb);
-    let zamudiceContainer = gumb.nextElementSibling;
-    console.log(zamudiceContainer);
-    let zamude = await zahtevaj_zamudo(busId);
-    console.log(zamude);
-    let zamudeHTML = "";
-    let items = 0;
-    for(let z of zamude) {
-        let barva = z.zamuda <= 0 ? "#3a4d39" : "#820300";
-        
-        if(zamudeHTML === "") {
-            zamudeHTML += `<summary><span style='
-            color: ${barva};
-            padding: 1px 8px 1px 8px;
-            margin-right:0.2rem;
-            border: 2px solid ${barva};
-            border-radius: 1rem;
-            width: fit-content;
-            display: inline-block;'>${z.zamuda} min</span>&nbsp${z.postaja} ${(z.zamuda > 3 || z.zamuda < -1) ? ' <span class="pritozba">Pritoži se na tramvaj komando</span>' : ""}</summary><ul>`;
-            // Če je zamuda > 3 min ali spelje prej kot –1 min, dodamo gumb za pritožbo na tramvaj komando (https://fran.si/iskanje?View=1&=&Query=tramvaj)
-            continue;
-        }
-        items++;
-        zamudeHTML += `<li class=" ${(items > stPostaj) ? 'no zamude' : ''} "><span style="
-        color: ${barva};
-        padding: 1px 8px 1px 8px;
-        margin-top:0.2rem;
-        margin-right:0.2rem;
-        border: 1px solid ${barva};
-        border-radius: 1rem;
-        width: fit-content;
-        display: inline-block;
-        opacity: 0.7">${z.zamuda} min</span>&nbsp${z.postaja}</li>`;
-    }
-    zamudeHTML += "</ul>";
-    if(items > stPostaj) zamudeHTML += "<a onclick = 'pokaziVse()' style='color:grey'>Pokaži vse postaje</a>"
-
-    //Update the button text
-    gumb.innerText = "Osveži zamude";
-    zamudiceContainer.innerHTML = zamudeHTML;
-
-}
-
+/**
+ * Display delay
+ * Displays delays for the selected bus in the special container. They are not automatically recalculated.
+ * @param {*} gumb Button property linked
+ * @param {*} busId Id of the bus
+ * @param {*} stPostaj Number of stops to be displayed folded
+ */
 async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
-    console.log("This", gumb);
-    let zamudiceContainer = document.getElementById("zamudiceContainer");
-    console.log(zamudiceContainer);
     let zamude = await zahtevaj_zamudo(busId);
-    console.log(zamude);
     let zamudeHTML = "";
     let items = 0;
 
-
     for(let z of zamude) {
-        let barva = z.zamuda <= 0 ? "var(color-secondary)" : "var(--color-delay)";
-
-
-
-        
         if(zamudeHTML === "") {
             zamudeHTML += `
                 <div class="zamuda_entry first">
@@ -212,7 +160,7 @@ async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
 					<span class="postaja" style="margin-left:-0.5rem">${z.postaja}</span>
 					<span class="zamuda ${z.zamuda <= 0 ? "green" : "red"}" style="padding-top:0.5rem">${z.zamuda} min</span>
 				</div>
-            `// Če je zamuda > 3 min ali spelje prej kot –1 min, dodamo gumb za pritožbo na tramvaj komando (https://fran.si/iskanje?View=1&=&Query=tramvaj)
+            `
             continue;
         }
         items++;
@@ -224,10 +172,6 @@ async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
         </div>`;
     }
     if(items > stPostaj) zamudeHTML += "<span class='btn_delay_more center' onclick = 'pokaziVse()'>Pokaži vse postaje</span>"
-
-    //Update the button text
-    //zamudiceContainer.innerHTML = zamudeHTML;
-
 
     //Display delays in the page continer rather
     let delay_container = document.getElementById("delay_container");
@@ -242,29 +186,14 @@ async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
 
 }
 
-function hideDelays(){
-    menuClose();
-    //Wait for the animation to finish
-    setTimeout(() => {
-        document.getElementById("delay_container").classList.add("no");
-    }, 500);
-    
-}
 
-
-
-async function pokaziVse() {
-    //Search for all elements with class no zamude inside the zamudiceContainer
-    let elements = [...document.getElementsByClassName("no zamude")];
-    console.log(elements);
-    for(let e of elements) {
-        e.classList.remove("no");
-        console.log(elements);
-    }
-    document.getElementsByClassName("btn_delay_more")[0].classList.add("no");
-}
 
 TIMETABLE = document.getElementById("timetable");
+/**
+ * Show timetable
+ * Displays timetable in the timetable menu section for the selected relation in the favorites.
+ * @param {*} trips Array of trips 
+ */
 async function izpisi_urnik(trips) {
 
     //Edit titles and warnings
@@ -273,8 +202,6 @@ async function izpisi_urnik(trips) {
 
     TIMETABLE.innerHTML = "<thead><tr><td>Ura</td><td>Linija</td><td>Trajanje</td><td>Prevoznik</td></tr></thead>";
     for(let t of trips) {
-
-        console.log(t);
 
         //Check if the trip is older than 15 minutes
         date = new Date;
@@ -338,55 +265,19 @@ async function izpisi_urnik(trips) {
     document.getElementById("timetable_sync_warning").classList.add("no");
 
 }
-function toggleTimetable() {
-		
-    var elementFavorite = document.getElementById("favorites");
-    var elementTimetable = document.getElementById("timetable_container");
-    var elementMenu = document.getElementById("menu");
-    var elementDelay = document.getElementById("delay_container");
-    var delayContent = document.getElementById("delay_content");
 
-    //If favorite is visible, close menus, change visibilites and toggle menu
-    if (elementTimetable.classList.contains("no")) {
-        console.log("Showing timetable");
-        if (!elementMenu.classList.contains("closed")) {
-            menuClose();
-            setTimeout(() => {
-                elementTimetable.classList.remove("no");
-                elementFavorite.classList.add("no");
-
-                if(delayContent.innerHTML!='\n\t\t\t'){
-                    elementDelay.classList.remove("no");
-                }
-
-            }, 800);
-            setTimeout(() => {
-                menuOpen();
-            }, 1000);
-        }
-        else{
-            elementTimetable.classList.remove("no");
-            elementFavorite.classList.add("no");
-            if(delayContent.innerHTML!='\n\t\t\t'){
-                elementDelay.classList.remove("no");
-            }
-            setTimeout(() => {
-                menuOpen();
-            }, 100);
-        }
-        elementMenu.classList.remove("closed");
-        
-    }
-    else{
-    toggleMenu();
-    }
-}
 
 
 
 //Check if bus is deleted
 // Function to check if the element with ID "DELETED" exists on the target website
 
+/**
+ * Check if bus schedule is outdated
+ * Crawls the OJPP bus schedule page and checks if the bus is marked as deleted. Should be replaced as soon as API is updated.
+ * @param {*} url URL for the bus schedule
+ * @returns True if deleted
+ */
 async function checkForDeletedElement(url) {
     // Make an HTTP GET request to the target website
     return fetch(url)
@@ -402,6 +293,12 @@ async function checkForDeletedElement(url) {
 
 
 var trips;
+/**
+ * Display all buses on map
+ * Displays all buses on the map. Resource heavy as it is also automaticaly refreshed.
+ * @param {*} automatic Bool if automatic refresh
+ * @returns Nothing
+ */
 async function godusModus(automatic=false) {
     buses = (await zahtevaj_buse())["features"];
     buses = buses.filter(bus => bus.properties.operator_name !== "Javno podjetje Ljubljanski potniški promet d.o.o."); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
@@ -428,16 +325,25 @@ vstopnaPostaja = [];
 izstopnaPostaja = [];
 data_postajalisca = [];
 
+/**
+ * Request all bus stops
+ * Requests all bus stops from the OJPP API and saves them to the global variable postajalisca
+ * @returns Nothing
+ */
 async function zahtevaj_vsa_postajalisca() {
     data_postajalisca = (await fp(`https://ojpp.si/api/stop_locations`))["features"];
     for(let p of data_postajalisca) {
         let name = p.properties.name;
         postajalisca?.[name]?.push(p.properties.id) ?? (postajalisca[name] = [p.properties.id]);
     }
-    //dodajPostaje();
     return;
 }
 
+/**
+ * Add stop for favorites
+ * Entry point for adding a stop to the favorites. 
+ * @returns 
+ */
 async function dodajPostaje() {
     // Ko bo https://bugzilla.mozilla.org/show_bug.cgi?id=1535985 fixed, lahko končno uporabimo datalist autocomplete.
     if(Object.keys(postajalisca).length === 0) {
@@ -472,7 +378,6 @@ async function dodajPostaje() {
                 button.onclick = () => {
                     izstopnaPostaja = postajalisca[p];
                     imeIzstopnePostaje = p;
-                    console.log(vstopnaPostaja, izstopnaPostaja);
                     zahtevaj_relacijo_vsi_peroni(vstopnaPostaja, izstopnaPostaja);
                     shraniRelacijo(vstopnaPostaja, izstopnaPostaja, `${imeVstopnePostaje}–${imeIzstopnePostaje}`)
                     //Delete bus stop buttons after the relation has been added
@@ -492,6 +397,12 @@ async function dodajPostaje() {
 //Marko implementation of refresh
 lastRelation = [];
 allBuses = false;
+
+/**
+ * Refresh function
+ * Refreshes all displayed buses and trips.
+ * @param {*} automatic True if called automatically
+ */
 async function refresh(automatic=false) {
  
     if(selectedStop){
@@ -506,10 +417,12 @@ async function refresh(automatic=false) {
         document.getElementById("refresh").classList.remove("refresh_animate");
     }, 1000);
 
-    
 
 }
 
+/**
+ * Center current bus to the center of the map
+ */
 function centerCurrentBus(){
     if (currentBusId){
         let currentBus = busi[currentBusId];
@@ -522,6 +435,11 @@ function centerCurrentBus(){
 
 
 gumbiZaRelacije = document.getElementById("gumbiZaRelacije");
+
+/**
+ * Draw favorite relation buttons
+ * @param {*} gumbi Array of all buttons
+ */
 function izrisiRelacijskeGumbe(gumbi) {
     gumbiZaRelacije.innerHTML = "";
     // <button type="button" style="height:2em; width:fit" onclick="zahtevaj_relacijo_vsi_peroni(start=[11, 121, 500], cilj=[30001, 6642]);">OJPP Geoss–Lj</button>
@@ -536,8 +454,6 @@ function izrisiRelacijskeGumbe(gumbi) {
             brisiMarkerje();
             menuClose();
         }
-
-    
 
         //Use eventListener so touch computer can use it
         btn.addEventListener('touchstart', startTouch);
@@ -559,10 +475,6 @@ function izrisiRelacijskeGumbe(gumbi) {
         function endTouch(){
             clearTimeout(timeout);
         }
-    
-        
-        
-
 
         btn.innerText = ime;
         btn.classList.add("btn_busline");
@@ -598,6 +510,13 @@ function exportPresets() {
 }
 
 
+/**
+ * Obtain all trips on a stop
+ * Obtains all trips for a certain stop in a certain time frame.
+ * @param {*} stop_id ID of the bus stop
+ * @param {*} period Time frame
+ * @returns Array of trips
+ */
 async function tripsOnStop(stop_id, period){
     trips = await fp(`https://ojpp.si/api/stop_locations/${stop_id}/arrivals`);
 
@@ -608,62 +527,76 @@ async function tripsOnStop(stop_id, period){
 
 }
 
+/**
+ * Display trips on bus stop
+ * Displays all trips on the selected bus stop in the timetable section. Calculates time upon arrival and live status.
+ * @param {*} stopid ID of the bus stop
+ * @param {*} period Time frame
+ */
 async function displayTripsOnStop(stopid, period = 60){
     filtered = await tripsOnStop(stopid, period);
 
     //Display the trips
-    TIMETABLE.innerHTML = "<thead><tr><td>Linija</td><td>Prihod</td></tr></thead>";
+    TIMETABLE.innerHTML = `
+    <thead><tr><td>Linija</td><td style='padding-right:30px'>Prihod</td></tr></thead>`;
     for(let t of filtered){ 
-
-        console.log(t);
-        
 
         //Check if the trip is older than 15 minutes
         date = new Date;
         hour = date.getHours();
         minute = date.getMinutes();
 
-        
-
         let tr = document.createElement("tr");
-
         //Unique id for the row
         tr.id = t.trip_id;
-
       
         let td = document.createElement("td");
-
-        if(t?.vehicle?.id) {
-            let p = document.createElement("p");
-            p.innerText = "Live";
-            p.style.color = "blue";
-            td.appendChild(p);
-            tr.dataset.busid = t.vehicle.id;
-            tr.addEventListener("click", function(e) {
-                // only if not a
-                if(e.target.tagName !== "A") m2[t.vehicle.id]?.openPopup();
-            });
-        }
-
         let a = document.createElement("a");
         a.href = `https://ojpp.si/trips/${t?.["trip_id"]}`;
         a.target = "_blank";
         a.innerText = t.route_name.trim();
         td.style.paddingLeft = "15px";
+        td.style.width = "70%";
         td.appendChild(a);
         tr.appendChild(td);
         td = document.createElement("td");
-        td.innerText = `${((new Date(`${danes}T${t.time_departure ?? t.time_arrival}`) - new Date()) / 60000).toFixed(0)} min`;
-        td.style.paddingRight = "15px";
+
+        //Calculate the time difference
+        minToArrival = ((new Date(`${danes}T${t.time_departure ?? t.time_arrival}`) - new Date()) / 60000).toFixed(0);
+
+        if(minToArrival < 60){
+            td.innerText = `${minToArrival} min`;
+        }
+        else{
+            td.innerText = `${t.time_departure.slice(0,5)}`;
+        }
+        td.style.paddingRight = "30px";
         tr.appendChild(td);
+
+        if(t?.vehicle?.id) {
+            let span = document.createElement("span");
+            span.classList.add("material-symbols-outlined");
+            span.classList.add('busLive');
+            span.innerText = "sensors";
+            td.appendChild(span);
+            tr.dataset.busid = t.vehicle.id;
+            tr.classList.add("tripLive");
+            tr.addEventListener("click", function(e) {
+                // only if not a
+                if(e.target.tagName !== "A") m2[t.vehicle.id]?.openPopup();
+            });
+        }
         TIMETABLE.appendChild(tr);
     }
-
     //Hide no line warning
     document.getElementById("timetable_no_line").classList.add("no");
 }
 
-
+/**
+ * Parse default OJPP time format as Date object
+ * @param {*} timeString OJPP time
+ * @returns Time formated in Date() object
+ */
 function getTimeAsDate(timeString) {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
     const currentDate = new Date();
