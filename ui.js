@@ -159,8 +159,10 @@ async function toggleSearch(){
 
     clearTimeout(searchTimeout);
     if (element.classList.contains("closed")){
+        menuClose();
+        document.getElementById('menu').classList.add('closed');
         fadeIn('search_container', 100);
-        document.getElementById("search_field").focus();
+        document.getElementById("search_field").focus();      
     }
     else{
         searchTimeout = fadeOut('search_container', 100);
@@ -180,9 +182,7 @@ var search_results = document.getElementById("search_results");
  * @param {*} e Current search input
  */
 function updateSearch(e){
-    console.log(e);
     let query = e.target.value;
-    console.log(query);
     search_results.innerHTML = "";
     if (query.length >= 3){
         let postaje = Object.keys(postajalisca).filter(p => p.toLowerCase().includes(query.toLowerCase()));
