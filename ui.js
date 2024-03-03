@@ -6,6 +6,10 @@ selectedStop = 0;
 
 
 var infoTimeout;
+
+/**
+ * Function to toggle the info container
+ */
 function toggleInfo() {
     var element = document.getElementById('info');
     element.classList.toggle('closed');
@@ -20,7 +24,9 @@ function toggleInfo() {
 
 }
 
-
+/**
+ * Function to close the menu/scrollable site container
+ */
 function menuClose(){
     setTimeout(function() {
         var element = document.getElementById('menu');
@@ -28,14 +34,20 @@ function menuClose(){
     }, 100); // Adjust the delay (in milliseconds) to make it slower
 }
 
+/**
+ * Function to open the menu/scrollable site container
+ */
 function menuOpen(){
     setTimeout(function() {
         var element = document.getElementById('menu');
         element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
     }, 100); // Adjust the delay (in milliseconds) to make it slower
-    return;
 }
 
+/**
+ * Open menu and show delays    
+ * It is used to show only delays after then button is pressed on viechle popup
+ */
 function delayOpen(){
     setTimeout(function() {
         var element = document.getElementById('delay_container')
@@ -49,6 +61,10 @@ function delayOpen(){
 
 }
 
+/**
+ * Toggle favorite container
+ * Switches from any other display onto the favorite container. If the favorite container is already displayed, it will close it.
+ */
 function toggleFavorite() {
     var elementFavorite = document.getElementById("favorites");
     var elementTimetable = document.getElementById("timetable_container");
@@ -85,6 +101,10 @@ function toggleFavorite() {
 }
 
 var searchTimeout;
+/**
+ * Toggle search container
+ * Enables searching for bus stops. If the search container is already displayed, it will close it.
+ */
 function toggleSearch(){
     var element = document.getElementById("search_container");
     element.classList.toggle("closed");
@@ -104,6 +124,11 @@ function toggleSearch(){
 }
 
 var search_results = document.getElementById("search_results");
+/**
+ * Update search results 
+ * Updates the search results based on the input in the search field (live search)
+ * @param {*} e Current search input
+ */
 function updateSearch(e){
     console.log(e);
     let query = e.target.value;
@@ -127,7 +152,11 @@ search_results.addEventListener("click", function(e){
     }
 });
 
-
+/**
+ * Show relavant stops on the map
+ * Based on the selected search input item it will show all relavant stops on the map so the appropriate one can be selected.
+ * @param {*} imePostaje Stop name as in the search results
+ */
 function prikaziPostajiNaZemljevidu(imePostaje) {
     console.log(imePostaje);
     idsPostaj = postajalisca[imePostaje];
@@ -145,7 +174,7 @@ function prikaziPostajiNaZemljevidu(imePostaje) {
             //On popup open
             marker.on('popupopen', function() {
                 selectedStop = postaja.properties.id;
-                poglejOdhodeSTePostaje(postaja.properties.id);
+                displayTripsOnStop(postaja.properties.id, 300);
                 menuClose();
                 menuElement.classList.add('closed');
                 toggleTimetable();
@@ -179,7 +208,10 @@ async function poglejOdhodeSTePostaje(id) {
 
 document.getElementById("search_field").addEventListener("input", updateSearch);
 
-
+/**
+ * Toggle menu/site cointainer
+ * It will close the menu/site container based on current state and position. If not fully closed it will open and not close.
+ */
 function toggleMenu() {
     
     var element = document.getElementById('menu');
@@ -223,8 +255,12 @@ hideOfflineWarning = function(){
 }
 
 
-//Fade in and out functions
-
+/**
+ * Fade in selected element with animation
+ * Animation fade in function for elements that need to be displayed over map so display:none must be present.
+ * @param {*} elementID Id name of the element in HTML
+ * @param {*} time Animation duration in miliseconds
+ */
 function fadeIn(elementID, time){
     var element = document.getElementById(elementID);
     element.style.transition = `opacity ${time/1000}s ease-in-out`;
@@ -233,6 +269,13 @@ function fadeIn(elementID, time){
     setTimeout(function(){element.style.opacity = 0.95;}, 34);
 }
 
+/**
+ * Fade out selected element with animation
+ * Animation fade out function for elements that need to be displayed over map so display:none must be present.
+ * @param {*} elementID Id name of the element in HTML
+ * @param {*} time Animation duration in miliseconds
+ * @returns 
+ */
 function fadeOut(elementID, time){
     var element = document.getElementById(elementID);
     element.style.opacity = 0;
