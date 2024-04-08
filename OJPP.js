@@ -63,6 +63,7 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
     &&
     ((trip.prihodNaCilj = (trip2?.time_arrival ?? trip2?.time_departure)) || true)
     ));
+    trips = trips.filter(trip => trip?.active == true); // Only show active trips (although only active are returned from server as of 2024-04-08)
 
     buses = data_buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
 
@@ -254,6 +255,7 @@ async function izpisi_urnik(trips) {
     //Hide no line warning
     document.getElementById("timetable_no_line").classList.add("no");
 
+    /* // Fixed on 2024-04-02 https://gitlab.com/derp-si/ojpp-django/-/merge_requests/21#note_1841577063
     //We will hide them later when entries are already in the table
     document.getElementById("timetable_sync_warning").classList.remove("no");
     for(let t of trips) {
@@ -265,7 +267,7 @@ async function izpisi_urnik(trips) {
         }
     }
     document.getElementById("timetable_sync_warning").classList.add("no");
-
+    */
 }
 
 
