@@ -176,6 +176,15 @@ async function toggleSearch(){
 }
 
 var search_results = document.getElementById("search_results");
+
+// Safari WebKit does not update :has and :not CSS-selectors when contents change
+// Since it officially supports :not and :has, we cannot use feature detection.
+const UA = navigator.userAgent;
+const isWebkit =
+  /WebKit/.test(UA) &&
+  !/Edge/.test(UA) &&
+  !window.MSStream;
+
 /**
  * Update search results 
  * Updates the search results based on the input in the search field (live search)
@@ -183,6 +192,7 @@ var search_results = document.getElementById("search_results");
  */
 function updateSearch(e){
     let query = e.target.value;
+    var search_results_container = document.getElementById("search_results_container");
     search_results.innerHTML = "";
     if (query.length >= 3){
         let postaje = Object.keys(postajalisca).filter(p => p.toLowerCase().includes(query.toLowerCase()));
@@ -191,7 +201,22 @@ function updateSearch(e){
             li.innerHTML = p;
             li.dataset.imePostaje = p;
             search_results.appendChild(li);
+
+            
         }
+
+        if(isWebkit){
+            search_results.style.height = "fit-content";
+            search_results.style.minHeight = "3rem";
+            search_results_container.style.opacity = "0.9";
+            search_results.style.transition = "all 0.2s ease-in-out;";
+        }
+
+    }
+    else if(!search_results.innerHTML && isWebkit){
+        search_results.style.height = "0";
+        search_results.style.minHeight = "0";
+        search_results_container.style.opacity = "0";
     }
 }
 
