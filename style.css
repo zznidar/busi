@@ -260,6 +260,7 @@ input:-webkit-autofill {
     border-radius: 0 0 25px 25px;
     margin-top: -30px;
     padding-top: 20px;
+    opacity: 0.9;
     z-index: 2;
     transition: opacity 0.2s ease-in-out;
 }
@@ -284,8 +285,6 @@ input:-webkit-autofill {
     max-height: 0;
     height: 0;
 }
-
-
 
 #search_results li{
     width: fit-content;
