@@ -245,6 +245,8 @@ function brisiMarkerje() {
     busi = {};
 }
 
+lastZoom = undefined;
+
 
 /**
  * Add buses to map
@@ -363,8 +365,9 @@ function izrisi_OJPP(busi, automatic=false) {
                 document.getElementById('delay_container').classList.add('no');
                 menuClose();
               
+                lastZoom = mymap.getZoom();
                 //Zoom in on bus location
-                mymap.flyTo([odg["lat"],odg["lon"]], 15, {duration: 0.5});
+                mymap.flyTo([odg["lat"],odg["lon"]], Math.max(lastZoom, 15), {duration: 0.5});
                 currentBusId = odg["id"];
 
             });
@@ -372,7 +375,7 @@ function izrisi_OJPP(busi, automatic=false) {
             m2[vozilo].on('popupclose', function() {
                 hideDelays();
                 //Zoom out
-                mymap.flyTo([odg["lat"],odg["lon"]], 12, {duration: 0.5});
+                mymap.flyTo([odg["lat"],odg["lon"]], Math.max(lastZoom, 12), {duration: 0.5});
                 currentBusId = 0;
                 document.getElementById("timetable_no_line").classList.remove("no");
             });
