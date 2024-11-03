@@ -93,7 +93,7 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
  * @returns Array of current buses
  */
 async function zahtevaj_buse() {
-    return fp(`https://ojpp.si/api/vehicle_locations`);
+    return fp(`https://api.beta.brezavta.si/vehicles/locations`);
 }
 
 NA_POSTAJALISCU_THRESHOLD = 100; // metres
@@ -304,13 +304,13 @@ var trips;
  * @returns Nothing
  */
 async function godusModus(automatic=false) {
-    buses = (await zahtevaj_buse())["features"];
-    buses = buses.filter(bus => bus.properties.operator_name !== "Javno podjetje Ljubljanski potniški promet d.o.o."); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
+    buses = (await zahtevaj_buse());
+    buses = buses.filter(bus => bus.vehicle.operator_name !== "Ljubljanski Potniški Promet"); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
 
-    if(trips) buses = buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
+    //if(trips) buses = buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
     for(let b of buses) {
-        let id = b.properties.vehicle_id;
-        busi[id] = {...busi[id], ...b.properties, long: b.geometry.coordinates[0], lat: b.geometry.coordinates[1]};
+        let id = b.vehicle.id;
+        busi[id] = {...busi[id], ...b.vehicle, ...b};
     }
 
     izrisi_OJPP(busi, automatic);
@@ -430,7 +430,7 @@ async function refresh(automatic=false) {
 function centerCurrentBus(){
     if (currentBusId){
         let currentBus = busi[currentBusId];
-        let currentBusCoordinates = [currentBus.lat, currentBus.long];
+        let currentBusCoordinates = [currentBus.lat, currentBus.lon];
         mymap.flyTo(currentBusCoordinates);
     }
 }
