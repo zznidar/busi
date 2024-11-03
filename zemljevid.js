@@ -328,7 +328,7 @@ function izrisi_OJPP(busi, automatic=false) {
             timeDeparture = odg?.["time_departure"] ?? "";
             timeArrival = odg?.["prihodNaCilj"] ?? "";
             plate = odg?.["plate"] ?? "";
-            plate = isNaN(plate[0]) ? plate : `${plate} (morda to ni prava registrska)`;
+            plate = isNaN(plate[0]) ? `${plate.substr(0, 2)} ${plate.substr(2)}` : `${plate} (morda to ni prava registrska)`;
 
 
             vsebina = "";
@@ -348,6 +348,7 @@ function izrisi_OJPP(busi, automatic=false) {
                 
             }
             vsebina += `<br><span class="bus_info"><b style='user-select: text'>${plate}</b></span>`;
+            vsebina += `<br><span class="bus_info">Prevoznik: ${odg?.["operator_name"]}</span>`;
 
             vsebina += (`<div class="popup_zamuda" style="width:fit-content;"><span class='popup_zamuda_button' onclick='izpisi_zamudo2(this,${vozilo})' style="width:fit-content; margin-left:-10px">Kolikšna je zamuda?</span></div>`); //ZAMUDA
 

@@ -335,10 +335,11 @@ data_postajalisca = [];
  * @returns Nothing
  */
 async function zahtevaj_vsa_postajalisca() {
-    data_postajalisca = (await fp(`https://ojpp.si/api/stop_locations`))["features"];
+    data_postajalisca = await fp(`https://api.beta.brezavta.si/stops/`);
     for(let p of data_postajalisca) {
-        let name = p.properties.name;
-        postajalisca?.[name]?.push(p.properties.id) ?? (postajalisca[name] = [p.properties.id]);
+        if(!p.gtfs_id.startsWith("IJPP:")) continue;
+        let name = p.name;
+        postajalisca?.[name]?.push(p.gtfs_id) ?? (postajalisca[name] = [p.gtfs_id]);
     }
     return;
 }
@@ -513,6 +514,17 @@ function exportPresets() {
     a.click();
 }
 
+/**
+ * Returns the time in the format HH:mm:ss
+ * @param {Int} seconds Seconds since midnight
+ */
+function seconds2time(seconds) {
+    let hour = `${Math.floor(seconds / 3600)}`.padStart(2, "0");
+    let minute = `${Math.floor((seconds % 3600) / 60)}`.padStart(2, "0");
+    let second = `${seconds % 60}`.padStart(2, "0");
+    return `${hour}:${minute}:${second}`;
+}
+
 
 /**
  * Obtain all trips on a stop
@@ -522,11 +534,13 @@ function exportPresets() {
  * @returns Array of trips
  */
 async function tripsOnStop(stop_id, period){
-    trips = await fp(`https://ojpp.si/api/stop_locations/${stop_id}/arrivals`);
+    let danasnjiDate = new Date().toISOString().slice(0,10).replaceAll("-", "");
+    trips = (await fp(`https://api.beta.brezavta.si/stops/${stop_id}?date=${danasnjiDate}&current=false`))["arrivals"]; // Set current=true to show only buses which haven't passed the stop yet. However, if no live-tracking is available, it will filter on schedule (not good)!
 
     //return trips;
     //Log just trips that are comming in the next hour
-    trips  = (trips.filter(trip => (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) > 0));
+    trips  = (trips.filter(trip => (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) > 0));
+    console.log(trips);
     return trips;
 
 }
@@ -556,9 +570,9 @@ async function displayTripsOnStop(stopid, period = 60){
       
         let td = document.createElement("td");
         let a = document.createElement("a");
-        a.href = `https://ojpp.si/trips/${t?.["trip_id"]}`;
+        a.href = `https://api.beta.brezavta.si/trips/${encodeURIComponent(t?.["trip_id"])}`;
         a.target = "_blank";
-        a.innerText = t.route_name.trim();
+        a.innerText = t.trip_headsign.trim();
         td.style.paddingLeft = "15px";
         td.style.width = "70%";
         td.appendChild(a);
@@ -566,13 +580,13 @@ async function displayTripsOnStop(stopid, period = 60){
         td = document.createElement("td");
 
         //Calculate the time difference
-        minToArrival = ((new Date(`${danes}T${t.time_departure ?? t.time_arrival}`) - new Date()) / 60000).toFixed(0);
+        minToArrival = ((new Date(`${danes}T${seconds2time(t.departure_realtime ?? t.arrival_realtime)}`) - new Date()) / 60000).toFixed(0);
 
         if(minToArrival < 60){
             td.innerText = `${minToArrival} min`;
         }
         else{
-            td.innerText = `${t.time_departure.slice(0,5)}`;
+            td.innerText = `${seconds2time(t.departure_realtime).slice(0,5)}`;
         }
         td.style.paddingRight = "30px";
         tr.appendChild(td);
@@ -589,6 +603,15 @@ async function displayTripsOnStop(stopid, period = 60){
                 // only if not a
                 if(e.target.tagName !== "A") m2[t.vehicle.id]?.openPopup();
             });
+        }
+        if(t?.realtime){
+            let span = document.createElement("span");
+            //span.classList.add("material-symbols-outlined");
+            span.classList.add('busLive');
+            span.innerText = "We have realtime info, ampak ne vem, kako ga polinkati z busom.";
+            td.appendChild(span);
+            //tr.dataset.busid = t.vehicle.id;
+            tr.classList.add("tripLive");
         }
         TIMETABLE.appendChild(tr);
     }
