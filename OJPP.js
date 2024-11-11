@@ -46,7 +46,7 @@ async function zahtevaj_voznje(postajalisca) {
     let requesti = [];
     for(let p of postajalisca) {
         //requesti.push(fp(`${ENDPOINT}posodobi-ojpp.php?postaja=${p}`));
-        requesti.push(fp(`https://ojpp.si/api/stop_locations/${p}/arrivals`));
+        requesti.push(fp(`https://api.beta.brezavta.si/stops/${encodeURIComponent(p)}/arrivals`));
     }
     let tripsi = (await Promise.all(requesti)).flat();
     return tripsi;
@@ -56,16 +56,16 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
     [trips_start, trips_cilj, data_buses] = await Promise.all([
         zahtevaj_voznje(start),
         zahtevaj_voznje(cilj),
-        (await zahtevaj_buse())["features"]
+        (await zahtevaj_buse())
     ]);
 
-    trips = trips_start.filter(trip => trips_cilj.some(trip2 => trip.trip_id === trip2?.trip_id && (trip.time_departure ?? trip.time_arrival) < (trip2?.time_departure ?? trip2?.time_arrival)
+    trips = trips_start.filter(trip => trips_cilj.some(trip2 => trip.trip_id === trip2?.trip_id && (trip.departure_realtime ?? trip.arrival_realtime) < (trip2?.departure_realtime ?? trip2?.arrival_realtime)
     &&
-    ((trip.prihodNaCilj = (trip2?.time_arrival ?? trip2?.time_departure)) || true)
+    ((trip.prihodNaCilj = (trip2?.arrival_realtime ?? trip2?.departure_realtime)) || true)
     ));
-    trips = trips.filter(trip => trip?.active == true); // Only show active trips (although only active are returned from server as of 2024-04-08)
+    //trips = trips.filter(trip => trip?.active == true); // Only show active trips (although only active are returned from server as of 2024-04-08)
 
-    buses = data_buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
+    buses = data_buses.filter(bus => trips.some(trip => trip.trip_id === bus.trip_id));
 
 
 
@@ -73,12 +73,12 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
     for(let t of trips) {
         if(t.vehicle) {
             let id = t.vehicle.id;
-            busi[id] = {...busi[id], ...t.vehicle, time_departure: (t.time_departure ?? t.time_arrival), prihodNaCilj: t.prihodNaCilj, route_name: t.route_name.trim()}; // Koncna postaja LJ AP nima time_departure (koncni Bohinj pa ga ima). 
+            busi[id] = {...busi[id], ...t.vehicle, time_departure: (t.departure_realtime ?? t.arrival_realtime), prihodNaCilj: t.prihodNaCilj, route_name: t.trip_headsign.trim()}; // Koncna postaja LJ AP nima time_departure (koncni Bohinj pa ga ima). 
         }
     }
     for(let b of buses) {
-        let id = b.properties.vehicle_id;
-        busi[id] = {...busi[id], ...b.properties, long: b.geometry.coordinates[0], lat: b.geometry.coordinates[1]};
+        let id = b.vehicle.id;
+        busi[id] = {...busi[id], ...b, ...b.vehicle, long: b.lon, lat: b.lat};
     }
 
     izrisi_OJPP(busi);
@@ -149,6 +149,8 @@ async function zahtevaj_zamudo(busId) {
  * @param {*} stPostaj Number of stops to be displayed folded
  */
 async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
+    alert("Če vas zanima zamuda, poiščite svojo postajo in jo boste morda tam videli.");
+    return;
     let zamude = await zahtevaj_zamudo(busId);
     let zamudeHTML = "";
     let items = 0;
@@ -307,7 +309,7 @@ async function godusModus(automatic=false) {
     buses = (await zahtevaj_buse());
     buses = buses.filter(bus => bus.vehicle.operator_name !== "Ljubljanski Potniški Promet"); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
 
-    //if(trips) buses = buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
+    if(trips) buses = buses.filter(bus => trips.some(trip => trip.trip_id === bus.trip_id));
     for(let b of buses) {
         let id = b.vehicle.id;
         busi[id] = {...busi[id], ...b.vehicle, ...b};
