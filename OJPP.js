@@ -539,10 +539,24 @@ async function tripsOnStop(stop_id, period){
 
     //return trips;
     //Log just trips that are comming in the next hour
-    trips  = (trips.filter(trip => (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) > 0));
+    trips  = (trips.filter(trip => (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) > -3*60*1000));
     console.log(trips);
     return trips;
 
+}
+
+/**
+ * Returns vehicle.id from trip_id
+ * @param {*} tripId trip_id
+ */
+function tripId2busId(tripId) {
+    console.log("tripId2busId", tripId);
+    // busi is a dictionary of dictionaries, where the key is the vehicle.id. We need to find the vehicle.id from the trip_id.
+    for(let busId in busi) {
+        if(busi[busId].trip_id === tripId) {
+            return busId;
+        }
+    }
 }
 
 /**
@@ -590,25 +604,17 @@ async function displayTripsOnStop(stopid, period = 60){
         }
         td.style.paddingRight = "30px";
         tr.appendChild(td);
+        tr.dataset.tripid = t.trip_id;
+        tr.addEventListener("click", function(e) {
+            // only if not a
+            if(e.target.tagName !== "A") m2[tripId2busId(t.trip_id)]?.openPopup();
+        });
 
-        if(t?.vehicle?.id) {
+        if(t?.realtime){
             let span = document.createElement("span");
             span.classList.add("material-symbols-outlined");
             span.classList.add('busLive');
             span.innerText = "sensors";
-            td.appendChild(span);
-            tr.dataset.busid = t.vehicle.id;
-            tr.classList.add("tripLive");
-            tr.addEventListener("click", function(e) {
-                // only if not a
-                if(e.target.tagName !== "A") m2[t.vehicle.id]?.openPopup();
-            });
-        }
-        if(t?.realtime){
-            let span = document.createElement("span");
-            //span.classList.add("material-symbols-outlined");
-            span.classList.add('busLive');
-            span.innerText = "We have realtime info, ampak ne vem, kako ga polinkati z busom.";
             td.appendChild(span);
             //tr.dataset.busid = t.vehicle.id;
             tr.classList.add("tripLive");

@@ -285,6 +285,7 @@ function izrisi_OJPP(busi, automatic=false) {
         var bear = odg["heading"];
 
         if(x === undefined || y === undefined) {
+            alert(`A se to kdaj zgodi? Bus ${vozilo} nima koordinat: ${x}, ${y}`);
             // Bus nima koordinat, le izpišemo registrsko
             log.innerText += (`\n${vozilo}: ${odg["plate"]}, ${odg["route_name"]}, urnik: ${odg["time_departure"]}; model: ${odg?.["model"]?.["name"]}`);
             continue;
@@ -314,7 +315,9 @@ function izrisi_OJPP(busi, automatic=false) {
         
         if (!document.getElementById("prikazujStareBuse").checked && d - busTstamp > ZAPADLOST) {
             mymap.removeLayer(m2[vozilo]);
+            mymap.removeLayer(m3[vozilo]);
             delete m2[vozilo];
+            delete m3[vozilo];
             continue;
         }
         // Konec preverjanja za skrivanje starih busov.
