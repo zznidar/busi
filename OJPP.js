@@ -516,7 +516,7 @@ const SAVENAME = "busi_shranjene-relacije";
 const st = localStorage;
 data = new Map(JSON.parse(st.getItem(SAVENAME))); // We use maps to maintain order
 if (data.size) {
-    if(!data?.entries()?.next()?.["value"]?.[1]?.["start"]?.[0]?.includes(":")) {
+    if(!`${data?.entries()?.next()?.["value"]?.[1]?.["start"]?.[0]}`?.includes(":")) {
         toast("Poteka migracija shranjenih relacij na novi vir podatkov ...")
         migrate();
     }
