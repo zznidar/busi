@@ -261,7 +261,7 @@ function izrisi_OJPP(busi, automatic=false) {
 	d = new Date(); // Uporabimo kasneje za skrivanje starih busov
 
     if(!automatic && Object.keys(busi).length === 0) {
-        alert("Ni takih busov, vsaj ne na OJPP");
+        //alert("Ni takih busov, vsaj ne na OJPP");
         //Get element with id 'non_existing'
         var errorPopup = document.getElementById("non_existing");
 
@@ -353,7 +353,7 @@ function izrisi_OJPP(busi, automatic=false) {
             vsebina += `<br><span class="bus_info"><b style='user-select: text'>${plate}</b></span>`;
             vsebina += `<br><span class="bus_info">Prevoznik: ${odg?.["operator_name"]}</span>`;
 
-            vsebina += (`<div class="popup_zamuda" style="width:fit-content;"><span class='popup_zamuda_button' onclick='izpisi_zamudo2(this,"${vozilo}")' style="width:fit-content; margin-left:-10px">Kolikšna je zamuda?</span></div>`); //ZAMUDA
+            vsebina += (`<div class="popup_zamuda" style="width:fit-content;"><span class='popup_zamuda_button' onclick='izpisi_zamudo2(this,"${vozilo}")' style="width:fit-content; margin-left:-10px; opacity: 0.1" disabled>Zamude busov trenutno niso prikazane.</span></div>`); //ZAMUDA
 
             vsebina +=` 
                 </div>
@@ -435,4 +435,23 @@ async function iskalnikBusId() {
     //Wait for busses to load
     await godusModus();
     m2[zadnjiIskaniBusId].openPopup();
+}
+
+
+var toastTT1, toastTT2, toastTT3;
+function toast(message) {
+    clearTimeout(toastTT1);
+    clearTimeout(toastTT2);
+    clearTimeout(toastTT3);
+    let toast = document.getElementById("toast_message");
+    toast.getElementsByTagName("p")[0].innerText = message;
+
+    //Increase opacity to 0.8 for 3 seconds with animation
+    //Also remove the "no" class so display: none is removed and then add it back after 3 seconds
+    toast.style.opacity = 0;
+    toast.style.transition = "opacity 1s ease-in-out";
+    toast.classList.remove("no");
+    toastTT1 = setTimeout(function(){toast.style.opacity = 0.8;}, 100);
+    toastTT2 = setTimeout(function(){toast.style.opacity = 0;}, 3000);
+    toastTT3 = setTimeout(function(){toast.classList.add("no");}, 4000);
 }

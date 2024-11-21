@@ -62,6 +62,8 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
     trips = trips_start.filter(trip => trips_cilj.some(trip2 => trip.trip_id === trip2?.trip_id && (trip.departure_realtime ?? trip.arrival_realtime) < (trip2?.departure_realtime ?? trip2?.arrival_realtime)
     &&
     ((trip.prihodNaCilj = (trip2?.arrival_realtime ?? trip2?.departure_realtime)) || true)
+    &&
+    ((trip.is_realtime = trip2?.realtime) || true)
     ));
     //trips = trips.filter(trip => trip?.active == true); // Only show active trips (although only active are returned from server as of 2024-04-08)
 
@@ -221,12 +223,12 @@ async function izpisi_urnik(trips) {
         tr.id = t.trip_id;
 
         let td = document.createElement("td");
-        td.innerText = `${(t.time_departure ?? t.time_arrival).slice(0, 5)}–${t.prihodNaCilj.slice(0, 5)}`;
+        td.innerText = `${(seconds2time(t.departure_realtime ?? t.arrival_realtime)).slice(0, 5)}–${seconds2time(t.prihodNaCilj).slice(0, 5)}`;
         td.classList.add("ura");
 
         //Bus departure hour and minute
-        let busHour = parseInt(t.time_departure.slice(0, 2));
-        let busMinute = parseInt(t.time_departure.slice(3, 5));
+        let busHour = parseInt(seconds2time(t.departure_realtime).slice(0, 2));
+        let busMinute = parseInt(seconds2time(t.departure_realtime).slice(3, 5));
 
         if(busHour < hour - 1) {
             tr.classList.add("missed");
@@ -238,19 +240,34 @@ async function izpisi_urnik(trips) {
         tr.appendChild(td);
         td = document.createElement("td");
         let a = document.createElement("a");
-        a.href = `https://ojpp.si/trips/${t?.["trip_id"]}`;
+        a.href = `https://api.beta.brezavta.si/trips/${encodeURIComponent(t?.["trip_id"])}`;
         a.target = "_blank";
-        a.innerText = t.route_name.trim();
+        a.innerText = t.trip_headsign.trim();
         td.appendChild(a);
         tr.appendChild(td);
         td = document.createElement("td");
-        td.innerText = `${(new Date(`${danes}T${t.prihodNaCilj}`) - new Date(`${danes}T${t.time_departure ?? t.time_arrival}`)) / 60000} min`;
+        td.innerText = `${Math.round((new Date(`${danes}T${seconds2time(t.prihodNaCilj)}`) - new Date(`${danes}T${seconds2time(t.departure_realtime ?? t.arrival_realtime)}`)) / 60000)} min`;
         tr.appendChild(td);
         td = document.createElement("td");
         // only fisrt 5 letters of operator name
-        td.innerText = t.operator.name.slice(0, 6);
-        td.title = t.operator.name;
+        td.innerText = t.agency_name.slice(0, 6);
+        td.title = t.agency_name.name;
         tr.appendChild(td);
+        tr.addEventListener("click", function(e) {
+            // only if not a
+            if(e.target.tagName !== "A") m2[tripId2busId(t.trip_id)]?.openPopup();
+        });
+
+        if(t?.realtime || t?.is_realtime){
+            let span = document.createElement("span");
+            span.classList.add("material-symbols-outlined");
+            span.classList.add('busLive');
+            span.innerText = "sensors";
+            td.appendChild(span);
+            //tr.dataset.busid = t.vehicle.id;
+            tr.classList.add("tripLive");
+        }
+
         TIMETABLE.appendChild(tr);
     }
 
@@ -459,6 +476,7 @@ function izrisiRelacijskeGumbe(gumbi) {
             lastRelation = [relacija.start, relacija.cilj];
             allBuses = false;
             brisiMarkerje();
+            toggleTimetable();
             menuClose();
         }
 
@@ -498,6 +516,10 @@ const SAVENAME = "busi_shranjene-relacije";
 const st = localStorage;
 data = new Map(JSON.parse(st.getItem(SAVENAME))); // We use maps to maintain order
 if (data.size) {
+    if(!data?.entries()?.next()?.["value"]?.[1]?.["start"]?.[0]?.includes(":")) {
+        toast("Poteka migracija shranjenih relacij na novi vir podatkov ...")
+        migrate();
+    }
     izrisiRelacijskeGumbe(data);
 }
 
@@ -514,6 +536,27 @@ function exportPresets() {
     a.href = URL.createObjectURL(file);
     a.download = `busi_${(new Date()).getTime()}.json`;
     a.click();
+}
+
+async function migrate() {
+    // Migrate from old to new api.
+    // For each entry, split the name by en-dash, then find the new ids in the postajalisca_data
+    console.log("Migrating", data);
+    
+    await zahtevaj_vsa_postajalisca()
+    let newData = new Map();
+    for(let [name, relacija] of data) {
+        let [imeVstopnePostaje, imeIzstopnePostaje] = name.split("–");
+        vstopnaPostaja = postajalisca[imeVstopnePostaje];
+        izstopnaPostaja = postajalisca[imeIzstopnePostaje];
+        newData.set(name, {"start": vstopnaPostaja, "cilj": izstopnaPostaja});
+    }
+    data = newData;
+    console.log("Migrated", data);
+    st.setItem(SAVENAME, JSON.stringify([...data]));
+    izrisiRelacijskeGumbe(data);
+    toast("Potekla je migracija shranjenih relacij na novi vir podatkov. Migracija končana. Srečno vožnjo!");
+
 }
 
 /**
@@ -612,7 +655,7 @@ async function displayTripsOnStop(stopid, period = 60){
             if(e.target.tagName !== "A") m2[tripId2busId(t.trip_id)]?.openPopup();
         });
 
-        if(t?.realtime){
+        if(t?.realtime || t?.is_realtime){
             let span = document.createElement("span");
             span.classList.add("material-symbols-outlined");
             span.classList.add('busLive');
