@@ -245,6 +245,8 @@ function brisiMarkerje() {
     busi = {};
 }
 
+lastZoom = undefined;
+
 
 /**
  * Add buses to map
@@ -276,12 +278,14 @@ function izrisi_OJPP(busi, automatic=false) {
     }
 	
     for (const [busId, odg] of Object.entries(busi)) {
+        console.log(odg);
         var x = odg["lat"];
-        var y = odg["long"];
-        var vozilo = odg["vehicle_id"];
-        var bear = odg["direction"];
+        var y = odg["lon"];
+        var vozilo = odg["id"];
+        var bear = odg["heading"];
 
         if(x === undefined || y === undefined) {
+            alert(`A se to kdaj zgodi? Bus ${vozilo} nima koordinat: ${x}, ${y}`);
             // Bus nima koordinat, le izpišemo registrsko
             log.innerText += (`\n${vozilo}: ${odg["plate"]}, ${odg["route_name"]}, urnik: ${odg["time_departure"]}; model: ${odg?.["model"]?.["name"]}`);
             continue;
@@ -300,40 +304,43 @@ function izrisi_OJPP(busi, automatic=false) {
         }
         if (!m2[vozilo]) {
             m2[vozilo] = L.marker([x, y], {
-                icon: myIcon
+                icon: !(odg["trip_id"] === null && odg["route_id"] === null && odg["route_name"] === null) ? myIcon : peronIcon
             }).addTo(mymap);
         }
         
 
         // Tukaj preverimo, katere stare buse bomo skrili z mape.
-        busTstamp = new Date(odg["time"]);
+        busTstamp = new Date(odg["timestamp"]*1000);
+        console.log(odg["timestamp"], busTstamp);
         
         if (!document.getElementById("prikazujStareBuse").checked && d - busTstamp > ZAPADLOST) {
             mymap.removeLayer(m2[vozilo]);
+            mymap.removeLayer(m3[vozilo]);
             delete m2[vozilo];
+            delete m3[vozilo];
             continue;
         }
         // Konec preverjanja za skrivanje starih busov.
 
-        if (odg["vehicle_id"] === null) {
+        if (vozilo === null) {
 			// Bus nima ID-ja, ignoriramo.
         } else {
             lng = y;
             lat = x;
-            bear = odg["direction"];
-            speed = odg?.["vehicleSpeed"] ?? `<span style="font-size: xx-small;">${odg?.["operator_name"]}</span>` ?? "🤷🏻‍♀️";
-            vid = odg["vehicle_id"];
+            speed = odg?.["speed"] ?? `<span style="font-size: xx-small;">${odg?.["operator_name"]}</span>` ?? "🤷🏻‍♀️";
             timeDeparture = odg?.["time_departure"] ?? "";
             timeArrival = odg?.["prihodNaCilj"] ?? "";
+            plate = odg?.["plate"] ?? "";
+            plate = isNaN(plate[0]) ? `${plate.substr(0, 2)} ${plate.substr(2)}` : `${plate} (morda to ni prava registrska)`;
 
 
             vsebina = "";
             vsebina += `
                 <div style="padding-left: 10px; padding-top: 10px;">
                 <span class="material-symbols-outlined" style="font-size: 2em; transform:translate(0,0.25em); z-index:100; color:var(--color-primary)" onclick="mymap.closePopup()">arrow_back</span>
-                <a href="https://ojpp.si/trips/${odg?.["trip_id"]}" target="_blank" class="popup-relacija">${odg?.["route_name"]}</a>
+                <a href="https://api.beta.brezavta.si/trips/${encodeURIComponent(odg?.["trip_id"])}" target="_blank" class="popup-relacija">${odg?.["trip_headsign"]}</a>
                 <div style="position:relative; left: 40px; max-width: calc(100% - 50px)">
-                    <span class="bus_info"><span class='popup_id' style='user-select: text'>Številka avtobusa: ${vid} </span></span>
+                    <span class="bus_info"><span class='popup_id' style='user-select: text'>Številka avtobusa: ${vozilo} </span></span>
                 
             `;
 
@@ -341,36 +348,38 @@ function izrisi_OJPP(busi, automatic=false) {
             
             if (timeDeparture != "" || timeArrival != "") {
                 vsebina += `<br><span class="bus_info">Urnik za relacijo: ${timeDeparture}–${timeArrival}</span>`;
-                vsebina += `<br><span class="bus_info"><b style='user-select: text'>${odg["plate"]}</b></span>`;
-
+                
             }
+            vsebina += `<br><span class="bus_info"><b style='user-select: text'>${plate}</b></span>`;
+            vsebina += `<br><span class="bus_info">Prevoznik: ${odg?.["operator_name"]}</span>`;
 
-            vsebina += (`<div class="popup_zamuda" style="width:fit-content;"><span class='popup_zamuda_button' onclick='izpisi_zamudo2(this,${vid})' style="width:fit-content; margin-left:-10px">Kolikšna je zamuda?</span></div>`); //ZAMUDA
+            vsebina += (`<div class="popup_zamuda" style="width:fit-content;"><span class='popup_zamuda_button' onclick='izpisi_zamudo2(this,"${vozilo}")' style="width:fit-content; margin-left:-10px; opacity: 0.1" disabled>Zamude busov trenutno niso prikazane.</span></div>`); //ZAMUDA
 
             vsebina +=` 
                 </div>
             </div>`;
-            vsebina += ("<br><span style='color: gray;font-size: 80%;bottom: 10%;right: 10%;' id='stamp_" + vid + "'><i>Nazadnje posodobljeno " + busTstamp + "</i></span><br>"); //TIMESTAMP (kmalu depreciated, ko bo STAROST)
-            vsebina += ("<img id='eksekuter' src='' onerror='for(let i = 0; i < odstevalci.length; i++) {clearInterval(odstevalci.pop());} odstevalci.push(setInterval(starost, 1000, \"" + busTstamp + "\", \"" + vid + "\")); document.getElementById(\"stamp_" + vid + "\").style.position = \"absolute\"; starost(\"" + busTstamp + "\", \"" + vid + "\"); this.remove();'/>");
+            vsebina += ("<br><span style='color: gray;font-size: 80%;bottom: 10%;right: 10%;' id='stamp_" + vozilo + "'><i>Nazadnje posodobljeno " + busTstamp + "</i></span><br>"); //TIMESTAMP (kmalu depreciated, ko bo STAROST)
+            vsebina += ("<img id='eksekuter' src='' onerror='for(let i = 0; i < odstevalci.length; i++) {clearInterval(odstevalci.pop());} odstevalci.push(setInterval(starost, 1000, \"" + busTstamp + "\", \"" + vozilo + "\")); document.getElementById(\"stamp_" + vozilo + "\").style.position = \"absolute\"; starost(\"" + busTstamp + "\", \"" + vozilo + "\"); this.remove();'/>");
 
 
             m2[vozilo].bindPopup(vsebina);
 
             m2[vozilo].on('popupopen', function() {
-                document.getElementById('delay_relation').innerText = odg["route_name"];
+                document.getElementById('delay_relation').innerText = odg?.["route_name"];
                 document.getElementById('delay_container').classList.add('no');
                 menuClose();
               
+                lastZoom = mymap.getZoom();
                 //Zoom in on bus location
-                mymap.flyTo([odg["lat"],odg["long"]], 15, {duration: 0.5});
-                currentBusId = odg["vehicle_id"];
+                mymap.flyTo([odg["lat"],odg["lon"]], Math.max(lastZoom, 15), {duration: 0.5});
+                currentBusId = odg["id"];
 
             });
 
             m2[vozilo].on('popupclose', function() {
                 hideDelays();
                 //Zoom out
-                mymap.flyTo([odg["lat"],odg["long"]], 12, {duration: 0.5});
+                mymap.flyTo([odg["lat"],odg["lon"]], Math.max(lastZoom, 12), {duration: 0.5});
                 currentBusId = 0;
                 document.getElementById("timetable_no_line").classList.remove("no");
             });
@@ -426,4 +435,23 @@ async function iskalnikBusId() {
     //Wait for busses to load
     await godusModus();
     m2[zadnjiIskaniBusId].openPopup();
+}
+
+
+var toastTT1, toastTT2, toastTT3;
+function toast(message) {
+    clearTimeout(toastTT1);
+    clearTimeout(toastTT2);
+    clearTimeout(toastTT3);
+    let toast = document.getElementById("toast_message");
+    toast.getElementsByTagName("p")[0].innerText = message;
+
+    //Increase opacity to 0.8 for 3 seconds with animation
+    //Also remove the "no" class so display: none is removed and then add it back after 3 seconds
+    toast.style.opacity = 0;
+    toast.style.transition = "opacity 1s ease-in-out";
+    toast.classList.remove("no");
+    toastTT1 = setTimeout(function(){toast.style.opacity = 0.8;}, 100);
+    toastTT2 = setTimeout(function(){toast.style.opacity = 0;}, 3000);
+    toastTT3 = setTimeout(function(){toast.classList.add("no");}, 4000);
 }

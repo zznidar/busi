@@ -46,7 +46,7 @@ async function zahtevaj_voznje(postajalisca) {
     let requesti = [];
     for(let p of postajalisca) {
         //requesti.push(fp(`${ENDPOINT}posodobi-ojpp.php?postaja=${p}`));
-        requesti.push(fp(`https://ojpp.si/api/stop_locations/${p}/arrivals`));
+        requesti.push(fp(`https://api.beta.brezavta.si/stops/${encodeURIComponent(p)}/arrivals`));
     }
     let tripsi = (await Promise.all(requesti)).flat();
     return tripsi;
@@ -56,16 +56,18 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
     [trips_start, trips_cilj, data_buses] = await Promise.all([
         zahtevaj_voznje(start),
         zahtevaj_voznje(cilj),
-        (await zahtevaj_buse())["features"]
+        (await zahtevaj_buse())
     ]);
 
-    trips = trips_start.filter(trip => trips_cilj.some(trip2 => trip.trip_id === trip2?.trip_id && (trip.time_departure ?? trip.time_arrival) < (trip2?.time_departure ?? trip2?.time_arrival)
+    trips = trips_start.filter(trip => trips_cilj.some(trip2 => trip.trip_id === trip2?.trip_id && (trip.departure_realtime ?? trip.arrival_realtime) < (trip2?.departure_realtime ?? trip2?.arrival_realtime)
     &&
-    ((trip.prihodNaCilj = (trip2?.time_arrival ?? trip2?.time_departure)) || true)
+    ((trip.prihodNaCilj = (trip2?.arrival_realtime ?? trip2?.departure_realtime)) || true)
+    &&
+    ((trip.is_realtime = trip2?.realtime) || true)
     ));
-    trips = trips.filter(trip => trip?.active == true); // Only show active trips (although only active are returned from server as of 2024-04-08)
+    //trips = trips.filter(trip => trip?.active == true); // Only show active trips (although only active are returned from server as of 2024-04-08)
 
-    buses = data_buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
+    buses = data_buses.filter(bus => trips.some(trip => trip.trip_id === bus.trip_id));
 
 
 
@@ -73,12 +75,12 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
     for(let t of trips) {
         if(t.vehicle) {
             let id = t.vehicle.id;
-            busi[id] = {...busi[id], ...t.vehicle, time_departure: (t.time_departure ?? t.time_arrival), prihodNaCilj: t.prihodNaCilj, route_name: t.route_name.trim()}; // Koncna postaja LJ AP nima time_departure (koncni Bohinj pa ga ima). 
+            busi[id] = {...busi[id], ...t.vehicle, time_departure: (t.departure_realtime ?? t.arrival_realtime), prihodNaCilj: t.prihodNaCilj, route_name: t.trip_headsign.trim()}; // Koncna postaja LJ AP nima time_departure (koncni Bohinj pa ga ima). 
         }
     }
     for(let b of buses) {
-        let id = b.properties.vehicle_id;
-        busi[id] = {...busi[id], ...b.properties, long: b.geometry.coordinates[0], lat: b.geometry.coordinates[1]};
+        let id = b.vehicle.id;
+        busi[id] = {...busi[id], ...b, ...b.vehicle, long: b.lon, lat: b.lat};
     }
 
     izrisi_OJPP(busi);
@@ -93,7 +95,7 @@ async function zahtevaj_relacijo_vsi_peroni(start, cilj) {
  * @returns Array of current buses
  */
 async function zahtevaj_buse() {
-    return fp(`https://ojpp.si/api/vehicle_locations`);
+    return fp(`https://api.beta.brezavta.si/vehicles/locations`);
 }
 
 NA_POSTAJALISCU_THRESHOLD = 100; // metres
@@ -149,6 +151,8 @@ async function zahtevaj_zamudo(busId) {
  * @param {*} stPostaj Number of stops to be displayed folded
  */
 async function izpisi_zamudo2(gumb, busId, stPostaj = 5) {
+    alert("Če vas zanima zamuda, poiščite svojo postajo in jo boste morda tam videli.");
+    return;
     let zamude = await zahtevaj_zamudo(busId);
     let zamudeHTML = "";
     let items = 0;
@@ -219,12 +223,12 @@ async function izpisi_urnik(trips) {
         tr.id = t.trip_id;
 
         let td = document.createElement("td");
-        td.innerText = `${(t.time_departure ?? t.time_arrival).slice(0, 5)}–${t.prihodNaCilj.slice(0, 5)}`;
+        td.innerText = `${(seconds2time(t.departure_realtime ?? t.arrival_realtime)).slice(0, 5)}–${seconds2time(t.prihodNaCilj).slice(0, 5)}`;
         td.classList.add("ura");
 
         //Bus departure hour and minute
-        let busHour = parseInt(t.time_departure.slice(0, 2));
-        let busMinute = parseInt(t.time_departure.slice(3, 5));
+        let busHour = parseInt(seconds2time(t.departure_realtime).slice(0, 2));
+        let busMinute = parseInt(seconds2time(t.departure_realtime).slice(3, 5));
 
         if(busHour < hour - 1) {
             tr.classList.add("missed");
@@ -236,19 +240,34 @@ async function izpisi_urnik(trips) {
         tr.appendChild(td);
         td = document.createElement("td");
         let a = document.createElement("a");
-        a.href = `https://ojpp.si/trips/${t?.["trip_id"]}`;
+        a.href = `https://api.beta.brezavta.si/trips/${encodeURIComponent(t?.["trip_id"])}`;
         a.target = "_blank";
-        a.innerText = t.route_name.trim();
+        a.innerText = t.trip_headsign.trim();
         td.appendChild(a);
         tr.appendChild(td);
         td = document.createElement("td");
-        td.innerText = `${(new Date(`${danes}T${t.prihodNaCilj}`) - new Date(`${danes}T${t.time_departure ?? t.time_arrival}`)) / 60000} min`;
+        td.innerText = `${Math.round((new Date(`${danes}T${seconds2time(t.prihodNaCilj)}`) - new Date(`${danes}T${seconds2time(t.departure_realtime ?? t.arrival_realtime)}`)) / 60000)} min`;
         tr.appendChild(td);
         td = document.createElement("td");
         // only fisrt 5 letters of operator name
-        td.innerText = t.operator.name.slice(0, 6);
-        td.title = t.operator.name;
+        td.innerText = t.agency_name.slice(0, 6);
+        td.title = t.agency_name.name;
         tr.appendChild(td);
+        tr.addEventListener("click", function(e) {
+            // only if not a
+            if(e.target.tagName !== "A") m2[tripId2busId(t.trip_id)]?.openPopup();
+        });
+
+        if(t?.realtime || t?.is_realtime){
+            let span = document.createElement("span");
+            span.classList.add("material-symbols-outlined");
+            span.classList.add('busLive');
+            span.innerText = "sensors";
+            td.appendChild(span);
+            //tr.dataset.busid = t.vehicle.id;
+            tr.classList.add("tripLive");
+        }
+
         TIMETABLE.appendChild(tr);
     }
 
@@ -304,13 +323,13 @@ var trips;
  * @returns Nothing
  */
 async function godusModus(automatic=false) {
-    buses = (await zahtevaj_buse())["features"];
-    buses = buses.filter(bus => bus.properties.operator_name !== "Javno podjetje Ljubljanski potniški promet d.o.o."); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
+    buses = (await zahtevaj_buse());
+    buses = buses.filter(bus => bus.vehicle.operator_name !== "Ljubljanski Potniški Promet"); // Odstranimo LPP, ker imamo zanje svoj gumb (LPP), ki pravilno prikaze vec info (registrska, hitrost ...). Ministrski podatki vsebujejo le null, null. Strålande null.
 
-    if(trips) buses = buses.filter(bus => trips.some(trip => trip.trip_id === bus.properties.trip_id));
+    if(trips) buses = buses.filter(bus => trips.some(trip => trip.trip_id === bus.trip_id));
     for(let b of buses) {
-        let id = b.properties.vehicle_id;
-        busi[id] = {...busi[id], ...b.properties, long: b.geometry.coordinates[0], lat: b.geometry.coordinates[1]};
+        let id = b.vehicle.id;
+        busi[id] = {...busi[id], ...b.vehicle, ...b};
     }
 
     izrisi_OJPP(busi, automatic);
@@ -335,10 +354,11 @@ data_postajalisca = [];
  * @returns Nothing
  */
 async function zahtevaj_vsa_postajalisca() {
-    data_postajalisca = (await fp(`https://ojpp.si/api/stop_locations`))["features"];
+    data_postajalisca = await fp(`https://api.beta.brezavta.si/stops/`);
     for(let p of data_postajalisca) {
-        let name = p.properties.name;
-        postajalisca?.[name]?.push(p.properties.id) ?? (postajalisca[name] = [p.properties.id]);
+        if(!p.gtfs_id.startsWith("IJPP:")) continue;
+        let name = p.name;
+        postajalisca?.[name]?.push(p.gtfs_id) ?? (postajalisca[name] = [p.gtfs_id]);
     }
     return;
 }
@@ -430,7 +450,7 @@ async function refresh(automatic=false) {
 function centerCurrentBus(){
     if (currentBusId){
         let currentBus = busi[currentBusId];
-        let currentBusCoordinates = [currentBus.lat, currentBus.long];
+        let currentBusCoordinates = [currentBus.lat, currentBus.lon];
         mymap.flyTo(currentBusCoordinates);
     }
 }
@@ -456,6 +476,7 @@ function izrisiRelacijskeGumbe(gumbi) {
             lastRelation = [relacija.start, relacija.cilj];
             allBuses = false;
             brisiMarkerje();
+            toggleTimetable();
             menuClose();
         }
 
@@ -495,6 +516,10 @@ const SAVENAME = "busi_shranjene-relacije";
 const st = localStorage;
 data = new Map(JSON.parse(st.getItem(SAVENAME))); // We use maps to maintain order
 if (data.size) {
+    if(!data?.entries()?.next()?.["value"]?.[1]?.["start"]?.[0]?.includes(":")) {
+        toast("Poteka migracija shranjenih relacij na novi vir podatkov ...")
+        migrate();
+    }
     izrisiRelacijskeGumbe(data);
 }
 
@@ -513,6 +538,38 @@ function exportPresets() {
     a.click();
 }
 
+async function migrate() {
+    // Migrate from old to new api.
+    // For each entry, split the name by en-dash, then find the new ids in the postajalisca_data
+    console.log("Migrating", data);
+    
+    await zahtevaj_vsa_postajalisca()
+    let newData = new Map();
+    for(let [name, relacija] of data) {
+        let [imeVstopnePostaje, imeIzstopnePostaje] = name.split("–");
+        vstopnaPostaja = postajalisca[imeVstopnePostaje];
+        izstopnaPostaja = postajalisca[imeIzstopnePostaje];
+        newData.set(name, {"start": vstopnaPostaja, "cilj": izstopnaPostaja});
+    }
+    data = newData;
+    console.log("Migrated", data);
+    st.setItem(SAVENAME, JSON.stringify([...data]));
+    izrisiRelacijskeGumbe(data);
+    toast("Potekla je migracija shranjenih relacij na novi vir podatkov. Migracija končana. Srečno vožnjo!");
+
+}
+
+/**
+ * Returns the time in the format HH:mm:ss
+ * @param {Int} seconds Seconds since midnight
+ */
+function seconds2time(seconds) {
+    let hour = `${Math.floor(seconds / 3600)}`.padStart(2, "0");
+    let minute = `${Math.floor((seconds % 3600) / 60)}`.padStart(2, "0");
+    let second = `${seconds % 60}`.padStart(2, "0");
+    return `${hour}:${minute}:${second}`;
+}
+
 
 /**
  * Obtain all trips on a stop
@@ -522,13 +579,29 @@ function exportPresets() {
  * @returns Array of trips
  */
 async function tripsOnStop(stop_id, period){
-    trips = await fp(`https://ojpp.si/api/stop_locations/${stop_id}/arrivals`);
+    let danasnjiDate = new Date().toISOString().slice(0,10).replaceAll("-", "");
+    trips = (await fp(`https://api.beta.brezavta.si/stops/${stop_id}?date=${danasnjiDate}&current=false`))["arrivals"]; // Set current=true to show only buses which haven't passed the stop yet. However, if no live-tracking is available, it will filter on schedule (not good)!
 
     //return trips;
     //Log just trips that are comming in the next hour
-    trips  = (trips.filter(trip => (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(trip?.time_departure ?? "-24:01:01") - new Date()) > 0));
+    trips  = (trips.filter(trip => (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) > -3*60*1000));
+    console.log(trips);
     return trips;
 
+}
+
+/**
+ * Returns vehicle.id from trip_id
+ * @param {*} tripId trip_id
+ */
+function tripId2busId(tripId) {
+    console.log("tripId2busId", tripId);
+    // busi is a dictionary of dictionaries, where the key is the vehicle.id. We need to find the vehicle.id from the trip_id.
+    for(let busId in busi) {
+        if(busi[busId].trip_id === tripId) {
+            return busId;
+        }
+    }
 }
 
 /**
@@ -556,9 +629,9 @@ async function displayTripsOnStop(stopid, period = 60){
       
         let td = document.createElement("td");
         let a = document.createElement("a");
-        a.href = `https://ojpp.si/trips/${t?.["trip_id"]}`;
+        a.href = `https://api.beta.brezavta.si/trips/${encodeURIComponent(t?.["trip_id"])}`;
         a.target = "_blank";
-        a.innerText = t.route_name.trim();
+        a.innerText = t.trip_headsign.trim();
         td.style.paddingLeft = "15px";
         td.style.width = "70%";
         td.appendChild(a);
@@ -566,29 +639,30 @@ async function displayTripsOnStop(stopid, period = 60){
         td = document.createElement("td");
 
         //Calculate the time difference
-        minToArrival = ((new Date(`${danes}T${t.time_departure ?? t.time_arrival}`) - new Date()) / 60000).toFixed(0);
+        minToArrival = ((new Date(`${danes}T${seconds2time(t.departure_realtime ?? t.arrival_realtime)}`) - new Date()) / 60000).toFixed(0);
 
         if(minToArrival < 60){
             td.innerText = `${minToArrival} min`;
         }
         else{
-            td.innerText = `${t.time_departure.slice(0,5)}`;
+            td.innerText = `${seconds2time(t.departure_realtime).slice(0,5)}`;
         }
         td.style.paddingRight = "30px";
         tr.appendChild(td);
+        tr.dataset.tripid = t.trip_id;
+        tr.addEventListener("click", function(e) {
+            // only if not a
+            if(e.target.tagName !== "A") m2[tripId2busId(t.trip_id)]?.openPopup();
+        });
 
-        if(t?.vehicle?.id) {
+        if(t?.realtime || t?.is_realtime){
             let span = document.createElement("span");
             span.classList.add("material-symbols-outlined");
             span.classList.add('busLive');
             span.innerText = "sensors";
             td.appendChild(span);
-            tr.dataset.busid = t.vehicle.id;
+            //tr.dataset.busid = t.vehicle.id;
             tr.classList.add("tripLive");
-            tr.addEventListener("click", function(e) {
-                // only if not a
-                if(e.target.tagName !== "A") m2[t.vehicle.id]?.openPopup();
-            });
         }
         TIMETABLE.appendChild(tr);
     }

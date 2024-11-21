@@ -237,24 +237,24 @@ function prikaziPostajiNaZemljevidu(imePostaje) {
     idsPostaj = postajalisca[imePostaje];
     // get object from data_postajalisca which has the same id as the one in idsPostaj
     for (let i = 0; i < idsPostaj.length; i++) {
-        let postaja = data_postajalisca.find(p => p.properties.id == idsPostaj[i]);
+        let postaja = data_postajalisca.find(p => p.gtfs_id == idsPostaj[i]);
         console.log(postaja);
         if (postaja) {
-            let lat = postaja.geometry.coordinates[1];
-            let lon = postaja.geometry.coordinates[0];
+            let lat = postaja.lat;
+            let lon = postaja.lon;
             // Create a new marker with icon peron
-            let marker = L.marker([postaja.geometry.coordinates[1], postaja.geometry.coordinates[0]], {icon: peronIcon}).addTo(mymap);
+            let marker = L.marker([lat, lon], {icon: peronIcon}).addTo(mymap);
             let menuElement = document.getElementById('menu');
 
             //On popup open
             marker.on('popupopen', function() {
-                selectedStop = postaja.properties.id;
-                poglejOdhodeSTePostaje(postaja.properties.id);
+                selectedStop = postaja.gtfs_id;
+                poglejOdhodeSTePostaje(postaja.gtfs_id);
                 menuClose();
                 menuElement.classList.add('closed');
                 toggleTimetable();
 
-                document.getElementById('timetable_title').innerHTML = postaja.properties.name;
+                document.getElementById('timetable_title').innerHTML = postaja.name;
                 document.getElementById('timetable_warning').classList.add("no");
             });
 
@@ -265,7 +265,7 @@ function prikaziPostajiNaZemljevidu(imePostaje) {
                 menuElement.classList.add('closed');
             });
 
-            let vsebina = `<span style="color:var(--color-primary)">${postaja.properties.name}</span>`;
+            let vsebina = `<span style="color:var(--color-primary)">${postaja.name}</span>`;
             marker.bindPopup(vsebina);
             // Fly to
             mymap.flyTo([lat, lon], 18.5, {duration: 0.5});
@@ -309,9 +309,14 @@ function toggleMenu() {
 }
 
 //Auto refresh every 20 seconds
-setInterval(function(){
+refresher = setInterval(function(){
     refresh(automatic=true);
 }, 20000);
+
+// Stop auto-refreshing after 5 minutes of inactivity
+setTimeout(function(){
+    clearInterval(refresher);
+}, 5*60*1000);
 
 //Handle offline situation
 window.addEventListener('offline', function(event){

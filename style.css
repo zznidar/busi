@@ -11,6 +11,7 @@
     --color-warning: #B67352;
     --color-info: grey;   
     --color-theme-second: rgba(204, 204, 204, 0.69);
+    --color-toast: #ecca9e;
 
     overscroll-behavior: none;
 }
@@ -27,6 +28,7 @@
 
     --color-warning: #f3986a !important;
     --color-info: #dadada !important;
+    --color-toast: #925507 !important;
     }
 
     body{
@@ -149,6 +151,20 @@ button:not(.zamudas button) {
 .offline_warning{
     position: fixed;
     background-color: var(--color-theme);
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
+    opacity:0.95;
+    bottom: 150px;
+    left:5vw;
+    width:90vw;
+    height: 130px;
+    z-index: 100;
+}
+
+.toast_message{
+    position: fixed;
+    background-color: #ecca9e;
+    color: #925507;
     border-radius: 1.5rem;
     box-shadow: 0 0 20px 0 var(--color-boxshadow);
     opacity:0.95;
