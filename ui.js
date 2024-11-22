@@ -238,7 +238,7 @@ function prikaziPostajiNaZemljevidu(imePostaje) {
     // get object from data_postajalisca which has the same id as the one in idsPostaj
     for (let i = 0; i < idsPostaj.length; i++) {
         let postaja = data_postajalisca.find(p => p.gtfs_id == idsPostaj[i]);
-        console.log(postaja);
+        //console.log(postaja);
         if (postaja) {
             let lat = postaja.lat;
             let lon = postaja.lon;
@@ -328,6 +328,13 @@ window.addEventListener('offline', function(event){
 window.addEventListener('online', function(event){
     console.log("online");
     hideOfflineWarning();
+
+    // Re-initialise MapTiler if needed:
+    if(!document.getElementsByClassName("maplibregl-ctrl-icon")?.length) {
+        console.log("Maptiler wasn't successfully initialised (user opened without internet). Reinitialising ...");
+        mymapTileLayer._initMaptilerSDK();
+        console.log("We hope of success!"); 
+    }
 });
 
 showOfflineWarning = function(){

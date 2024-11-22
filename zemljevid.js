@@ -60,11 +60,14 @@ var mymap = L.map('mapid', {
 
 
 
-new L.maptilerLayer({
+var mymapTileLayer = new L.maptilerLayer({
     apiKey:"Iz6oqHAlxuXztN4SolAF", // For live version 
     //apiKey: "Bid81QPElcfo4iUZ8tF2", //For testing -- more permissions
     style: mapStyle,
-}).addTo(mymap);
+});
+mymapTileLayer.addTo(mymap);
+
+// To reinitiate: testiram._initMaptilerSDK(); // But this causes the tiles to disappear and load again (takes a few seconds)
 
 // All external links should be opened in a new tab
 [...mapid.getElementsByTagName("a")].forEach(a => a.target != "_blank" ? a.target = "_blank" : undefined)
@@ -278,7 +281,7 @@ function izrisi_OJPP(busi, automatic=false) {
     }
 	
     for (const [busId, odg] of Object.entries(busi)) {
-        console.log(odg);
+        //console.log(odg);
         var x = odg["lat"];
         var y = odg["lon"];
         var vozilo = odg["id"];
@@ -311,7 +314,7 @@ function izrisi_OJPP(busi, automatic=false) {
 
         // Tukaj preverimo, katere stare buse bomo skrili z mape.
         busTstamp = new Date(odg["timestamp"]*1000);
-        console.log(odg["timestamp"], busTstamp);
+        //console.log(odg["timestamp"], busTstamp);
         
         if (!document.getElementById("prikazujStareBuse").checked && d - busTstamp > ZAPADLOST) {
             mymap.removeLayer(m2[vozilo]);

@@ -585,7 +585,7 @@ async function tripsOnStop(stop_id, period){
     //return trips;
     //Log just trips that are comming in the next hour
     trips  = (trips.filter(trip => (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) < period*60*1000 && (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) > -3*60*1000));
-    console.log(trips);
+    //console.log(trips);
     return trips;
 
 }
