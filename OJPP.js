@@ -232,9 +232,13 @@ async function izpisi_urnik(trips) {
 
         if(busHour < hour - 1) {
             tr.classList.add("missed");
+            //Ne prikazi
+            tr.classList.add("no");
         }
         else if(busHour === hour - 1 && busMinute < minute) {
             tr.classList.add("missed");
+            //Ne prikazi
+            tr.classList.add("no");
         }
 
         tr.appendChild(td);
@@ -687,3 +691,4 @@ function getTimeAsDate(timeString) {
         seconds
     );
 }
+

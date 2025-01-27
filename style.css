@@ -855,3 +855,13 @@ input[type='text']{
     color: gray;
     text-align: center;
 }
+
+.share-button {
+    position: absolute !important;
+    left: -50px;
+    bottom: -30px;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+
+}

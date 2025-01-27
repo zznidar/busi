@@ -1,4 +1,4 @@
-const ZAPADLOST = 1000 * 3600; // Kako stare avtobuse skrijemo (v milisekundah)
+const ZAPADLOST = 5000 * 3600; // Kako stare avtobuse skrijemo (v milisekundah)
 
 x = 46.051;
 y = 14.505;
@@ -344,6 +344,7 @@ function izrisi_OJPP(busi, automatic=false) {
                 <a href="https://api.beta.brezavta.si/trips/${encodeURIComponent(odg?.["trip_id"])}" target="_blank" class="popup-relacija">${odg?.["trip_headsign"]}</a>
                 <div style="position:relative; left: 40px; max-width: calc(100% - 50px)">
                     <span class="bus_info"><span class='popup_id' style='user-select: text'>Številka avtobusa: ${vozilo} </span></span>
+                    <span class="material-symbols-outlined share-button" style="color:var(--color-primary)" onclick="share('${vozilo}');">share</span><br>
                 
             `;
 
@@ -377,6 +378,11 @@ function izrisi_OJPP(busi, automatic=false) {
                 mymap.flyTo([odg["lat"],odg["lon"]], Math.max(lastZoom, 15), {duration: 0.5});
                 currentBusId = odg["id"];
 
+                //Draw bus route
+                if (odg["trip_id"] !== null) {
+                    displayBusRoute(odg["id"]);
+                }
+
             });
 
             m2[vozilo].on('popupclose', function() {
@@ -385,6 +391,7 @@ function izrisi_OJPP(busi, automatic=false) {
                 mymap.flyTo([odg["lat"],odg["lon"]], Math.max(lastZoom, 12), {duration: 0.5});
                 currentBusId = 0;
                 document.getElementById("timetable_no_line").classList.remove("no");
+                eraseGeometryOnMap();
             });
 
             m2[vozilo]["busTstamp"] = busTstamp;
