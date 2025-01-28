@@ -30,6 +30,17 @@ async function obtainGeometryByTripId(tripId) {
 }
 
 /**
+ * Return the data of a trip by its id
+ * @param {*} tripId - The id of the trip
+ * @returns trip data
+ */
+async function obtainDataByTripId(tripId) {
+    // Get the geometry for the trip
+    const data = await fp(`${base_api}/trips/${tripId}`);
+    return data;
+}
+
+/**
  * Display a LineString geometry on a Leaflet map and clear the previous line if it exists
  * @param {Array} geometry - Array of coordinates [lon, lat] from the LineString
  * @param {Object} options - Optional polyline styling (e.g., color, weight)
@@ -73,14 +84,56 @@ function displayGeometryOnMap(geometry, stopTimes = [], options = {}, showStops 
     // Optionally display stops
     if (showStops && stopTimes.length > 0) {
         const stopMarkers = stopTimes.map(stopTime => {
-            const { stop } = stopTime;
-            return L.circleMarker([stop.lat, stop.lon], {
-                radius: options.stopRadius || 3.5,
+            const { stop, arrival_scheduled, arrival_realtime, arrival_delay, realtime } = stopTime; // Destructure fields
+
+            // Function to format time (assuming seconds since midnight)
+            const formatTime = seconds => {
+                if (!seconds || seconds === 0) return 'N/A'; // Handle invalid or missing times
+                const date = new Date(seconds * 1000); // Convert seconds to milliseconds
+                return date.toISOString().substr(11, 5); // Format as HH:mm
+            };
+
+            // Prepare content based on the realtime status
+            let tooltipContent = `<b>${stop.name}</b><br>`;
+            if (realtime) {
+                const realtimeArrival = formatTime(arrival_realtime);
+                const delay = arrival_delay !== 0 ? `${Math.round(arrival_delay / 60)} min` : 'Točen';
+                tooltipContent += `
+                    Načrtovan prihod: ${realtimeArrival}<br>
+                    Zamuda: ${delay}
+                `;
+            } else {
+                const scheduledArrival = formatTime(arrival_scheduled);
+                tooltipContent += `Načrtovan prihod: ${scheduledArrival}`;
+            }
+            
+
+            const hoverMarker = L.circleMarker([stop.lat, stop.lon], {
+                radius: options.stopRadius || 20,
+                color: 'transparent',
+                fillColor: options.stopFillColor || 'transparent',
+                fillOpacity: options.stopFillOpacity || 0.2,
+            }).bindTooltip(tooltipContent, {
+                permanent: false,
+                direction: 'top',
+                className: 'stop-tooltip',
+            });
+
+            //If clicked on a stop show a toast message
+            hoverMarker.on('click', function() {
+                toast('Ne klikaj na postaje, ampak zadrži na njej.')
+            });
+
+            const visibleMarker = L.circleMarker([stop.lat, stop.lon], {
+                radius: options.stopRadius || 4.5,
                 color: options.stopColor || '#9e3fd1',
                 fillColor: options.stopFillColor || '#9e3fd1',
                 fillOpacity: options.stopFillOpacity || 0,
-            }).bindPopup(`<b>${stop.name}</b><br>Type: ${stop.type}`);
+            });
+
+            return L.layerGroup([visibleMarker, hoverMarker]);
         });
+
 
         // Add the stop markers to a feature group for easy management
         currentStopsLayer = L.featureGroup(stopMarkers).addTo(mymap);
@@ -107,7 +160,7 @@ function eraseGeometryOnMap() {
 async function displayBusRoute(busId) {
     trip_id = await findTripIdByVehicle(busId);
     geometry = await obtainGeometryByTripId(trip_id);
-    trip_data = await fp(`${base_api}/trips/${trip_id}`);
+    trip_data = await obtainDataByTripId(trip_id);
 
     displayGeometryOnMap(geometry.coordinates, trip_data.stop_times, { color: trip_data.color, stopColor: trip_data.color, stopFillColor: trip_data.color }, true);
 

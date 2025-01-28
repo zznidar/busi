@@ -163,15 +163,17 @@ button:not(.zamudas button) {
 
 .toast_message{
     position: fixed;
-    background-color: #ecca9e;
-    color: #925507;
+    background-color: var(--color-theme);
+    color: var(--color-font);
     border-radius: 1.5rem;
     box-shadow: 0 0 20px 0 var(--color-boxshadow);
     opacity:0.95;
     bottom: 150px;
     left:5vw;
     width:90vw;
-    height: 130px;
+    height: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     z-index: 100;
 }
 
@@ -863,5 +865,6 @@ input[type='text']{
     color: var(--color-primary);
     font-size: 1.5rem;
     cursor: pointer;
+    display: none;
 
 }

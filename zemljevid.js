@@ -61,8 +61,8 @@ var mymap = L.map('mapid', {
 
 
 var mymapTileLayer = new L.maptilerLayer({
-    apiKey:"Iz6oqHAlxuXztN4SolAF", // For live version 
-    //apiKey: "Bid81QPElcfo4iUZ8tF2", //For testing -- more permissions
+    //apiKey:"Iz6oqHAlxuXztN4SolAF", // For live version 
+    apiKey: "Bid81QPElcfo4iUZ8tF2", //For testing -- more permissions
     style: mapStyle,
 });
 mymapTileLayer.addTo(mymap);
@@ -378,10 +378,19 @@ function izrisi_OJPP(busi, automatic=false) {
                 mymap.flyTo([odg["lat"],odg["lon"]], Math.max(lastZoom, 15), {duration: 0.5});
                 currentBusId = odg["id"];
 
+                
                 //Draw bus route
                 if (odg["trip_id"] !== null) {
                     displayBusRoute(odg["id"]);
                 }
+
+                //Check if navigator.share is available, otherway set share-button to display: none
+                if (typeof navigator.share !== 'undefined') {
+                    document.getElementsByClassName("share-button")[0].style.display = "inline";
+                }
+
+
+
 
             });
 

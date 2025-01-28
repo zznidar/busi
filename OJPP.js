@@ -692,3 +692,21 @@ function getTimeAsDate(timeString) {
     );
 }
 
+async function displayBus(busId, automatic=false) {
+    buses = await zahtevaj_buse();
+    bus = buses.find(bus => bus.vehicle.id === busId);
+    trip_id = await findTripIdByVehicle(busId);
+    trips = [await obtainDataByTripId(trip_id)];
+    if(bus) {
+        busi[busId] = {...busi[busId], ...bus, ...bus.vehicle, long: bus.lon, lat: bus.lat};
+        izrisi_OJPP(busi, automatic);
+        currentBusId = busId;
+        centerCurrentBus();
+        m2[busId].openPopup();
+    }
+    else {
+        console.error("Bus not found");
+    }
+}
+
+

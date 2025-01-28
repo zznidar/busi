@@ -398,16 +398,6 @@ function fadeOut(elementID, time){
     return setTimeout(function(){element.classList.add("no");}, time);
 }
 
-/**
- * Finf bus by ID (used for sharable links)
- */
-async function findBus(busId) {
-    //Wait for busses to load
-    await godusModus();
-    m2[busId].openPopup();
-    
-    //Remove all other buses somehow - TODO
-}
 
 
 // Get the busId from the URL
@@ -416,7 +406,7 @@ const busId = urlParams.get('busId'); // e.g., https://link?busId=123
 
 // Display the result
 if (busId) {
-    const result = findBus(busId);
+    const result = displayBus(busId);
     document.getElementById('result').textContent = result;
 } else {
     document.getElementById('result').textContent = "No bus found. Please provide a busId.";
@@ -431,10 +421,15 @@ function share(busId){
     let url = new URL(window.location);
     url.searchParams.set('busId', busId);
     console.log(url.href);
-    navigator.share({
-        title: 'Sledi avtobusu',
-        text: 'Klikni na povezavo in sledi mojemu avtobusu',
-        url: url.href
-    });
-
+    try{
+        navigator.share({
+            title: 'Sledi avtobusu',
+            text: 'Klikni na povezavo in sledi mojemu avtobusu',
+            url: url.href
+        });
+    } catch (e){
+        console.error("Sharing failed: ", e);
+    }
 }
+
+
