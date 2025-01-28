@@ -232,9 +232,13 @@ async function izpisi_urnik(trips) {
 
         if(busHour < hour - 1) {
             tr.classList.add("missed");
+            //Ne prikazi
+            tr.classList.add("no");
         }
         else if(busHour === hour - 1 && busMinute < minute) {
             tr.classList.add("missed");
+            //Ne prikazi
+            tr.classList.add("no");
         }
 
         tr.appendChild(td);
@@ -687,3 +691,26 @@ function getTimeAsDate(timeString) {
         seconds
     );
 }
+
+async function displayBus(busId, automatic=false) {
+    buses = await zahtevaj_buse();
+    bus = buses.find(bus => bus.vehicle.id === busId);
+    trip_id = await findTripIdByVehicle(busId);
+    trips = [await obtainDataByTripId(trip_id)].map(trip => {
+        trip.trip_id = trip.gtfs_id;
+        return trip;
+    })
+
+    if(bus) {
+        busi[busId] = {...busi[busId], ...bus, ...bus.vehicle, long: bus.lon, lat: bus.lat};
+        izrisi_OJPP(busi, automatic);
+        currentBusId = busId;
+        centerCurrentBus();
+        m2[busId].openPopup();
+    }
+    else {
+        console.error("Bus not found");
+    }
+}
+
+

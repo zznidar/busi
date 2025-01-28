@@ -397,3 +397,36 @@ function fadeOut(elementID, time){
     element.style.opacity = 0;
     return setTimeout(function(){element.classList.add("no");}, time);
 }
+
+
+
+// Get the busId from the URL
+const urlParams = new URLSearchParams(window.location.search);
+const busId = urlParams.get('busId'); // e.g., https://link?busId=123
+
+// Display the result
+if (busId) {
+    displayBus(busId);
+}
+
+/**
+ * Share bus by ID
+ * Share bus by ID using the share API
+ * @param {*} busId ID of the bus
+ */
+function share(busId){
+    let url = new URL(window.location);
+    url.searchParams.set('busId', busId);
+    console.log(url.href);
+    try{
+        navigator.share({
+            title: 'Sledi avtobusu',
+            text: 'Klikni na povezavo in sledi mojemu avtobusu',
+            url: url.href
+        });
+    } catch (e){
+        console.error("Sharing failed: ", e);
+    }
+}
+
+

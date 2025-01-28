@@ -1,5 +1,5 @@
 {
-	"version": 9,
+	"version": 10,
 	"fileList": [
 		"index.html",
 		"style.css",
@@ -13,7 +13,8 @@
 		"zemljevid.js",
 		"ZZ_leaflet.js",
 		"ui.js",
-		"postaja.png"
+		"postaja.png",
+		"overlay.js"
 	],
 	"lazyLoad": [
 	]

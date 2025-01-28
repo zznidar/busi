@@ -1,4 +1,4 @@
-const ZAPADLOST = 1000 * 3600; // Kako stare avtobuse skrijemo (v milisekundah)
+const ZAPADLOST = 5000 * 3600; // Kako stare avtobuse skrijemo (v milisekundah)
 
 x = 46.051;
 y = 14.505;
@@ -61,8 +61,8 @@ var mymap = L.map('mapid', {
 
 
 var mymapTileLayer = new L.maptilerLayer({
-    apiKey:"Iz6oqHAlxuXztN4SolAF", // For live version 
-    //apiKey: "Bid81QPElcfo4iUZ8tF2", //For testing -- more permissions
+    //apiKey:"Iz6oqHAlxuXztN4SolAF", // For live version 
+    apiKey: "Bid81QPElcfo4iUZ8tF2", //For testing -- more permissions
     style: mapStyle,
 });
 mymapTileLayer.addTo(mymap);
@@ -309,6 +309,8 @@ function izrisi_OJPP(busi, automatic=false) {
             m2[vozilo] = L.marker([x, y], {
                 icon: !(odg["trip_id"] === null && odg["route_id"] === null && odg["route_name"] === null) ? myIcon : peronIcon
             }).addTo(mymap);
+        } else {
+            m2[vozilo].off('popupopen');
         }
         
 
@@ -344,6 +346,7 @@ function izrisi_OJPP(busi, automatic=false) {
                 <a href="https://api.beta.brezavta.si/trips/${encodeURIComponent(odg?.["trip_id"])}" target="_blank" class="popup-relacija">${odg?.["trip_headsign"]}</a>
                 <div style="position:relative; left: 40px; max-width: calc(100% - 50px)">
                     <span class="bus_info"><span class='popup_id' style='user-select: text'>Številka avtobusa: ${vozilo} </span></span>
+                    <span class="material-symbols-outlined share-button" style="color:var(--color-primary)" onclick="share('${vozilo}');">share</span><br>
                 
             `;
 
@@ -377,6 +380,20 @@ function izrisi_OJPP(busi, automatic=false) {
                 mymap.flyTo([odg["lat"],odg["lon"]], Math.max(lastZoom, 15), {duration: 0.5});
                 currentBusId = odg["id"];
 
+                
+                //Draw bus route
+                if (odg["trip_id"] !== null) {
+                    displayBusRoute(odg["id"]);
+                }
+
+                //Check if navigator.share is available, otherway set share-button to display: none
+                if (typeof navigator.share !== 'undefined') {
+                    document.getElementsByClassName("share-button")[0].style.display = "inline";
+                }
+
+
+
+
             });
 
             m2[vozilo].on('popupclose', function() {
@@ -385,6 +402,7 @@ function izrisi_OJPP(busi, automatic=false) {
                 mymap.flyTo([odg["lat"],odg["lon"]], Math.max(lastZoom, 12), {duration: 0.5});
                 currentBusId = 0;
                 document.getElementById("timetable_no_line").classList.remove("no");
+                eraseGeometryOnMap();
             });
 
             m2[vozilo]["busTstamp"] = busTstamp;
