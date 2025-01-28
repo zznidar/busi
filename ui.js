@@ -406,10 +406,7 @@ const busId = urlParams.get('busId'); // e.g., https://link?busId=123
 
 // Display the result
 if (busId) {
-    const result = displayBus(busId);
-    document.getElementById('result').textContent = result;
-} else {
-    document.getElementById('result').textContent = "No bus found. Please provide a busId.";
+    displayBus(busId);
 }
 
 /**

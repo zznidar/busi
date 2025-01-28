@@ -696,7 +696,11 @@ async function displayBus(busId, automatic=false) {
     buses = await zahtevaj_buse();
     bus = buses.find(bus => bus.vehicle.id === busId);
     trip_id = await findTripIdByVehicle(busId);
-    trips = [await obtainDataByTripId(trip_id)];
+    trips = [await obtainDataByTripId(trip_id)].map(trip => {
+        trip.trip_id = trip.gtfs_id;
+        return trip;
+    })
+
     if(bus) {
         busi[busId] = {...busi[busId], ...bus, ...bus.vehicle, long: bus.lon, lat: bus.lat};
         izrisi_OJPP(busi, automatic);

@@ -36,7 +36,8 @@ async function obtainGeometryByTripId(tripId) {
  */
 async function obtainDataByTripId(tripId) {
     // Get the geometry for the trip
-    const data = await fp(`${base_api}/trips/${tripId}`);
+    let today = new Date().toISOString().slice(0,10).replaceAll("-", "");
+    const data = await fp(`${base_api}/trips/${tripId}?date=${today}`);
     return data;
 }
 
