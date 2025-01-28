@@ -309,6 +309,8 @@ function izrisi_OJPP(busi, automatic=false) {
             m2[vozilo] = L.marker([x, y], {
                 icon: !(odg["trip_id"] === null && odg["route_id"] === null && odg["route_name"] === null) ? myIcon : peronIcon
             }).addTo(mymap);
+        } else {
+            m2[vozilo].off('popupopen');
         }
         
 
