@@ -10,13 +10,13 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 	<!-- Favicon -->
-	<link rel="icon" type="image/png" href="bus_icon.png" />
+	<link rel="icon" type="image/png" href="graphics/bus_icon.png" />
 
 	<link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"  />
 
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="">
-	<script src="ZZ_leaflet.js" crossorigin=""></script>
+	<script src="scripts/ZZ_leaflet.js" crossorigin=""></script>
 	    <script src="https://cdn.maptiler.com/maptiler-sdk-js/v1.2.0/maptiler-sdk.umd.js"></script>
     <!-- <link href="https://cdn.maptiler.com/maptiler-sdk-js/v1.2.0/maptiler-sdk.css" rel="stylesheet" /> -->
     <script src="https://cdn.maptiler.com/leaflet-maptilersdk/v2.0.0/leaflet-maptilersdk.js"></script>
@@ -74,15 +74,14 @@
 
 	<div class="info-panel no" id="info">
 		<div class ="center" style="width:75%">
-
 	
 
-			<span class="material-symbols-outlined tool_icon" style="left:40%; bottom: 10px; font-size:1.5rem" onclick="iskalnikBusId(); toggleInfo()">search</span><br>
-			<span class="material-symbols-outlined tool_icon" style="left:60%; bottom: 10px; font-size:1.5rem" onclick="trips = undefined; godusModus(); toggleInfo()">directions_bus</span><br>
+			<span class="material-symbols-outlined tool_icon" style="left:40%; bottom: 10px; font-size:1.5rem" onclick="searchBusId(); toggleInfo()">search</span><br>
+			<span class="material-symbols-outlined tool_icon" style="left:60%; bottom: 10px; font-size:1.5rem" onclick="trips = undefined; showBuses(); toggleInfo()">directions_bus</span><br>
 
 			
 			<h2 style="margin-top: -10px;">Busi</h2>
-			<img src="bus_icon.png" style="width: 64px; height: 64px; margin-top: -10px; padding-bottom: 5px;">
+			<img src="graphics/bus_icon.png" style="width: 64px; height: 64px; margin-top: -10px; padding-bottom: 5px;">
 			<p>Prikazovalnik lokacije avtobusov in njihovih zamud.</p>
 			<p>Avtorja: <br>
 				Žan&nbsp;Žnidar <br>
@@ -129,14 +128,14 @@
 			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="toggleInfo();">info</span>
 			<span class= "tool_item" style="left:87.5%">Info</span>
 
-			<!--<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="iskalnikBusId()">search</span>-->
+			<!--<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="searchBusId()">search</span>-->
 			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="toggleTimetable()">calendar_month</span>
 			<span class= "tool_item" style="left:37.5%">Vozni red</span>
 
 			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="toggleSearch()">search</span>
 			<span class= "tool_item" style="left:62.5%">Iskanje</span>
 
-			<!-- <span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="trips = undefined; godusModus()">directions_bus</span>
+			<!-- <span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="trips = undefined; showBuses()">directions_bus</span>
 			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span> -->
 		</div>
 		
@@ -161,11 +160,11 @@
 			<h2>Priljubljene relacije</h2>
 			<p style="margin-top: -15px; width:80vw" class="center">Novo relacijo dodaš z gumbom "Dodaj relacijo". Da relacijo odstraniš, zadrži gumb za 2 sekundi.</p>
 			
-			<div id="dodajanjePostajContainer">
+			<div id="addBusStopContainer">
 			</div>
 
-			<div id="gumbiZaRelacije" style ="margin-top: 25px;"><p></p></div><br>
-			<span class="btn_general center" id="dodajPostajeBtn" onclick="dodajPostaje();">Dodaj relacijo</span>
+			<div id="busLineButtons" style ="margin-top: 25px;"><p></p></div><br>
+			<span class="btn_general center" id="dodajPostajeBtn" onclick="addBusStops();">Dodaj relacijo</span>
 
 		</div>
 			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px; width:90%" class="center no" id="timetable_container">
@@ -191,7 +190,7 @@
 			</div>
 	 	
 			<p id="log" style="display:none">Log: <br></p>
-			<input type="checkbox" name="prikazujStareBuse" id="prikazujStareBuse" style="display: none;"><label for="prikazujStareBuse"></input></label>
+			<input type="checkbox" name="showOldBuses" id="showOldBuses" style="display: none;"><label for="showOldBuses"></input></label>
 
 		</div>
 
@@ -217,14 +216,14 @@
 
 	var clamp = (x, a, b) => (x < a) ? a : (x > b) ? b : x; // Clamp number between a and b
 </script>
-<script src="zemljevid.js"></script>
-<script src="OJPP.js"></script>
-<script src="ui.js"></script>
-<script src="overlay.js"></script>
+<script src="scripts/map.js"></script>
+<script src="scripts/backend.js"></script>
+<script src="scripts/ui.js"></script>
+<script src="scripts/api_calls.js"></script>
 
 <script>
 // Caching https://github.com/AshleyScirra/scirra-offline-sw
-navigator.serviceWorker.register("sw.js", { scope: "./" });
+navigator.serviceWorker.register("scripts/sw.js", { scope: "./" });
 
 let broadcastChannel = new BroadcastChannel("busi-offline");
 broadcastChannel.onmessage = function (e) {

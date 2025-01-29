@@ -11,7 +11,7 @@
 		"location_accent-01.svg",
 		"OJPP.js",
 		"zemljevid.js",
-		"ZZ_leaflet.js",
+		"scripts/ZZ_leaflet.js",
 		"ui.js",
 		"postaja.png",
 		"overlay.js"
