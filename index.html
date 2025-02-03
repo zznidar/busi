@@ -203,6 +203,27 @@
 </body>
 
 <script>
+	document.addEventListener("DOMContentLoaded", function () {
+	  if (window.location.hostname !== "zznidar.github.io/busi") {
+		const banner = document.createElement("div");
+		banner.innerHTML = "This is development version of the app!";
+		banner.style.position = "fixed";
+		banner.style.top = "0";
+		banner.style.left = "0";
+		banner.style.width = "100%";
+		banner.style.backgroundColor = "red";
+		banner.style.color = "white";
+		banner.style.opacity = "0.75";
+		banner.style.textAlign = "center";
+		banner.style.padding = "10px";
+		banner.style.zIndex = "1000";
+  
+		document.body.prepend(banner);
+	  }
+	});
+  </script>
+
+<script>
 	// Uporabne funkcije, src nekaterih: https://www.scirra.com/manual/126/system-expressions
 	var lerp = (a, b, x) => (a + x * (b - a)); // Linear interpolation
 
