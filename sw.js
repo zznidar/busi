@@ -14,7 +14,7 @@ modified by zznidar to report up-to-date version
 // Add localforage and uncomment to enable lazy loading list
 //importScripts("localforage.js");
 
-const OFFLINE_DATA_FILE = "scripts/busi-offline.js";
+const OFFLINE_DATA_FILE = "busi-offline.js";
 const CACHE_NAME_PREFIX = "busi-offline";
 const BROADCASTCHANNEL_NAME = "busi-offline";
 const CONSOLE_PREFIX = "[busi-SW] ";

@@ -4,7 +4,7 @@ var trips;
 
 lastRelation = [];
 allBuses = false;
-const SAVENAME = "busesSavedLines";
+const SAVENAME = "busi_shranjene-relacije";
 var selectedStop = 0;
 var currentBusId = 0;
 var lastSearchedBusId = "";
@@ -124,7 +124,7 @@ async function refresh(automatic = false) {
  * @param {*} name - Name of the bus line 
  */
 function saveBusLine(start, finish, name) {
-    data.set(name, { "start": start, "finish": finish });
+    data.set(name, { "start": start, "cilj": finish });
     st.setItem(SAVENAME, JSON.stringify([...data]));
     displayBusLineButtons(data);
 }

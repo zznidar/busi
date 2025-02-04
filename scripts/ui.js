@@ -159,8 +159,8 @@ function displayBusLineButtons(buttons) {
         let btn = document.createElement("span");
         btn.type = "span";
         btn.onclick = () => {
-            requestLineAllStops(start = busLine.start, finish = busLine.finish);
-            lastRelation = [busLine.start, busLine.finish];
+            requestLineAllStops(start = busLine.start, finish = busLine.cilj);
+            lastRelation = [busLine.start, busLine.cilj];
             allBuses = false;
             removeMarkers();
             toggleTimetable();
