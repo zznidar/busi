@@ -229,6 +229,37 @@
 
 	</div>
 
+	<div class = "busInfoContainer no" id = "busInfoContainer">
+		<div style="padding: 0.5rem 1.5rem">
+			<div style="position:absolute; left: 20px; top: 1.5rem"><span class = "material-symbols-outlined">home</span></div>
+			<div style="position:absolute; left: 20px; top: 3.4rem"><span class = "material-symbols-outlined">more_vert</span></div>
+			<div style="position:absolute; left: 45px; top: 4.25rem"><span class = "material-symbols-outlined">directions_bus</span></div>
+			<div style="position:absolute; left: 20px; top: 4.6rem"><span class = "material-symbols-outlined">more_vert</span></div>
+			<div style="position:absolute; left: 20px; top: 6.5rem"><span class = "material-symbols-outlined">flag</span></div>
+
+			<div style="margin-left: 1.75rem; margin-top: 1rem">
+				<div><b id = 'startStopName'>startStopName</b></div>
+				<div class="timeLabel"><span class="timeLabel" id = "startStopTime">XX:YY</span></div>
+				<div style="margin-left: 25px"><span id = 'currentStopName'>currentStopName</span></div>
+				<div class="timeLabel" style="margin-left: 25px"><span class="timeLabel" id = "currentStopTime">XX:YY</span></div>
+				<div><b id = 'endStopName'>endStopName</b></div>
+				<div class="timeLabel"><span class="timeLabel" id = "endStopTime">XX:YY</span></div>
+			</div>
+
+			<div class="shareContainer" onclick="share(currentBusId)">
+				<div style="position:absolute; right: 15px; top: 4rem"><span class = "material-symbols-outlined" style="color:white">share</span></div>
+			</div>
+
+			<span style='color: gray;font-size: 80%;bottom: 10%;right: 5rem; position: absolute;' id='timeStamp'><i>XXmin YYs</i></span>
+			
+			
+		</div>
+	</div>
+
+	<div>
+		<span class="btn_return no" onclick="centerCurrentBus()" id="returnView">Vrni prikaz <span class = "material-symbols-outlined" style="transform:translate(0.1rem, 0.5rem)">near_me</span></span>
+	</div>
+
 
 
 

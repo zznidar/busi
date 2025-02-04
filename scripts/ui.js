@@ -323,6 +323,19 @@ function toggleInfo() {
 
 }
 
+
+function openBusContainer(){
+    var element = document.getElementById('busInfoContainer');
+    element.classList.remove('closed');
+    fadeIn('busInfoContainer', 100);
+}
+
+function closeBusContainer(){
+    var element = document.getElementById('busInfoContainer');
+    element.classList.add('closed');
+    fadeOut('busInfoContainer', 100);
+}
+
 /**
  * Function to close the menu/scrollable site container
  */
@@ -456,12 +469,16 @@ async function toggleSearch() {
     clearTimeout(searchTimeout);
     if (element.classList.contains("closed")) {
         menuClose();
+        closeBusContainer();
         document.getElementById('menu').classList.add('closed');
         fadeIn('search_container', 100);
         document.getElementById("search_field").focus();
     }
     else {
         searchTimeout = fadeOut('search_container', 100);
+        if (currentBusId){
+            openBusContainer();
+        }
     }
 
     if (Object.keys(busStops).length === 0) {
@@ -649,6 +666,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+// Make sharable button apear for all popups
+if (typeof navigator.share === 'undefined') {
+    document.getElementsByClassName("shareContainer")[0].attributes.setNamedItem(document.createAttribute("disabled"));
+}
 
 /**
  * Share bus by ID
@@ -669,6 +690,18 @@ function share(busId) {
         console.error("Sharing failed: ", e);
     }
 }
+
+//Periodicaly check if marker is in bounds, if not fade in the returnView button
+setInterval(() => {
+    if(currentBusId){
+        if (!isMarkerInBounds(m2[currentBusId])) {
+            fadeIn("returnView", 1000);
+        }
+        else {
+            fadeOut("returnView", 1000);
+        }
+    }
+}, 1000);
 
 menuClose()
 

@@ -102,7 +102,7 @@ button:not(.zamudas button) {
     top:calc(100dvh - 120px - env(safe-area-inset-bottom));
     background-color: var(--color-theme);
     padding-bottom: calc(85px + env(safe-area-inset-bottom));
-    z-index: 0;
+    z-index: 1;
 
 }
 
@@ -117,7 +117,7 @@ button:not(.zamudas button) {
     opacity: 1;
     box-shadow: 0 0 20px 0 var(--color-boxshadow);
     display: block;
-    z-index: 1;
+    z-index: 2;
     padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -201,7 +201,7 @@ button:not(.zamudas button) {
     background-color: var(--color-theme);
     border-radius: 1.5rem;
     box-shadow: 0 0 20px 0 var(--color-boxshadow);
-    z-index: 1;
+    z-index: 10;
 }
 
 .tool_item{
@@ -487,6 +487,26 @@ footer {
     font-size: 0.8rem;
 }
 
+.btn_return{
+    background-color: var(--color-theme);
+    color:var(--color-font);
+    box-shadow: 0 8px 8px 0 var(--color-boxshadow);
+    border-radius: 1.5rem;
+    width:fit-content;
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 180px);
+    left: 50%;
+    transform: translate(-50%);
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.8rem;
+    opacity:0.8;
+}
+
 .btn_offline{
     background-color: var(--color-theme-second);
     color: var(--color-font);
@@ -650,14 +670,17 @@ footer {
     width: fit-content;
     max-width: 90vw;
     background-color: var(--color-theme);
+    display: none;
 }
 
 .leaflet-popup-tip {
     background-color: var(--color-theme);
+    display: none;
 }
 
 .leaflet-popup{
     opacity: 0.85 !important;
+    display: none;
 }
 
 .leaflet-popup-close-button{
@@ -893,3 +916,53 @@ input[type='text']{
     margin-left: 0.3rem;
 }
 
+.busInfoContainer{
+    position:fixed;
+    width: 90vw;
+    height: fit-content;
+    background-color: var(--color-theme);
+    border-radius: 1.5rem;
+    box-shadow: 0 0 20px 0 var(--color-boxshadow);
+    top:calc(env(safe-area-inset-top) + 40px);
+    left: calc((100vw - min(400px, 90vw))/2);
+    opacity: 0.85;
+    animation: fadein 0.5s;
+}
+
+.busInfoContainer.hidden {
+    display: none !important;
+    animation: fadeout 0.5s;
+    
+}
+
+.popupIcon{
+    padding-right: 0.5rem;
+    margin-top:0.3rem;
+}
+
+.timeLabel{
+    font-size: 0.6rem;
+    color: grey;
+    margin-left: 0.4rem;
+    padding-bottom: 0.5rem;
+}
+
+.shareContainer{
+    background-color: var(--color-secondary);
+    width:3.5rem; 
+    height: 100%; 
+    position:absolute; 
+    right: 0; 
+    top: 0; 
+    text-align: center; 
+    border-radius: 0 1.5rem 1.5rem 0;
+}
+
+.shareContainer :hover{
+    opacity: 0.6;
+}
+
+.shareContainer[disabled]{
+    pointer-events: none;
+    opacity: 0.4;
+}

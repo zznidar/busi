@@ -10,6 +10,7 @@ lastZoom = undefined;
 let currentPolyline = null;
 let currentStopsLayer = null;
 var nextStopData = null;
+var busData = {};
 
 
 //Theme settings
@@ -222,10 +223,15 @@ function rotatePopup() {
  * @param {*} busId ID of the bus
  * @returns 
  */
-function starost(tstamp, busId) {
+function timespan() {
     let d = new Date();
     let output = "";
-    let timespan = (d - new Date(tstamp));
+    try{
+        timestamp = busData[currentBusId].timestamp*1000;
+    }   catch (e) {
+        return;
+    }
+    let timespan = (d - new Date(timestamp));
 
     if (timespan >= 1000 * 3600 * 24) {
         output += (Math.floor(timespan / 1000 / 3600 / 24) + "d ");
@@ -246,9 +252,8 @@ function starost(tstamp, busId) {
     timespan %= (1000);
 
     try {
-        document.getElementById("stamp_" + busId).innerText = output;
+        document.getElementById("timeStamp").innerText = output;
     } catch (e) {
-        clearInterval(timers.pop());
     }
     return output;
 }
@@ -344,49 +349,9 @@ async function drawBuses(buses, automatic = false) {
             plate = response?.["plate"] ?? "";
             plate = isNaN(plate[0]) ? `${plate.substr(0, 2)} ${plate.substr(2)}` : `${plate} (morda to ni prava registrska)`;
 
+            busData[vehicle] = response;
 
-            content = "";
-            content += `
-                <div style="padding-left: 10px; padding-top: 10px;">
-                <span class="material-symbols-outlined" style="font-size: 2em; transform:translate(0,0.25em); z-index:100; color:var(--color-primary)" onclick="mymap.closePopup()">arrow_back</span>
-                <a href="${apiUrl}/trips/${encodeURIComponent(response?.["trip_id"])}" target="_blank" class="popup-relacija">${response?.["trip_headsign"]}</a>
-                <div style="position:relative; left: 40px; max-width: calc(100% - 50px)">
-                    <span class="bus_info"><span class='popup_id' style='user-select: text'>Številka avtobusa: ${vehicle} </span></span>
-                    <span class="material-symbols-outlined share-button" style="color:var(--color-primary)" onclick="share('${vehicle}');">share</span><br>
-            `;
-
-            if (timeDeparture != "" || timeArrival != "") {
-                content += `<br><span class="bus_info">Urnik za relacijo: ${timeDeparture}–${timeArrival}</span>`;
-
-            }
-            //content += `<br><span class="bus_info"><b style='user-select: text'>${plate}</b></span>`;
-            //content += `<br><span class="bus_info">Prevoznik: ${response?.["operator_name"]}</span>`;
-
-            if(nextStopData !== null) {
-                content += `<div class="realtime_container">`;
-                content += `<span class = "bus_info"><b>Naslednja postaja:</b> ${nextStopData.name}</span>`;
-                content += `<br><span class = "bus_info">Predviden prihod: ${nextStopData.arrival}</span>`;
-                content += `<br><span class = "bus_info">Zamuda: ${nextStopData.delay}</span>`;
-                content += `<span class = "nextStopLiveData material-symbols-outlined">sensors<span>`
-                content += `</div>`;
-                
-            }
-         
-
-            //content += (`<div class="popup_zamuda" style="width:fit-content;"><span class='popup_zamuda_button' onclick='izpisi_zamudo2(this,"${vehicle}")' style="width:fit-content; margin-left:-10px; opacity: 0.1" disabled>Zamude busov trenutno niso prikazane.</span></div>`); //ZAMUDA
-
-            content += ` 
-                </div>
-            </div>`;
-            content += ("<br><span style='color: gray;font-size: 80%;bottom: 10%;right: 10%;' id='stamp_" + vehicle + "'><i>Nazadnje posodobljeno " + busTstamp + "</i></span><br>"); //TIMESTAMP (kmalu depreciated, ko bo STAROST)
-            content += ("<img id='eksekuter' src='' onerror='for(let i = 0; i < timers.length; i++) {clearInterval(timers.pop());} timers.push(setInterval(starost, 1000, \"" + busTstamp + "\", \"" + vehicle + "\")); document.getElementById(\"stamp_" + vehicle + "\").style.position = \"absolute\"; starost(\"" + busTstamp + "\", \"" + vehicle + "\"); this.remove();'/>");
-
-            // Make sharable button apear for all popups
-            if (typeof navigator.share !== 'undefined') {
-                for (let i = 0; i < document.getElementsByClassName("share-button").length; i++) {
-                    document.getElementsByClassName("share-button")[i].style.display = "inline";
-                }
-            }
+            content = ("<img id='eksekuter' src='' onerror='for(let i = 0; i < timers.length; i++) {clearInterval(timers.pop());} timers.push(setInterval(timespan, 1000, \"" + busTstamp + "\", \"" + vehicle + "\"));  timespan(\"" + busTstamp + "\", \"" + vehicle + "\"); this.remove();'/>");
 
             m2[vehicle].bindPopup(content);
 
@@ -406,12 +371,18 @@ async function drawBuses(buses, automatic = false) {
                         console.error(e);
                     }
                 }
-
-                if (typeof navigator.share !== 'undefined') {
-                    document.getElementsByClassName("share-button")[0].style.display = "inline";
-                }
-
                 refresh();
+                openBusContainer();
+                
+
+                //Make all other visible markers more opaque
+                for (let m in m2) {
+                    if (m !== currentBusId){
+                        m2[m].setOpacity(0);
+                        m3[m].setOpacity(0);
+                };
+            }
+
             
             }, { once: true });
 
@@ -424,6 +395,13 @@ async function drawBuses(buses, automatic = false) {
                 currentBusId = 0;
                 document.getElementById("timetable_no_line").classList.remove("no");
                 eraseGeometryOnMap();
+                closeBusContainer();
+
+                //Restore opacity
+                for (let m in m2) {
+                    m2[m].setOpacity(1);
+                    m3[m].setOpacity(1);
+                }
 
                 //Reset global variable
                 nextStopData = null;
@@ -435,6 +413,7 @@ async function drawBuses(buses, automatic = false) {
             animate(m2[vehicle], lat, lng);
             animateDirection(m3[vehicle], lat, lng, bear);
             outdateBus(vehicle);
+            
 
         }
     }
@@ -703,4 +682,42 @@ async function getNextStopData(busId){
 
         return {arrival: realtimeArrival, delay: delay, name: name};
     }
+}
+
+/**
+ * Get data for start and end stop of the bus by bus ID
+ * @param {*} busId 
+ * @returns 
+ */
+async function getStartEndStopData(busId){
+    const formatTime = seconds => {
+        if (!seconds || seconds === 0) return 'N/A'; // Handle invalid or missing times
+        const date = new Date(seconds * 1000); // Convert seconds to milliseconds
+        return date.toISOString().substr(11, 5); // Format as HH:mm
+    };
+
+    trip_id = await findTripIdByVehicle(busId);
+    trip_data = await obtainDataByTripId(trip_id);
+    stoptimes = trip_data.stop_times;
+    
+    //Departure and arrival time for the first and last stop
+    const startStop = stoptimes[0];
+    const endStop = stoptimes[stoptimes.length-1];
+
+    const startStopName = startStop.stop.name;
+    const endStopName = endStop.stop.name;
+    const startStopArrival = formatTime(startStop.arrival_scheduled);
+    const endStopArrival = formatTime(endStop.arrival_scheduled);
+
+    return {startStopName: startStopName, endStopName: endStopName, startStopArrival: startStopArrival, endStopArrival: endStopArrival};
+}
+
+/**
+ * Checks if the marker is visible on the map
+ * @param {*} marker 
+ * @returns true if the marker is visible on the map
+ */
+function isMarkerInBounds(marker) {
+    var bounds = mymap.getBounds();
+    return bounds.contains(marker.getLatLng());
 }

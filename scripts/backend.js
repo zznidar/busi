@@ -90,6 +90,19 @@ async function refresh(automatic = false) {
     //Refresh delay status
     if (currentBusId) {
         nextStopData = await getNextStopData(currentBusId);
+        endStopData = await getStartEndStopData(currentBusId);
+
+        document.getElementById('startStopName').innerText = endStopData?.startStopName ?? "N/A";
+        document.getElementById('startStopTime').innerText = `${endStopData?.startStopArrival ?? "N/A"}`;
+        document.getElementById('endStopName').innerText = endStopData?.endStopName ?? "N/A";
+        document.getElementById('endStopTime').innerText = `${endStopData?.endStopArrival ?? "N/A"}`;
+        document.getElementById('currentStopName').innerText = nextStopData?.name ?? "N/A";
+        document.getElementById('currentStopTime').innerText = `${nextStopData?.arrival ?? "N/A"} , zamuda: ${nextStopData?.delay ?? "N/A"}`;
+    }
+
+    //Do not center and animate if selected bus is not in the bounds
+    if (currentBusId && !isMarkerInBounds(m2[currentBusId])) {
+        return ;
     }
 
     await showBuses(automatic);
@@ -193,3 +206,6 @@ async function checkDepartures(id) {
     await displayTripsOnStop(id, 300);
     refresh(automatic=true);
 }
+
+
+setInterval(timespan, 1000)
