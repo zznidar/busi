@@ -11,9 +11,9 @@ The structure of the project is as followed:
     │   ├───backend.js
     │   ├───busi-offline.js
     │   ├───map.js
-    │   ├───sw.js
     │   ├───ui.js
     │   └───ZZ_leaflet.js
+    ├───sw.html
     ├───index.html
     ├───style.css
     └───manifest.webmanifest
@@ -55,6 +55,7 @@ Here all global variables with their descriptions are listed.
 |`lastSearchedBusId`|`var string`|String of last bus ID that was searched for.|
 |`currentPolyline`|`object`|Stores current polyline for the bus line displayed on leaflet map.|
 |`currentStopsLayer`|`object`|Stores current markers that are displayed as bus stops along the polyline.|
+|`nextStopData`|`var object`|Stores bus stop name, arrival time and delay for the next bus stop of the currently selected bus. Used for updating realtime info inside opened bubble.|
 
 ## Key functionalities
 > ### 1. View all buses

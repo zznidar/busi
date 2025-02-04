@@ -12,6 +12,7 @@
     --color-info: grey;   
     --color-theme-second: rgba(204, 204, 204, 0.69);
     --color-toast: #ecca9e;
+    --color-live: #4f6f52;
 
     overscroll-behavior: none;
 }
@@ -25,6 +26,7 @@
     --color-primary: var(--color-font);
     --color-boxshadow: rgba(200, 200, 200, 0.08);
     --color-delay: #a85150;
+    --color-live: rgb(220,220,220);
 
     --color-warning: #f3986a !important;
     --color-info: #dadada !important;
@@ -868,3 +870,26 @@ input[type='text']{
     display: none;
 
 }
+
+.realtime_container{
+    width: calc(100% - 0.5rem);
+    border-color: var(--color-secondary);
+    border-radius: 1rem;
+    border-width: 0.1rem;
+    border-style: dotted;
+    padding-left: 1.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    margin-left:-2rem;
+    margin-top:0.75rem;
+    margin-bottom:0.5rem;
+}
+
+.nextStopLiveData{
+    color: var(--color-secondary);
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-left: 0.3rem;
+}
+

@@ -599,7 +599,7 @@ function hideDelays() {
  * Show all delays
  * Show all delays in the delays container.
  */
-async function pokaziVse() {
+async function showAll() {
     //Search for all elements with class no zamude inside the zamudiceContainer
     let elements = [...document.getElementsByClassName("no zamude")];
     for (let e of elements) {
@@ -642,9 +642,13 @@ const urlParams = new URLSearchParams(window.location.search);
 const busId = urlParams.get('busId'); // e.g., https://link?busId=123
 
 // Display the result
-if (busId) {
-    displayBus(busId);
-}
+
+document.addEventListener("DOMContentLoaded", function() {
+    if (busId) {
+        displayBus(busId);
+    }
+});
+
 
 /**
  * Share bus by ID
@@ -667,3 +671,4 @@ function share(busId) {
 }
 
 menuClose()
+

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="sl">
+
 <head>
-    <meta charset="UTF-8" />
-	<meta name="author" content="Žan Žnidar">
+	<meta charset="UTF-8" />
+	<meta name="author" content="Žan Žnidar, Marko Zupan">
 	<title>Busi</title>
 	<meta name="description" content="Prikazovalnik lokacij avtobusov in njihovih zamud">
 	<meta name="mobile-web-app-capable" content="yes">
@@ -13,86 +14,103 @@
 	<link rel="icon" type="image/png" href="graphics/bus_icon.png" />
 
 	<link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"  />
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+		integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+		crossorigin="">
 	<script src="scripts/ZZ_leaflet.js" crossorigin=""></script>
-	    <script src="https://cdn.maptiler.com/maptiler-sdk-js/v1.2.0/maptiler-sdk.umd.js"></script>
-    <!-- <link href="https://cdn.maptiler.com/maptiler-sdk-js/v1.2.0/maptiler-sdk.css" rel="stylesheet" /> -->
-    <script src="https://cdn.maptiler.com/leaflet-maptilersdk/v2.0.0/leaflet-maptilersdk.js"></script>
-   
-   <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover" />
+	<script src="https://cdn.maptiler.com/maptiler-sdk-js/v1.2.0/maptiler-sdk.umd.js"></script>
+	<!-- <link href="https://cdn.maptiler.com/maptiler-sdk-js/v1.2.0/maptiler-sdk.css" rel="stylesheet" /> -->
+	<script src="https://cdn.maptiler.com/leaflet-maptilersdk/v2.0.0/leaflet-maptilersdk.js"></script>
 
-   
-	
-   <!-- style.css -->
-   	<link rel="stylesheet" href="style.css" />
-   	<link rel="manifest" href="manifest.webmanifest" />
+	<meta name="viewport"
+		content="width=device-width,height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover" />
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+
+	<!-- possible content values: default, black or black-translucent -->
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+
+
+	<!-- style.css -->
+	<link rel="stylesheet" href="style.css" />
+	<link rel="manifest" href="manifest.webmanifest" />
 	<meta name="theme-color" content="#3a4d39" />
 	<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#213545" />
-</head> 
- 
- 
-<body> 
-	 <div id="mapid" class="map">
+</head>
+
+
+<body>
+	<div id="mapid" class="map">
 		<div id="map_attributions" class="">
 			<span>&copy;<a href="https://www.maptiler.com/copyright" target="_blank">MapTiler</a></span>
-			<span> &copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a></span>
-	 	</div>
-	 </div>
-	 <div class="loader center no" id="loader"></div>
+			<span> &copy;<a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap
+					contributors</a></span>
+		</div>
+	</div>
+	<div class="loader center no" id="loader"></div>
 
 
-	 <div class="search_container no" id="search_container">
+	<div class="search_container no" id="search_container">
 		<div style="margin-top:-2px">
-			<input type="text" id="search_field" class="search_field" placeholder="Išči po postajah" >
+			<input type="text" id="search_field" class="search_field" placeholder="Išči po postajah">
 			<span class="material-symbols-outlined" id="search_logo">search</span>
 			<div id="search_results_container">
 				<ul id="search_results">
 				</ul>
 			</div>
 		</div>
-		
+
 	</div>
 
-	 
-	
+
+
 	<div class="info-container no">
-		<span class="material-symbols-outlined tool_icon" style="left: 50%; top:10px;" onclick="toggleVisibility()">info</span>
-		<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px" onclick="mymap.flyTo(xy, 13, {duration: 0.5});">my_location</span>
+		<span class="material-symbols-outlined tool_icon" style="left: 50%; top:10px;"
+			onclick="toggleVisibility()">info</span>
+		<span class="material-symbols-outlined tool_icon" style="left: 50%; bottom:10px"
+			onclick="mymap.flyTo(xy, 13, {duration: 0.5});">my_location</span>
 
 	</div>
 
 
 	<div class="refresh float">
-		<span id = "refresh" class="material-symbols-outlined float_icon center refresh_icon" onclick="refresh()">sync</span>
+		<span id="refresh" class="material-symbols-outlined float_icon center refresh_icon"
+			onclick="refresh()">sync</span>
 	</div>
 	<div class="locate float" onclick="mymap.flyTo(xy, 13, {duration: 0.5});">
-		<span class="material-symbols-outlined float_icon center" onclick="mymap.flyTo(xy, 13, {duration: 0.5});">my_location</span>
+		<span class="material-symbols-outlined float_icon center"
+			onclick="mymap.flyTo(xy, 13, {duration: 0.5});">my_location</span>
 	</div>
 
 
 	<div class="info-panel no" id="info">
-		<div class ="center" style="width:75%">
-	
+		<div class="center" style="width:75%">
 
-			<span class="material-symbols-outlined tool_icon" style="left:40%; bottom: 10px; font-size:1.5rem" onclick="searchBusId(); toggleInfo()">search</span><br>
-			<span class="material-symbols-outlined tool_icon" style="left:60%; bottom: 10px; font-size:1.5rem" onclick="trips = undefined; showBuses(); toggleInfo()">directions_bus</span><br>
 
-			
+			<span class="material-symbols-outlined tool_icon" style="left:40%; bottom: 10px; font-size:1.5rem"
+				onclick="searchBusId(); toggleInfo()">search</span><br>
+			<span class="material-symbols-outlined tool_icon" style="left:60%; bottom: 10px; font-size:1.5rem"
+				onclick="trips = undefined; showBuses(); toggleInfo()">directions_bus</span><br>
+
+
 			<h2 style="margin-top: -10px;">Busi</h2>
 			<img src="graphics/bus_icon.png" style="width: 64px; height: 64px; margin-top: -10px; padding-bottom: 5px;">
 			<p>Prikazovalnik lokacije avtobusov in njihovih zamud.</p>
 			<p>Avtorja: <br>
 				Žan&nbsp;Žnidar <br>
-				Marko&nbsp;Zupan<br> 
+				Marko&nbsp;Zupan<br>
 				©&nbsp;2024<br>
 				<br>
 				<br>
 				Vir podatkov: <a href="https://ojpp.si/about" target="_blank">OJPP</a><br>
 				Leaflet: <a href="https://leafletjs.com/" target="_blank">Leaflet</a><br>
-				Source code is available on <a href="https://github.com/zznidar/busi">GitHub</a></p>
-				<p id="update-info"></p>
+				Source code is available on <a href="https://github.com/zznidar/busi">GitHub</a>
+			</p>
+			<p id="update-info"></p>
 		</div>
 	</div>
 
@@ -104,7 +122,8 @@
 
 	<div class="offline_warning no" id="offline">
 		<div class="center" style="width:80%">
-			<span class="material-symbols-outlined" style="left:50%; color:var(--color-info); padding-top: 20px; font-size:1.5rem">wifi_off</span><br>
+			<span class="material-symbols-outlined"
+				style="left:50%; color:var(--color-info); padding-top: 20px; font-size:1.5rem">wifi_off</span><br>
 			<p>Brez internetne povezave. Busi se dejansko premikajo in ne stojijo!</p>
 
 		</div>
@@ -120,108 +139,121 @@
 
 
 
-	<div class = "tool_container">
+	<div class="tool_container">
 		<div style="padding-top: 5px; padding-bottom: 5px;">
-			<span class="material-symbols-outlined tool_icon" style="left: 12.5%;" onclick="toggleFavorite()">favorite</span>
-			<span class= "tool_item" style="left:12.5%">Priljubljene</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 12.5%;"
+				onclick="toggleFavorite()">favorite</span>
+			<span class="tool_item" style="left:12.5%">Priljubljene</span>
 
 			<span class="material-symbols-outlined tool_icon" style="left: 87.5%;" onclick="toggleInfo();">info</span>
-			<span class= "tool_item" style="left:87.5%">Info</span>
+			<span class="tool_item" style="left:87.5%">Info</span>
 
 			<!--<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="searchBusId()">search</span>-->
-			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;" onclick="toggleTimetable()">calendar_month</span>
-			<span class= "tool_item" style="left:37.5%">Vozni red</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 37.5%;"
+				onclick="toggleTimetable()">calendar_month</span>
+			<span class="tool_item" style="left:37.5%">Vozni red</span>
 
-			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="toggleSearch()">search</span>
-			<span class= "tool_item" style="left:62.5%">Iskanje</span>
+			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;"
+				onclick="toggleSearch()">search</span>
+			<span class="tool_item" style="left:62.5%">Iskanje</span>
 
 			<!-- <span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="trips = undefined; showBuses()">directions_bus</span>
 			<span class= "tool_item" style="left:62.5%">Vsi avtobusi</span> -->
 		</div>
-		
+
 	</div>
 
-	<div class = "site_container closed" id="menu">
+	<div class="site_container closed" id="menu">
 		<hr class="line">
 
-		
+
 		<div id="delay_container" style="padding-left: 15px; padding-right: 15px; margin-top: 30px;" class="no">
-			<h2 class="center" >Zamude na relaciji</h2>
+			<h2 class="center">Zamude na relaciji</h2>
 			<h2 class="center" id="delay_relation">Relacija</h2>
 
-			<div id = "delay_content">
+			<div id="delay_content">
 			</div>
 
 		</div>
 
 
 		<div id="favorites" style="padding-left: 5px; padding-right: 5px; margin-top: 20px;" class="center">
-			
+
 			<h2>Priljubljene relacije</h2>
-			<p style="margin-top: -15px; width:80vw" class="center">Novo relacijo dodaš z gumbom "Dodaj relacijo". Da relacijo odstraniš, zadrži gumb za 2 sekundi.</p>
-			
+			<p style="margin-top: -15px; width:80vw" class="center">Novo relacijo dodaš z gumbom "Dodaj relacijo". Da
+				relacijo odstraniš, zadrži gumb za 2 sekundi.</p>
+
 			<div id="addBusStopContainer">
 			</div>
 
-			<div id="busLineButtons" style ="margin-top: 25px;"><p></p></div><br>
+			<div id="busLineButtons" style="margin-top: 25px;">
+				<p></p>
+			</div><br>
 			<span class="btn_general center" id="dodajPostajeBtn" onclick="addBusStops();">Dodaj relacijo</span>
 
 		</div>
-			<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px; width:90%" class="center no" id="timetable_container">
-				<h2 id="timetable_title">Urnik za izbrano relacijo</h2>
-				<p class="center" style="padding-top: 5px; padding-bottom: 20px;" id="timetable_no_line">Trenutno ni izbrane nobene linije.</p>
-				<div class="bubble info center" id="timetable_warning">
-					<span class="material-symbols-outlined" style="left:50%; color:var(--color-info); padding-top: 7.5px; font-size:1.5rem">warning</span>
-					<p style="margin-top: 2.5px;">Urniki so lahko napačni ali pomanjkljivi. <br> Preverite vozni red pri svojem prevozniku!</p>
-				</div>
-
-				<div class="bubble warning center no" style="margin-top: 10px;" id="timetable_sync_warning">
-					<span class="material-symbols-outlined spinning" style="left:50%; color:var(--color-warning); margin-top: 7.5px; font-size:1.5rem">Sync</span>
-					<p style="margin-top: 2.5px;">Poteka brisanje zastarelih linij z urnika. <br> Počakajte trenutek&nbsp;...</p>
-				</div>
-
-				<div id="urnik">
-					
-					<!-- Timetable -->
-					<table id="timetable">
-						
-					</table>
-				</div>
+		<div style="padding-left: 5px; padding-right: 5px; margin-top: 50px; width:90%" class="center no"
+			id="timetable_container">
+			<h2 id="timetable_title">Urnik za izbrano relacijo</h2>
+			<p class="center" style="padding-top: 5px; padding-bottom: 20px;" id="timetable_no_line">Trenutno ni izbrane
+				nobene linije.</p>
+			<div class="bubble info center" id="timetable_warning">
+				<span class="material-symbols-outlined"
+					style="left:50%; color:var(--color-info); padding-top: 7.5px; font-size:1.5rem">warning</span>
+				<p style="margin-top: 2.5px;">Urniki so lahko napačni ali pomanjkljivi. <br> Preverite vozni red pri
+					svojem prevozniku!</p>
 			</div>
-	 	
-			<p id="log" style="display:none">Log: <br></p>
-			<input type="checkbox" name="showOldBuses" id="showOldBuses" style="display: none;"><label for="showOldBuses"></input></label>
 
+			<div class="bubble warning center no" style="margin-top: 10px;" id="timetable_sync_warning">
+				<span class="material-symbols-outlined spinning"
+					style="left:50%; color:var(--color-warning); margin-top: 7.5px; font-size:1.5rem">Sync</span>
+				<p style="margin-top: 2.5px;">Poteka brisanje zastarelih linij z urnika. <br> Počakajte
+					trenutek&nbsp;...</p>
+			</div>
+
+			<div id="urnik">
+
+				<!-- Timetable -->
+				<table id="timetable">
+
+				</table>
+			</div>
 		</div>
+
+		<p id="log" style="display:none">Log: <br></p>
+		<input type="checkbox" name="showOldBuses" id="showOldBuses" style="display: none;"><label
+			for="showOldBuses"></input></label>
+
+	</div>
 
 
 	</div>
 
 
 
-	 
+
 </body>
 
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
-	  if (window.location.hostname !== "zznidar.github.io/busi") {
-		const banner = document.createElement("div");
-		banner.innerHTML = "This is development version of the app!";
-		banner.style.position = "fixed";
-		banner.style.top = "0";
-		banner.style.left = "0";
-		banner.style.width = "100%";
-		banner.style.backgroundColor = "red";
-		banner.style.color = "white";
-		banner.style.opacity = "0.75";
-		banner.style.textAlign = "center";
-		banner.style.padding = "10px";
-		banner.style.zIndex = "1000";
-  
-		document.body.prepend(banner);
-	  }
+		if (window.location.hostname !== "zznidar.github.io/busi") {
+			const banner = document.createElement("div");
+			banner.innerHTML = "This is development version of the app!";
+			banner.style.position = "fixed";
+			banner.style.top = "0";
+			banner.style.left = "0";
+			banner.style.width = "100%";
+			banner.style.backgroundColor = "red";
+			banner.style.color = "white";
+			banner.style.opacity = "0.75";
+			banner.style.textAlign = "center";
+			banner.style.padding = "10px";
+			banner.style.zIndex = "1000";
+
+			document.body.prepend(banner);
+		}
 	});
-  </script>
+</script>
 
 <script>
 	// Uporabne funkcije, src nekaterih: https://www.scirra.com/manual/126/system-expressions
@@ -243,26 +275,28 @@
 <script src="scripts/api_calls.js"></script>
 
 <script>
-// Caching https://github.com/AshleyScirra/scirra-offline-sw
-navigator.serviceWorker.register("scripts/sw.js", { scope: "./" });
+	// Caching https://github.com/AshleyScirra/scirra-offline-sw
+	navigator.serviceWorker.register("./sw.js", {scope: "./"});
+	
 
-let broadcastChannel = new BroadcastChannel("busi-offline");
-broadcastChannel.onmessage = function (e) {
-  const data = e.data;
-  const messageType = data.type;
+	let broadcastChannel = new BroadcastChannel("busi-offline");
+	broadcastChannel.onmessage = function (e) {
+		const data = e.data;
+		const messageType = data.type;
 
-  console.log(data, messageType);
-  document.getElementById("update-info").innerText = `${messageType} v${data?.version ?? ""}`;
+		console.log(data, messageType);
+		document.getElementById("update-info").innerText = `${messageType} v${data?.version / 10 ?? ""}`;
 
-  // messageType can be:
-  // "downloading-update": has started downloading a new version in the background
-  //     (data.version indicates which)
-  // "update-ready": an update has finished downloading in the background and is
-  //     now ready to use after a reload (data.version indicates which)
-  // "update-pending": an update is available but needs a reload to start using it
-  // "up-to-date": identified that the latest version is already in use
-  // "downloading": started first-time caching of the current version for offline use
-  // "offline-ready": finished first-time caching, so app can now work offline
-};
+		// messageType can be:
+		// "downloading-update": has started downloading a new version in the background
+		//     (data.version indicates which)
+		// "update-ready": an update has finished downloading in the background and is
+		//     now ready to use after a reload (data.version indicates which)
+		// "update-pending": an update is available but needs a reload to start using it
+		// "up-to-date": identified that the latest version is already in use
+		// "downloading": started first-time caching of the current version for offline use
+		// "offline-ready": finished first-time caching, so app can now work offline
+	};
 </script>
+
 </html>

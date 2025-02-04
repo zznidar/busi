@@ -9,6 +9,7 @@ timers = [];
 lastZoom = undefined;
 let currentPolyline = null;
 let currentStopsLayer = null;
+var nextStopData = null;
 
 
 //Theme settings
@@ -358,19 +359,21 @@ async function drawBuses(buses, automatic = false) {
                 content += `<br><span class="bus_info">Urnik za relacijo: ${timeDeparture}–${timeArrival}</span>`;
 
             }
-            content += `<br><span class="bus_info"><b style='user-select: text'>${plate}</b></span>`;
-            content += `<br><span class="bus_info">Prevoznik: ${response?.["operator_name"]}</span>`;
+            //content += `<br><span class="bus_info"><b style='user-select: text'>${plate}</b></span>`;
+            //content += `<br><span class="bus_info">Prevoznik: ${response?.["operator_name"]}</span>`;
 
-            //Obtain next stop data
-            //nextStopData = await getNextStopData(vehicle);
+            if(nextStopData !== null) {
+                content += `<div class="realtime_container">`;
+                content += `<span class = "bus_info"><b>Naslednja postaja:</b> ${nextStopData.name}</span>`;
+                content += `<br><span class = "bus_info">Predviden prihod: ${nextStopData.arrival}</span>`;
+                content += `<br><span class = "bus_info">Zamuda: ${nextStopData.delay}</span>`;
+                content += `<span class = "nextStopLiveData material-symbols-outlined">sensors<span>`
+                content += `</div>`;
+                
+            }
+         
 
-/*             if(nextStopData.arrival !== null){
-                content += `<br><b>Naslednja postaja:</b> ${nextStopData.name}`;
-                content += `<br><b>Predviden prihod:</b> ${nextStopData.arrival}`;
-                content += `<br><b>Zamuda:</b> ${nextStopData.delay}`;
-            } */
-
-            content += (`<div class="popup_zamuda" style="width:fit-content;"><span class='popup_zamuda_button' onclick='izpisi_zamudo2(this,"${vehicle}")' style="width:fit-content; margin-left:-10px; opacity: 0.1" disabled>Zamude busov trenutno niso prikazane.</span></div>`); //ZAMUDA
+            //content += (`<div class="popup_zamuda" style="width:fit-content;"><span class='popup_zamuda_button' onclick='izpisi_zamudo2(this,"${vehicle}")' style="width:fit-content; margin-left:-10px; opacity: 0.1" disabled>Zamude busov trenutno niso prikazane.</span></div>`); //ZAMUDA
 
             content += ` 
                 </div>
@@ -408,8 +411,11 @@ async function drawBuses(buses, automatic = false) {
                     document.getElementsByClassName("share-button")[0].style.display = "inline";
                 }
 
+                refresh();
             
             }, { once: true });
+
+
 
             m2[vehicle].on('popupclose', function () {
                 hideDelays();
@@ -418,6 +424,9 @@ async function drawBuses(buses, automatic = false) {
                 currentBusId = 0;
                 document.getElementById("timetable_no_line").classList.remove("no");
                 eraseGeometryOnMap();
+
+                //Reset global variable
+                nextStopData = null;
             });
 
             m2[vehicle]["busTstamp"] = busTstamp;
@@ -509,7 +518,7 @@ async function obtainDataByTripId(tripId) {
  * @param {Object} options - Optional polyline and marker styling
  * @param {boolean} showStops - Whether to display stops along the route
  */
-function displayGeometryOnMap(geometry, stopTimes = [], options = {}, showStops = false) {
+async function displayGeometryOnMap(geometry, stopTimes = [], options = {}, showStops = false) {
     if (!geometry || geometry.length === 0) {
         console.error("Invalid geometry: cannot display on the map.");
         return;
@@ -594,7 +603,6 @@ function displayGeometryOnMap(geometry, stopTimes = [], options = {}, showStops 
 
         // Add the stop markers to a feature group for easy management
         currentStopsLayer = L.featureGroup(stopMarkers).addTo(mymap);
-
     }
 }
 

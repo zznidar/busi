@@ -11,6 +11,7 @@ var lastSearchedBusId = "";
 
 
 
+
 async function requestLineAllStops(start, end) {
     [trips_start, trips_finish, data_buses] = await Promise.all([
         requestTrips(start),
@@ -84,6 +85,11 @@ async function refresh(automatic = false) {
 
     if (selectedStop) {
         await displayTripsOnStop(selectedStop, 300);
+    }
+
+    //Refresh delay status
+    if (currentBusId) {
+        nextStopData = await getNextStopData(currentBusId);
     }
 
     await showBuses(automatic);
