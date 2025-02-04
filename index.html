@@ -316,7 +316,7 @@
 		const messageType = data.type;
 
 		console.log(data, messageType);
-		document.getElementById("update-info").innerText = `${messageType} v${data?.version / 10 ?? ""}`;
+		document.getElementById("update-info").innerText = `${messageType} v${data?.version ?? ""}`;
 
 		// messageType can be:
 		// "downloading-update": has started downloading a new version in the background
