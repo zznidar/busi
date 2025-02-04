@@ -924,7 +924,7 @@ input[type='text']{
     border-radius: 1.5rem;
     box-shadow: 0 0 20px 0 var(--color-boxshadow);
     top:calc(env(safe-area-inset-top) + 40px);
-    left: calc((100vw - min(400px, 90vw))/2);
+    left: calc(5vw);
     opacity: 0.85;
     animation: fadein 0.5s;
 }

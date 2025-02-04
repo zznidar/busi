@@ -9,7 +9,7 @@ Release date: 4.2.2025
 **🌟 Improvements**  
 * Whole codebase has been rewritten to include English variables, function names and documentation.
 * The documentation has been established along with changelog.
-* UI redesign for poup. Now next bus stop with live data is displayed and other non-vital info is ommited.
+* UI redesign for popup. Now next bus stop with live data is displayed and other non-vital info is ommited.
 * In tracking mode buses are made opaque to enable better visualization.
 
 **🐛 Bug fixes**  
