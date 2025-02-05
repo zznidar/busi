@@ -9,6 +9,8 @@ var selectedStop = 0;
 var currentBusId = 0;
 var lastSearchedBusId = "";
 
+var currentBusData = {};
+
 
 
 
@@ -89,8 +91,19 @@ async function refresh(automatic = false) {
 
     //Refresh delay status
     if (currentBusId) {
-        nextStopData = await getNextStopData(currentBusId);
-        endStopData = await getStartEndStopData(currentBusId);
+        tripId = buses[currentBusId].trip_id;
+        tripData = await obtainDataByTripId(tripId);
+        nextStopData = getNextStopData(tripData.stop_times);
+        endStopData = getStartEndStopData(tripData.stop_times);
+
+        if (currentBusData.tripId !== tripId || (currentBusData.tripId === tripId && currentBusData.displayedGeometry === false)) {
+            geometry = await obtainGeometryByTripId(tripId);
+            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, displayedGeometry: true};
+            displayBusRoute(geometry);
+        }
+        else {
+            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, displayedGeometry: true};
+        }
 
         document.getElementById('startStopName').innerText = endStopData?.startStopName ?? "N/A";
         document.getElementById('startStopTime').innerText = `${endStopData?.startStopArrival ?? "N/A"}`;

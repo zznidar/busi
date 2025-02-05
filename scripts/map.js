@@ -273,7 +273,7 @@ function removeMarkers() {
     buses = {};
 }
 
-async function drawBuses(buses, automatic = false) {
+async function  drawBuses(buses, automatic = false) {
     myIcon = busIcon;
 
     d = new Date(); // Uporabimo kasneje za skrivanje starih busov
@@ -363,14 +363,7 @@ async function drawBuses(buses, automatic = false) {
                 lastZoom = mymap.getZoom();
                 mymap.flyTo([response["lat"], response["lon"]], Math.max(lastZoom, 15), { duration: 0.5 });
                 currentBusId = response["id"];
-
-                if (response["trip_id"] !== null) {
-                    try {
-                        displayBusRoute(response["id"]);
-                    } catch (e) {
-                        console.error(e);
-                    }
-                }
+                currentBusData.displayedGeometry = false;
                 refresh();
                 openBusContainer();
                 
@@ -594,20 +587,17 @@ function eraseGeometryOnMap() {
         mymap.removeLayer(currentStopsLayer);
         currentPolyline = null;
         currentStopsLayer = null;
+        currentBusData.displayedGeometry = false;
     }
 }
 
 /**
  * Displays route and stops of a bus on the map
- * @param {string} busId - The id of the buss 
+ * @param {object} tripdata - The object containing trip data
  */
-async function displayBusRoute(busId) {
-    trip_id = await findTripIdByVehicle(busId);
-    geometry = await obtainGeometryByTripId(trip_id);
-    trip_data = await obtainDataByTripId(trip_id);
-
+async function displayBusRoute(geometry) {
+    trip_data = currentBusData.tripData;
     displayGeometryOnMap(geometry.coordinates, trip_data.stop_times, { color: trip_data.color, stopColor: trip_data.color, stopFillColor: trip_data.color }, true);
-
 };
 
 
@@ -655,10 +645,7 @@ function displayBusStopsOnMap(busStopName) {
 }
 
 
-async function getNextStopData(busId){
-    trip_id = await findTripIdByVehicle(busId);
-    trip_data = await obtainDataByTripId(trip_id);
-    stoptimes = trip_data.stop_times;
+function getNextStopData(stoptimes){
     // Function to format time (assuming seconds since midnight)
     const formatTime = seconds => {
         if (!seconds || seconds === 0) return 'N/A'; // Handle invalid or missing times
@@ -684,21 +671,13 @@ async function getNextStopData(busId){
     }
 }
 
-/**
- * Get data for start and end stop of the bus by bus ID
- * @param {*} busId 
- * @returns 
- */
-async function getStartEndStopData(busId){
+
+function getStartEndStopData(stoptimes){
     const formatTime = seconds => {
         if (!seconds || seconds === 0) return 'N/A'; // Handle invalid or missing times
         const date = new Date(seconds * 1000); // Convert seconds to milliseconds
         return date.toISOString().substr(11, 5); // Format as HH:mm
     };
-
-    trip_id = await findTripIdByVehicle(busId);
-    trip_data = await obtainDataByTripId(trip_id);
-    stoptimes = trip_data.stop_times;
     
     //Departure and arrival time for the first and last stop
     const startStop = stoptimes[0];

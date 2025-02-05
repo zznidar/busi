@@ -55,7 +55,8 @@ Here all global variables with their descriptions are listed.
 |`lastSearchedBusId`|`var string`|String of last bus ID that was searched for.|
 |`currentPolyline`|`object`|Stores current polyline for the bus line displayed on leaflet map.|
 |`currentStopsLayer`|`object`|Stores current markers that are displayed as bus stops along the polyline.|
-|`nextStopData`|`var object`|Stores bus stop name, arrival time and delay for the next bus stop of the currently selected bus. Used for updating realtime info inside opened bubble.|
+|`nextStopData`|`var object`|Stores bus stop name, arrival time and delay for the next bus stop of the currently selected bus. Used for updating realtime info inside opened bubble.|¸
+|`currentBusData`|`var object`|Stores current bus data like bus ID, trip ID and trip data to recude API calls.|
 
 ## Key functionalities
 > ### 1. View all buses
