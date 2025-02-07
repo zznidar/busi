@@ -132,7 +132,7 @@ async function displayBus(busId) {
     bus = buses.find(bus => bus.vehicle.id === busId);
     trip_id = await findTripIdByVehicle(busId);
     trips = [await obtainDataByTripId(trip_id)].map(trip => {
-        trip.trip_id = trip.gtfs_id;
+        if(trip) trip.trip_id = trip.gtfs_id;
         return trip;
     })
 
@@ -145,6 +145,7 @@ async function displayBus(busId) {
     }
     else {
         console.error("Bus not found");
+        toast("🥶 Tega busa ni več. Vaš prijatelj vas najbrž že nekaj ur premražen čaka na postaji. Lp 🍞")
     }
 }
 
@@ -326,6 +327,7 @@ async function  drawBuses(buses, automatic = false) {
         }
         else {
             m2[vehicle].off('popupopen');
+            m2[vehicle].off('popupclose');
         }
 
         // Check if bus is too old
@@ -368,7 +370,7 @@ async function  drawBuses(buses, automatic = false) {
                 openBusContainer();
                 
 
-                //Make all other visible markers more opaque
+                //Make all other visible markers more transparent
                 for (let m in m2) {
                     if (m !== currentBusId){
                         m2[m].setOpacity(0);

@@ -625,6 +625,7 @@ async function showAll() {
     document.getElementsByClassName("btn_delay_more")[0].classList.add("no");
 }
 
+var fadator = {};
 /**
  * Fade in selected element with animation
  * Animation fade in function for elements that need to be displayed over map so display:none must be present.
@@ -632,6 +633,7 @@ async function showAll() {
  * @param {*} time Animation duration in miliseconds
  */
 function fadeIn(elementID, time) {
+    clearTimeout(fadator?.[elementID]);
     var element = document.getElementById(elementID);
     element.style.transition = `opacity ${time / 1000}s ease-in-out`;
     element.style.opacity = 0;
@@ -649,7 +651,7 @@ function fadeIn(elementID, time) {
 function fadeOut(elementID, time) {
     var element = document.getElementById(elementID);
     element.style.opacity = 0;
-    return setTimeout(function () { element.classList.add("no"); }, time);
+    return fadator[elementID] = setTimeout(function () { element.classList.add("no"); }, time);
 }
 
 
