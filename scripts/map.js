@@ -161,7 +161,7 @@ function animate(enMarker, newx, newy) {
     var x = enMarker.getLatLng().lat;
     var y = enMarker.getLatLng().lng;
 
-    var pr = setInterval(function () {
+    var pr = setInterval(function() {
         if (p < 1) {
 
             newCoords = new L.LatLng(cosp(x, newx, p), cosp(y, newy, p));
@@ -188,7 +188,7 @@ function animateDirection(enMarker, newx, newy, newbear) {
 
     var x = enMarker.getLatLng().lat;
     var y = enMarker.getLatLng().lng;
-    var pr = setInterval(function () {
+    var pr = setInterval(function() {
         if (p < 1) {
             enMarker.setLatLng(new L.LatLng(cosp(x, newx, p), cosp(y, newy, p)));
             p += 0.1;
@@ -289,9 +289,9 @@ async function  drawBuses(buses, automatic = false) {
         errorPopup.style.opacity = 0;
         errorPopup.style.transition = "opacity 1s ease-in-out";
         errorPopup.classList.remove("no");
-        setTimeout(function () { errorPopup.style.opacity = 0.8; }, 100);
-        setTimeout(function () { errorPopup.style.opacity = 0; }, 3000);
-        setTimeout(function () { errorPopup.classList.add("no"); }, 4000);
+        setTimeout(function() { errorPopup.style.opacity = 0.8; }, 100);
+        setTimeout(function() { errorPopup.style.opacity = 0; }, 3000);
+        setTimeout(function() { errorPopup.classList.add("no"); }, 4000);
         return;
 
     }
@@ -357,7 +357,7 @@ async function  drawBuses(buses, automatic = false) {
 
             m2[vehicle].bindPopup(content);
 
-            m2[vehicle].on('popupopen', function () {
+            m2[vehicle].on('popupopen', function() {
                 document.getElementById('delay_relation').innerText = response?.["route_name"];
                 document.getElementById('delay_container').classList.add('no');
                 menuClose();
@@ -383,7 +383,7 @@ async function  drawBuses(buses, automatic = false) {
 
 
 
-            m2[vehicle].on('popupclose', function () {
+            m2[vehicle].on('popupclose', function() {
                 hideDelays();
                 //Zoom out
                 mymap.flyTo([response["lat"], response["lon"]], Math.max(lastZoom, 12), { duration: 0.5 });
@@ -560,7 +560,7 @@ async function displayGeometryOnMap(geometry, stopTimes = [], options = {}, show
             });
 
             //If clicked on a stop show a toast message
-            hoverMarker.on('click', function () {
+            hoverMarker.on('click', function() {
                 toast('Ne klikaj na postaje, ampak zadrži na njej.')
             });
 
@@ -619,7 +619,7 @@ function displayBusStopsOnMap(busStopName) {
             let menuElement = document.getElementById('menu');
 
             //On popup open
-            marker.on('popupopen', function () {
+            marker.on('popupopen', function() {
                 selectedStop = busStop.gtfs_id;
                 checkDepartures(busStop.gtfs_id);
                 menuClose();
@@ -631,7 +631,7 @@ function displayBusStopsOnMap(busStopName) {
             });
 
             //On popup close
-            marker.on('popupclose', function () {
+            marker.on('popupclose', function() {
                 selectedStop = 0;
                 menuClose();
                 menuElement.classList.add('closed');

@@ -266,7 +266,7 @@
 </body>
 
 <script>
-	document.addEventListener("DOMContentLoaded", function () {
+	document.addEventListener("DOMContentLoaded", function() {
 		if (window.location.hostname !== "zznidar.github.io/busi") {
 			const banner = document.createElement("div");
 			banner.innerHTML = "This is development version of the app!";
@@ -311,7 +311,7 @@
 	
 
 	let broadcastChannel = new BroadcastChannel("busi-offline");
-	broadcastChannel.onmessage = function (e) {
+	broadcastChannel.onmessage = function(e) {
 		const data = e.data;
 		const messageType = data.type;
 

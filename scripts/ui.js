@@ -70,7 +70,7 @@ async function printTimetable(trips) {
         td.innerText = t.agency_name.slice(0, 6);
         td.title = t.agency_name.name;
         tr.appendChild(td);
-        tr.addEventListener("click", function (e) {
+        tr.addEventListener("click", function(e) {
             // only if not a
             if (e.target.tagName !== "A" && t.trip_id) {
                 try {
@@ -251,7 +251,7 @@ async function displayTripsOnStop(stopid, period = 60) {
         td.style.paddingRight = "30px";
         tr.appendChild(td);
         tr.dataset.tripid = t.trip_id;
-        tr.addEventListener("click", function (e) {
+        tr.addEventListener("click", function(e) {
             if (e.target.tagName !== "A" && t.trip_id) {
                 try {
                     id = tripId2busId(t.trip_id);
@@ -301,9 +301,9 @@ function toast(message) {
     toast.style.opacity = 0;
     toast.style.transition = "opacity 1s ease-in-out";
     toast.classList.remove("no");
-    toastTT1 = setTimeout(function () { toast.style.opacity = 0.8; }, 100);
-    toastTT2 = setTimeout(function () { toast.style.opacity = 0; }, 3000);
-    toastTT3 = setTimeout(function () { toast.classList.add("no"); }, 4000);
+    toastTT1 = setTimeout(function() { toast.style.opacity = 0.8; }, 100);
+    toastTT2 = setTimeout(function() { toast.style.opacity = 0; }, 3000);
+    toastTT3 = setTimeout(function() { toast.classList.add("no"); }, 4000);
 }
 
 /**
@@ -340,7 +340,7 @@ function closeBusContainer(){
  * Function to close the menu/scrollable site container
  */
 function menuClose() {
-    setTimeout(function () {
+    setTimeout(function() {
         var element = document.getElementById('menu');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 300); // Adjust the delay (in milliseconds) to make it slower
@@ -350,7 +350,7 @@ function menuClose() {
  * Function to open the menu/scrollable site container
  */
 function menuOpen() {
-    setTimeout(function () {
+    setTimeout(function() {
         var element = document.getElementById('menu');
         element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
     }, 300); // Adjust the delay (in milliseconds) to make it slower
@@ -362,7 +362,7 @@ function menuOpen() {
  * It is used to show only delays after then button is pressed on viechle popup
  */
 function delayOpen() {
-    setTimeout(function () {
+    setTimeout(function() {
         var element = document.getElementById('delay_container')
         var elementTimetable = document.getElementById("timetable_container");
         var elementFavorite = document.getElementById("favorites");
@@ -387,7 +387,7 @@ function toggleFavorite() {
     if (elementFavorite.classList.contains("no")) {
         if (!elementMenu.classList.contains("closed")) {
             menuClose();
-            setTimeout(function () {
+            setTimeout(function() {
                 elementFavorite.classList.remove("no");
                 elementTimetable.classList.add("no");
                 elementDelay.classList.add("no");
@@ -529,7 +529,7 @@ function updateSearch(e) {
     }
 }
 
-SEARCH_RESULTS.addEventListener("click", function (e) {
+SEARCH_RESULTS.addEventListener("click", function(e) {
     console.log(e);
     if (e.target.tagName === "LI") {
         displayBusStopsOnMap(e.target.dataset.busStopName);
@@ -563,23 +563,23 @@ function toggleMenu() {
 
 
 //Auto refresh every 20 seconds
-refresher = setInterval(function () {
+refresher = setInterval(function() {
     refresh(automatic = true);
 }, 20000);
 
 // Stop auto-refreshing after 5 minutes of inactivity
-setTimeout(function () {
+setTimeout(function() {
     clearInterval(refresher);
 }, 5 * 60 * 1000);
 
 //Handle offline situation
-window.addEventListener('offline', function (event) {
+window.addEventListener('offline', function(event) {
     console.log("offline");
     showOfflineWarning();
 });
 
 //Handle offline situation
-window.addEventListener('online', function (event) {
+window.addEventListener('online', function(event) {
     console.log("online");
     hideOfflineWarning();
 
@@ -591,11 +591,11 @@ window.addEventListener('online', function (event) {
     }
 });
 
-showOfflineWarning = function () {
+showOfflineWarning = function() {
     fadeIn("offline", 1000);
 }
 
-hideOfflineWarning = function () {
+hideOfflineWarning = function() {
     fadeOut("offline", 1000);
 }
 
@@ -638,7 +638,7 @@ function fadeIn(elementID, time) {
     element.style.transition = `opacity ${time / 1000}s ease-in-out`;
     element.style.opacity = 0;
     element.classList.remove("no");
-    setTimeout(function () { element.style.opacity = 0.95; }, 34);
+    setTimeout(function() { element.style.opacity = 0.95; }, 34);
 }
 
 /**
@@ -651,7 +651,7 @@ function fadeIn(elementID, time) {
 function fadeOut(elementID, time) {
     var element = document.getElementById(elementID);
     element.style.opacity = 0;
-    return fadator[elementID] = setTimeout(function () { element.classList.add("no"); }, time);
+    return fadator[elementID] = setTimeout(function() { element.classList.add("no"); }, time);
 }
 
 
