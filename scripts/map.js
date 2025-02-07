@@ -144,7 +144,7 @@ async function displayBus(busId) {
         m2[busId].openPopup();
     }
     else {
-        console.error("Bus not found");
+        console.error(`Bus ${busId} not found`);
         toast("🥶 Tega busa ni več. Vaš prijatelj vas najbrž že nekaj ur premražen čaka na postaji. Lp 🍞")
     }
 }
@@ -450,7 +450,7 @@ let outdating = setInterval(outdateBuses, 20000);
  */
 async function findTripIdByVehicle(busId) {
     // Find the vehicle object with the matching ID
-    vehicles = await parseLink(`${apiUrl}/vehicles/locations`);
+    vehicles = await fetchJson(`${apiUrl}/vehicles/locations`);
     const vehicle = vehicles.find(v => v.vehicle.id === busId);
 
     // Return the trip_id if found, otherwise return null
@@ -464,7 +464,7 @@ async function findTripIdByVehicle(busId) {
  */
 async function obtainGeometryByTripId(tripId) {
     // Get the geometry for the trip
-    const geometry = await parseLink(`${apiUrl}/trips/${tripId}/geometry`);
+    const geometry = await fetchJson(`${apiUrl}/trips/${tripId}/geometry`);
     return geometry;
 }
 
@@ -476,7 +476,7 @@ async function obtainGeometryByTripId(tripId) {
 async function obtainDataByTripId(tripId) {
     // Get the geometry for the trip
     let today = new Date().toISOString().slice(0, 10).replaceAll("-", "");
-    const data = await parseLink(`${apiUrl}/trips/${tripId}?date=${today}`);
+    const data = await fetchJson(`${apiUrl}/trips/${tripId}?date=${today}`);
     return data;
 }
 

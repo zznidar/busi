@@ -5,11 +5,11 @@ var noLoaders = 0;
 
 
 /**
- * Parses the link and returns the data
- * @param {*} link - The link to parse
- * @returns data
+ * Fetches the link and parses the response as JSON
+ * @param {*} link - Link to fetch
+ * @returns data as JSON
  */
-async function parseLink(link) {
+async function fetchJson(link) {
     try {
         document.getElementById("loader").classList.remove("no");
         noLoaders++;
@@ -19,16 +19,19 @@ async function parseLink(link) {
 
         if (status !== 200) {
             document.getElementById("log").innerText += ('Error' + status);
+            console.error('Error', status);
             return;
         }
 
         if (data.length === 0) {
             document.getElementById("log").innerText += ('\nNapaka: prazen odgovor!' + data);
+            console.error('Napaka: prazen odgovor!', data);
         }
 
         return data;
     } catch (err) {
         document.getElementById("log").innerText += ('Fetch Error :-S' + err);
+        console.error('Fetch Error :-S', err);
     } finally {
         if (!--noLoaders) document.getElementById("loader").classList.add("no");
     }
@@ -43,7 +46,7 @@ async function parseLink(link) {
 async function requestTrips(stops) {
     let requests = [];
     for (let p of stops) {
-        requests.push(parseLink(`${apiUrl}/stops/${encodeURIComponent(p)}/arrivals`));
+        requests.push(fetchJson(`${apiUrl}/stops/${encodeURIComponent(p)}/arrivals`));
     }
     let trips = (await Promise.all(requests)).flat();
     return trips;
@@ -55,7 +58,7 @@ async function requestTrips(stops) {
  * @returns Array of current buses
  */
 async function requestBuses() {
-    return parseLink(`${apiUrl}/vehicles/locations`);
+    return fetchJson(`${apiUrl}/vehicles/locations`);
 }
 
 
@@ -63,7 +66,7 @@ async function requestBuses() {
  * Get all bus stops
  */
 async function requestAllBusStops() {
-    busStopsData = await parseLink(`${apiUrl}/stops/`);
+    busStopsData = await fetchJson(`${apiUrl}/stops/`);
     for (let p of busStopsData) {
         if (!p.gtfs_id.startsWith("IJPP:")) continue;
         let name = p.name;
@@ -80,7 +83,7 @@ async function requestAllBusStops() {
  * @returns Array of trips
  */
 async function requestTripsOnBusStop(stop_id, period) {
-    trips = (await parseLink(`${apiUrl}/stops/${stop_id}?date=${today}&current=false`))["arrivals"]; // Set current=true to show only buses which haven't passed the stop yet. However, if no live-tracking is available, it will filter on schedule (not good)!
+    trips = (await fetchJson(`${apiUrl}/stops/${stop_id}?date=${today}&current=false`))["arrivals"]; // Set current=true to show only buses which haven't passed the stop yet. However, if no live-tracking is available, it will filter on schedule (not good)!
 
     //Log just trips that are comming in the next hour
     trips = (trips.filter(trip => (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) < period * 60 * 1000 && (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) > -3 * 60 * 1000));
