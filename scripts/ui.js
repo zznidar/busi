@@ -656,6 +656,11 @@ document.addEventListener("DOMContentLoaded", function() {
     if (busId) {
         displayBus(busId);
     }
+
+    // TODO: Make this a beautiful tooltip
+    document.getElementById("directions_bus_container").addEventListener("mouseover", function() {
+        alert(`Prevoznik: ${buses?.[currentBusId]?.["operator_name"]}`);
+    });
 });
 
 // Make sharable button apear for all popups
