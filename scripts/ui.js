@@ -73,13 +73,8 @@ async function printTimetable(trips) {
         tr.addEventListener("click", function(e) {
             // only if not a
             if (e.target.tagName !== "A" && t.trip_id) {
-                try {
-                    id = tripId2busId(t.trip_id);
-                    m2[id]?.openPopup();
-                    menuClose();
-                } catch (e) {
-                    console.error(e);
-                };
+                id = tripId2busId(t.trip_id);
+                m2?.[id]?.openPopup() && menuClose();
             };
         });
 
@@ -253,13 +248,8 @@ async function displayTripsOnStop(stopid, period = 60) {
         tr.dataset.tripid = t.trip_id;
         tr.addEventListener("click", function(e) {
             if (e.target.tagName !== "A" && t.trip_id) {
-                try {
-                    id = tripId2busId(t.trip_id);
-                    m2[id].openPopup();
-                    menuClose();
-                } catch (e) {
-                    console.error(e);
-                };
+                id = tripId2busId(t.trip_id);
+                m2?.[id]?.openPopup() && menuClose();
             };
         });
 

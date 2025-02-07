@@ -227,9 +227,9 @@ function rotatePopup() {
 function timespan() {
     let d = new Date();
     let output = "";
-    try{
+    try {
         timestamp = busData[currentBusId].timestamp*1000;
-    }   catch (e) {
+    } catch (e) {
         return;
     }
     let timespan = (d - new Date(timestamp));
