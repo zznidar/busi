@@ -156,7 +156,7 @@ function displayBusLineButtons(buttons) {
         btn.onclick = () => {
             requestLineAllStops(start = busLine.start, finish = busLine.cilj);
             lastRelation = [busLine.start, busLine.cilj];
-            allBuses = false;
+            //allBuses = false;
             removeMarkers();
             toggleTimetable();
             menuClose();

@@ -46,7 +46,6 @@ Here all global variables with their descriptions are listed.
 |`selectedStop`|`var string`|ID of currently selected stop.|
 |`busStopsData`|`list`|List of bus stops with their respective IDs.|
 |`lastRelation`|`list`|List of the last relation displayed/viewed.|
-|`allBuses`|`boolean`|True if all buses should be displayed, false otherwise.|
 |`currentBusId`|`var string`|ID of current selected bus.|
 |`m2`|`var object`|Leaflet marker object for bus markers.|
 |`m3`|`var object`|Leaflet marker object for bus direction markers.|

@@ -3,7 +3,7 @@ var trips;
 
 
 lastRelation = [];
-allBuses = false;
+//allBuses = false;
 const SAVENAME = "busi_shranjene-relacije";
 var selectedStop = 0;
 var currentBusId = 0;
@@ -54,26 +54,31 @@ async function requestLineAllStops(start, end) {
  * It is also used as a callback function from refresh() function.
  * -> old godusModus()
  * @param {*} automatic - True if called from refresh() function
+ * @param {*} allBuses - True if all buses should be displayed
  * @returns 
  */
-async function showBuses(automatic = false) {
-    buses_response = (await requestBuses());
-    buses_response = buses_response.filter(bus => bus.vehicle.operator_name !== "Ljubljanski Potniški Promet");
+async function showBuses(automatic = false, allBuses = false) {
+    
+    if (trips || currentBusId || allBuses) {
+        buses_response = (await requestBuses());
+        buses_response = buses_response.filter(bus => bus.vehicle.operator_name !== "Ljubljanski Potniški Promet");
 
-    if (trips) buses_response = buses_response.filter(bus => trips.some(trip => trip.trip_id === bus.trip_id));
-    for (let b of buses_response) {
-        let id = b.vehicle.id;
-        buses[id] = { ...buses[id], ...b.vehicle, ...b };
+        if (allBuses) trips = buses_response;
+
+        if (trips) buses_response = buses_response.filter(bus => trips.some(trip => trip.trip_id === bus.trip_id));
+        for (let b of buses_response) {
+            let id = b.vehicle.id;
+            buses[id] = { ...buses[id], ...b.vehicle, ...b };
+        }
+
+        drawBuses(buses, automatic);
+        centerCurrentBus();
+
+        if (!currentBusId && !automatic) {
+            hideDelays();
+        }
     }
-
-    drawBuses(buses, automatic);
-    centerCurrentBus();
-
-    if (!currentBusId && !automatic) {
-        hideDelays();
-    }
-
-    allBuses = true;
+    //allBuses = true;
     return;
 }
 
