@@ -408,6 +408,7 @@ async function  drawBuses(buses, automatic = false) {
             animate(m2[vehicle], lat, lng);
             animateDirection(m3[vehicle], lat, lng, bear);
             outdateBus(vehicle);
+            fadeOut('returnView', 1000);
             
 
         }
