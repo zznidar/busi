@@ -11,6 +11,10 @@ exitBusStop = [];
 busStopsData = [];
 
 
+// Theme styles
+var colorTheme =window.getComputedStyle(document.body).getPropertyValue('--color-theme'); //get
+
+
 
 /**
  * Show timetable

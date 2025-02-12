@@ -575,11 +575,13 @@ async function displayGeometryOnMap(geometry, stopTimes = [], options = {}, show
                 toast('Ne klikaj na postaje, ampak zadrži na njej.')
             });
 
+            
+
             const visibleMarker = L.circleMarker([stop.lat, stop.lon], {
                 radius: options.stopRadius || 5,
                 color: options.stopColor || '#9e3fd1',
-                fillColor: options.stopFillColor || '#9e3fd1',
-                fillOpacity: options.stopFillOpacity || 0,
+                fillColor: colorTheme,
+                fillOpacity: 0.8,
             });
 
             return L.layerGroup([visibleMarker, hoverMarker]);

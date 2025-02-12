@@ -56,6 +56,7 @@ Here all global variables with their descriptions are listed.
 |`currentStopsLayer`|`object`|Stores current markers that are displayed as bus stops along the polyline.|
 |`nextStopData`|`var object`|Stores bus stop name, arrival time and delay for the next bus stop of the currently selected bus. Used for updating realtime info inside opened bubble.|¸
 |`currentBusData`|`var object`|Stores current bus data like bus ID, trip ID and trip data to recude API calls.|
+|`colorThemme`|`var string`|Theme color obtained from CSS variable.|
 
 ## Key functionalities
 > ### 1. View all buses
