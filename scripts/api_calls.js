@@ -96,10 +96,9 @@ async function requestTripsOnBusStop(stop_id, period) {
  * @param {*} tripId trip_id
  */
 function tripId2busId(tripId) {
-    console.log("tripId2busId", tripId);
     for (let busId in buses) {
         if (buses[busId].trip_id === tripId) {
             return busId;
         }
     }
-}
+}   

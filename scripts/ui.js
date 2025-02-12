@@ -154,9 +154,9 @@ function displayBusLineButtons(buttons) {
         let btn = document.createElement("span");
         btn.type = "span";
         btn.onclick = () => {
+            m2[currentBusId]?.closePopup();
             requestLineAllStops(start = busLine.start, finish = busLine.cilj);
             lastRelation = [busLine.start, busLine.cilj];
-            refresh();
             removeMarkers();
             toggleTimetable();
             menuClose();
