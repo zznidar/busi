@@ -374,6 +374,7 @@ async function  drawBuses(buses, automatic = false, fitView = false) {
                 currentBusId = response["id"];
                 currentBusData.displayedGeometry = false;
                 refresh();
+                setPopupContent(reset=true);
                 openBusContainer();
                 
 

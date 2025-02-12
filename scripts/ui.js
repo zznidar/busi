@@ -688,6 +688,19 @@ function share(busId) {
     }
 }
 
+function setPopupContent(reset=false){
+    reset_text = "nalaganje...";
+    if (reset){
+        currentBusData = {busId: null, tripId: null, tripData: null, nextStopData: null, endStopData: null, displayedGeometry: false};
+    }
+    document.getElementById('startStopName').innerText = currentBusData.endStopData?.startStopName ?? reset_text;
+    document.getElementById('startStopTime').innerText = currentBusData.endStopData?.startStopArrival ?? reset_text;
+    document.getElementById('endStopName').innerText = currentBusData.endStopData?.endStopName ?? reset_text;
+    document.getElementById('endStopTime').innerText = currentBusData.endStopData?.endStopArrival ?? reset_text;
+    document.getElementById('currentStopName').innerText = currentBusData.nextStopData?.name ?? reset_text;
+    document.getElementById('currentStopTime').innerText = `${currentBusData.nextStopData?.arrival ?? reset_text} , zamuda: ${currentBusData.nextStopData?.delay ?? reset_text}`;
+}
+
 //Periodicaly check if marker is in bounds, if not fade in the returnView button
 setInterval(() => {
     if(currentBusId){
@@ -699,6 +712,7 @@ setInterval(() => {
         }
     }
 }, 1000);
+
 
 menuClose()
 

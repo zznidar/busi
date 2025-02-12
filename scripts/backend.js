@@ -103,19 +103,14 @@ async function refresh(automatic = false) {
 
         if (currentBusData.tripId !== tripId || (currentBusData.tripId === tripId && currentBusData.displayedGeometry === false)) {
             geometry = await obtainGeometryByTripId(tripId);
-            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, displayedGeometry: true};
+            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, nextStopData: nextStopData, endStopData, endStopData, displayedGeometry: true};
             displayBusRoute(geometry);
         }
         else {
-            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, displayedGeometry: true};
+            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, nextStopData: nextStopData, endStopData, endStopData, displayedGeometry: true};
         }
 
-        document.getElementById('startStopName').innerText = endStopData?.startStopName ?? "N/A";
-        document.getElementById('startStopTime').innerText = `${endStopData?.startStopArrival ?? "N/A"}`;
-        document.getElementById('endStopName').innerText = endStopData?.endStopName ?? "N/A";
-        document.getElementById('endStopTime').innerText = `${endStopData?.endStopArrival ?? "N/A"}`;
-        document.getElementById('currentStopName').innerText = nextStopData?.name ?? "N/A";
-        document.getElementById('currentStopTime').innerText = `${nextStopData?.arrival ?? "N/A"} , zamuda: ${nextStopData?.delay ?? "N/A"}`;
+        setPopupContent();
     }
 
     //Do not center and animate if selected bus is not in the bounds
