@@ -394,11 +394,12 @@ async function  drawBuses(buses, automatic = false, fitView = false) {
             m2[vehicle].on('popupclose', function() {
                 hideDelays();
                 //Zoom out
-                mymap.flyTo([response["lat"], response["lon"]], Math.max(lastZoom, 12), { duration: 0.5 });
+                mymap.flyTo([response["lat"], response["lon"]], Math.max(lastZoom, 11), { duration: 0.5 });
                 currentBusId = 0;
                 document.getElementById("timetable_no_line").classList.remove("no");
                 eraseGeometryOnMap();
                 closeBusContainer();
+                fadeOut('returnView', 1000);
 
                 //Restore opacity
                 for (let m in m2) {
@@ -416,7 +417,7 @@ async function  drawBuses(buses, automatic = false, fitView = false) {
             animate(m2[vehicle], lat, lng);
             animateDirection(m3[vehicle], lat, lng, bear);
             outdateBus(vehicle);
-            fadeOut('returnView', 1000);
+            
 
             if (fitView) mymap.fitBounds(Object.values(m2).map(p => [p.getLatLng()['lat'], p.getLatLng()['lng']]));
         
