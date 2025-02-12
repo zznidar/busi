@@ -688,6 +688,10 @@ function share(busId) {
     }
 }
 
+/**
+ * Function to set the content of the popup for current line
+ * @param {*} reset - True if the popup current line should be reset
+ */
 function setPopupContent(reset=false){
     reset_text = "nalaganje...";
     if (reset){
@@ -700,17 +704,17 @@ function setPopupContent(reset=false){
 
 
     if ((currentBusData.endStopData?.startStopArrival !== currentBusData.endStopData?.startStopArrivalRealtime) && currentBusData.endStopData){
-        document.getElementById('startStopTime').innerHTML = `<s>${currentBusData.endStopData?.startStopArrival}</s>&nbsp;&nbsp;${currentBusData.endStopData?.startStopArrivalRealtime}`;
+        document.getElementById('startStopTime').innerHTML = `<s style="opacity:0.6">${currentBusData.endStopData?.startStopArrival}</s>&nbsp;&nbsp;${currentBusData.endStopData?.startStopArrivalRealtime}`;
     } else {
         document.getElementById('startStopTime').innerText = currentBusData.endStopData?.startStopArrival ?? reset_text;
     }
 
     if ((currentBusData.endStopData?.endStopArrival !== currentBusData.endStopData?.endStopArrivalRealtime) && currentBusData.endStopData){
-        document.getElementById('endStopTime').innerHTML = `<s>${currentBusData.endStopData?.endStopArrival}</s>&nbsp;&nbsp;${currentBusData.endStopData?.endStopArrivalRealtime}`;
+        document.getElementById('endStopTime').innerHTML = `<s style="opacity:0.6">${currentBusData.endStopData?.endStopArrival}</s>&nbsp;&nbsp;${currentBusData.endStopData?.endStopArrivalRealtime}`;
     } else {
         document.getElementById('endStopTime').innerText = currentBusData.endStopData?.endStopArrival ?? reset_text;
     }
-    
+
     document.getElementById('currentStopTime').innerText = `${currentBusData.nextStopData?.arrival ?? reset_text} , zamuda: ${currentBusData.nextStopData?.delay ?? reset_text}`;
 }
 
