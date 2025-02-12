@@ -698,14 +698,22 @@ function share(busId) {
  */
 function setPopupContent(reset=false){
     reset_text = "nalaganje...";
-    if (reset){
+    if (reset) {
         currentBusData = {busId: null, tripId: null, tripData: null, nextStopData: null, endStopData: null, displayedGeometry: false};
+        document.getElementById('directions_bus_container').style.opacity = "1";
+        document.getElementById('currentStopName').style.opacity = "1";
+        document.getElementById('currentStopTime').style.opacity = "1";
     }
+
+    if (!nextStopData && !reset) {
+        document.getElementById('directions_bus_container').style.opacity = "0";
+        document.getElementById('currentStopName').style.opacity = "0";
+        document.getElementById('currentStopTime').style.opacity = "0";
+    }
+
     document.getElementById('startStopName').innerText = currentBusData.endStopData?.startStopName ?? reset_text;
     document.getElementById('endStopName').innerText = currentBusData.endStopData?.endStopName ?? reset_text;
     document.getElementById('currentStopName').innerText = currentBusData.nextStopData?.name ?? reset_text;
-
-
 
     if ((currentBusData.endStopData?.startStopArrival !== currentBusData.endStopData?.startStopArrivalRealtime) && currentBusData.endStopData){
         document.getElementById('startStopTime').innerHTML = `<s style="opacity:0.6">${currentBusData.endStopData?.startStopArrival}</s>&nbsp;&nbsp;${currentBusData.endStopData?.startStopArrivalRealtime}`;
