@@ -274,7 +274,14 @@ function removeMarkers() {
     buses = {};
 }
 
-async function  drawBuses(buses, automatic = false) {
+/**
+ * Draws buses on the map and sets their icons
+ * @param {*} buses - Bus object from the API response
+ * @param {*} automatic - True if called from refresh() function automatically
+ * @param {*} fitView - True if displayed marker should fit on the screen
+ * @returns 
+ */
+async function  drawBuses(buses, automatic = false, fitView = false) {
     myIcon = busIcon;
 
     d = new Date(); // Uporabimo kasneje za skrivanje starih busov
@@ -409,8 +416,9 @@ async function  drawBuses(buses, automatic = false) {
             animateDirection(m3[vehicle], lat, lng, bear);
             outdateBus(vehicle);
             fadeOut('returnView', 1000);
-            
 
+            if (fitView) mymap.fitBounds(Object.values(m2).map(p => [p.getLatLng()['lat'], p.getLatLng()['lng']]));
+        
         }
     }
 }

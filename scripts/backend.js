@@ -41,7 +41,7 @@ async function requestLineAllStops(start, end) {
         buses[id] = { ...buses[id], ...b, ...b.vehicle, long: b.lon, lat: b.lat };
     }
 
-    drawBuses(buses);
+    drawBuses(buses, automatic = false, fitView = true);
 
     if (!currentBusId) {
         printTimetable(trips);
@@ -58,7 +58,7 @@ async function requestLineAllStops(start, end) {
  * @returns 
  */
 async function showBuses(automatic = false, allBuses = false) {
-    
+
     if (trips || currentBusId || allBuses) {
         buses_response = (await requestBuses());
         buses_response = buses_response.filter(bus => bus.vehicle.operator_name !== "Ljubljanski Potniški Promet");
