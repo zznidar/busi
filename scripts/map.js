@@ -562,7 +562,7 @@ async function displayGeometryOnMap(geometry, stopTimes = [], options = {}, show
                 radius: options.stopRadius || 20,
                 color: 'transparent',
                 fillColor: options.stopFillColor || 'transparent',
-                fillOpacity: options.stopFillOpacity || 0.2,
+                fillOpacity: 0,
             }).bindTooltip(tooltipContent, {
                 permanent: false,
                 direction: 'top',
@@ -575,7 +575,7 @@ async function displayGeometryOnMap(geometry, stopTimes = [], options = {}, show
             });
 
             const visibleMarker = L.circleMarker([stop.lat, stop.lon], {
-                radius: options.stopRadius || 4.5,
+                radius: options.stopRadius || 5,
                 color: options.stopColor || '#9e3fd1',
                 fillColor: options.stopFillColor || '#9e3fd1',
                 fillOpacity: options.stopFillOpacity || 0,
@@ -698,9 +698,11 @@ function getStartEndStopData(stoptimes){
     const startStopName = startStop.stop.name;
     const endStopName = endStop.stop.name;
     const startStopArrival = formatTime(startStop.arrival_scheduled);
+    const startStopArrivalRealtime = formatTime(startStop.arrival_realtime);
     const endStopArrival = formatTime(endStop.arrival_scheduled);
+    const endStopArrivalRealtime = formatTime(endStop.arrival_realtime);
 
-    return {startStopName: startStopName, endStopName: endStopName, startStopArrival: startStopArrival, endStopArrival: endStopArrival};
+    return {startStopName: startStopName, endStopName: endStopName, startStopArrival: startStopArrival, startStopArrivalRealtime: startStopArrivalRealtime ,endStopArrival: endStopArrival, endStopArrivalRealtime: endStopArrivalRealtime};
 }
 
 /**

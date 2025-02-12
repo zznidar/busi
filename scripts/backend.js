@@ -103,13 +103,13 @@ async function refresh(automatic = false) {
 
         if (currentBusData.tripId !== tripId || (currentBusData.tripId === tripId && currentBusData.displayedGeometry === false)) {
             geometry = await obtainGeometryByTripId(tripId);
-            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, nextStopData: nextStopData, endStopData, endStopData, displayedGeometry: true};
-            displayBusRoute(geometry);
+            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, nextStopData: nextStopData, endStopData, endStopData, displayedGeometry: true, geometry: geometry};   
         }
         else {
             currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, nextStopData: nextStopData, endStopData, endStopData, displayedGeometry: true};
         }
-
+        
+        displayBusRoute(geometry);
         setPopupContent();
     }
 

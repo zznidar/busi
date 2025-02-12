@@ -694,10 +694,23 @@ function setPopupContent(reset=false){
         currentBusData = {busId: null, tripId: null, tripData: null, nextStopData: null, endStopData: null, displayedGeometry: false};
     }
     document.getElementById('startStopName').innerText = currentBusData.endStopData?.startStopName ?? reset_text;
-    document.getElementById('startStopTime').innerText = currentBusData.endStopData?.startStopArrival ?? reset_text;
     document.getElementById('endStopName').innerText = currentBusData.endStopData?.endStopName ?? reset_text;
-    document.getElementById('endStopTime').innerText = currentBusData.endStopData?.endStopArrival ?? reset_text;
     document.getElementById('currentStopName').innerText = currentBusData.nextStopData?.name ?? reset_text;
+
+
+
+    if ((currentBusData.endStopData?.startStopArrival !== currentBusData.endStopData?.startStopArrivalRealtime) && currentBusData.endStopData){
+        document.getElementById('startStopTime').innerHTML = `<s>${currentBusData.endStopData?.startStopArrival}</s>&nbsp;&nbsp;${currentBusData.endStopData?.startStopArrivalRealtime}`;
+    } else {
+        document.getElementById('startStopTime').innerText = currentBusData.endStopData?.startStopArrival ?? reset_text;
+    }
+
+    if ((currentBusData.endStopData?.endStopArrival !== currentBusData.endStopData?.endStopArrivalRealtime) && currentBusData.endStopData){
+        document.getElementById('endStopTime').innerHTML = `<s>${currentBusData.endStopData?.endStopArrival}</s>&nbsp;&nbsp;${currentBusData.endStopData?.endStopArrivalRealtime}`;
+    } else {
+        document.getElementById('endStopTime').innerText = currentBusData.endStopData?.endStopArrival ?? reset_text;
+    }
+    
     document.getElementById('currentStopTime').innerText = `${currentBusData.nextStopData?.arrival ?? reset_text} , zamuda: ${currentBusData.nextStopData?.delay ?? reset_text}`;
 }
 
