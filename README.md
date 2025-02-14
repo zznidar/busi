@@ -1,5 +1,5 @@
-# busi
-Prikazovalnik lokacij avtobusov in njihovih zamud
+# Busi
+Prikazovalnik avtobusov in njihovih zamud.
 
 
 ## Vir podatkov

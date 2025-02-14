@@ -1,21 +1,22 @@
 {
-	"version": 10,
+	"version": "2.0",
 	"fileList": [
 		"index.html",
 		"style.css",
-		"bus_icon.png",
-		"bus.svg",
-		"bus_dark.svg",
-		"bus_arrow.svg",
-		"bus_arrow_dark.svg",
-		"location_accent-01.svg",
-		"OJPP.js",
-		"zemljevid.js",
-		"ZZ_leaflet.js",
-		"ui.js",
-		"postaja.png",
-		"overlay.js"
+		"graphics/bus_icon.png",
+		"graphics/bus.svg",
+		"graphics/bus_dark.svg",
+		"graphics/bus_arrow.svg",
+		"graphics/bus_arrow_dark.svg",
+		"graphics/location_accent-01.svg",
+		"scripts/backend.js",
+		"scripts/map.js",
+		"scripts/ZZ_leaflet.js",
+		"scripts/ui.js",
+		"scripts/api_calls.js",
+		"graphics/postaja.png"
 	],
 	"lazyLoad": [
 	]
 }
+
