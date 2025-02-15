@@ -383,8 +383,12 @@ async function  drawBuses(buses, automatic = false, fitView = false) {
                     if (m !== currentBusId){
                         m2[m].setOpacity(0);
                         m3[m].setOpacity(0);
-                };
-            }
+                    }
+                    else {
+                        L.DomUtil.addClass(m2[m]._icon, 'selectedMarker Icon');
+                        L.DomUtil.addClass(m3[m]._icon, 'selectedMarker Bearing');
+                    };
+                }
 
             
             }, { once: true });
@@ -406,6 +410,8 @@ async function  drawBuses(buses, automatic = false, fitView = false) {
                     m2[m].setOpacity(1);
                     m3[m].setOpacity(1);
                 }
+                L.DomUtil.removeClass(m2[m]._icon, 'selectedMarker Icon');
+                L.DomUtil.removeClass(m3[m]._icon, 'selectedMarker Bearing');
 
                 //Reset global variable
                 nextStopData = null;
@@ -564,10 +570,12 @@ async function displayGeometryOnMap(geometry, stopTimes = [], options = {}, show
                 color: 'transparent',
                 fillColor: options.stopFillColor || 'transparent',
                 fillOpacity: 0,
+                zIndexOffset: 9999,
             }).bindTooltip(tooltipContent, {
                 permanent: false,
                 direction: 'top',
                 className: 'stop-tooltip',
+                zIndexOffset: 9999,
             });
 
             //If clicked on a stop show a toast message
@@ -582,6 +590,7 @@ async function displayGeometryOnMap(geometry, stopTimes = [], options = {}, show
                 color: options.stopColor || '#9e3fd1',
                 fillColor: colorTheme,
                 fillOpacity: 0.8,
+                zIndexOffset: 9999,
             });
 
             return L.layerGroup([visibleMarker, hoverMarker]);
@@ -589,7 +598,7 @@ async function displayGeometryOnMap(geometry, stopTimes = [], options = {}, show
 
 
         // Add the stop markers to a feature group for easy management
-        currentStopsLayer = L.featureGroup(stopMarkers).addTo(mymap);
+        currentStopsLayer = L.featureGroup(stopMarkers).addTo(mymap).bringToFront();
     }
 }
 

@@ -967,3 +967,9 @@ input[type='text']{
     pointer-events: none;
     opacity: 0.4;
 }
+
+.leaflet-overlay-pane { z-index: 9997; }
+
+.selectedMarker {
+    z-index: 10000;
+}
