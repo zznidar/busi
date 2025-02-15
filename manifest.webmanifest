@@ -6,7 +6,7 @@
   "scope": "./",
   "start_url": "./index.html",
     "icons": [{
-      "src": "bus_icon.png",
+      "src": "./graphics/bus_icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
