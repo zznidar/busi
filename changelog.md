@@ -3,6 +3,13 @@
 # Changelog
 All versions of releases will be documented here. Versions before 1.0 relase are not documented here as changelog was not established then. 
 
+## v2.1
+Release date: 2025-04-20
+### What is new?
+**🌟 Improvements**  
+* Display path geometries for all trips (including future and past ones), not just currently driving buses.
+* Do the same if user clicks on the green relation button (instead of showing some scary JSON from the API).
+
 ## v2.0
 Release date: 4.2.2025
 ### What is new?
