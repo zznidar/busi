@@ -60,11 +60,10 @@ async function printTimetable(trips) {
 
         tr.appendChild(td);
         td = document.createElement("td");
-        let a = document.createElement("a");
-        a.href = `${apiUrl}/trips/${encodeURIComponent(t?.["trip_id"])}`;
-        a.target = "_blank";
-        a.innerText = t.trip_headsign.trim();
-        td.appendChild(a);
+        let zeleniRelacijskiGumb = document.createElement("p");
+        zeleniRelacijskiGumb.classList.add("zeleniRelacijskiGumb");
+        zeleniRelacijskiGumb.innerText = t.trip_headsign.trim();
+        td.appendChild(zeleniRelacijskiGumb);
         tr.appendChild(td);
         td = document.createElement("td");
         td.innerText = `${Math.round((new Date(`${todayISO}T${seconds2time(t.endStopArrival)}`) - new Date(`${todayISO}T${seconds2time(t.departure_realtime ?? t.arrival_realtime)}`)) / 60000)} min`;
@@ -75,10 +74,9 @@ async function printTimetable(trips) {
         td.title = t.agency_name.name;
         tr.appendChild(td);
         tr.addEventListener("click", function(e) {
-            // only if not a
-            if (e.target.tagName !== "A" && t.trip_id) {
+            if (t.trip_id) {
                 id = tripId2busId(t.trip_id);
-                m2?.[id]?.openPopup() && menuClose();
+                m2?.[id]?.openPopup() || prepareGeometry(t.trip_id) && menuClose();
             };
         });
 
@@ -228,13 +226,12 @@ async function displayTripsOnStop(stopid, period = 60) {
         tr.id = t.trip_id;
 
         let td = document.createElement("td");
-        let a = document.createElement("a");
-        a.href = `${apiUrl}/trips/${encodeURIComponent(t?.["trip_id"])}`;
-        a.target = "_blank";
-        a.innerText = t.trip_headsign.trim();
+        let zeleniRelacijskiGumb = document.createElement("p");
+        zeleniRelacijskiGumb.classList.add("zeleniRelacijskiGumb");
+        zeleniRelacijskiGumb.innerText = t.trip_headsign.trim();
         td.style.paddingLeft = "15px";
         td.style.width = "70%";
-        td.appendChild(a);
+        td.appendChild(zeleniRelacijskiGumb);
         tr.appendChild(td);
         td = document.createElement("td");
 
@@ -251,9 +248,9 @@ async function displayTripsOnStop(stopid, period = 60) {
         tr.appendChild(td);
         tr.dataset.tripid = t.trip_id;
         tr.addEventListener("click", function(e) {
-            if (e.target.tagName !== "A" && t.trip_id) {
+            if (t.trip_id) {
                 id = tripId2busId(t.trip_id);
-                m2?.[id]?.openPopup() && menuClose();
+                m2?.[id]?.openPopup() || prepareGeometry(t.trip_id) && menuClose();
             };
         });
 

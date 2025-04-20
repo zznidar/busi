@@ -88,29 +88,16 @@ async function showBuses(automatic = false, allBuses = false) {
  * Refreshes all displayed buses and trips.
  * @param {*} automatic True if called automatically
  */
-async function refresh(automatic = false) {
+async function refresh(automatic = false, tripId = undefined) {
 
     if (selectedStop) {
         await displayTripsOnStop(selectedStop, 300);
     }
 
     //Refresh delay status
-    if (currentBusId) {
-        tripId = buses[currentBusId].trip_id;
-        tripData = await obtainDataByTripId(tripId);
-        nextStopData = getNextStopData(tripData.stop_times);
-        endStopData = getStartEndStopData(tripData.stop_times);
-
-        if (currentBusData.tripId !== tripId || (currentBusData.tripId === tripId && currentBusData.displayedGeometry === false)) {
-            geometry = await obtainGeometryByTripId(tripId);
-            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, nextStopData: nextStopData, endStopData, endStopData, displayedGeometry: true, geometry: geometry};   
-        }
-        else {
-            currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, nextStopData: nextStopData, endStopData, endStopData, displayedGeometry: true};
-        }
-        
-        displayBusRoute(geometry);
-        setPopupContent();
+    if ((currentBusId && (tripId = buses[currentBusId].trip_id)) || tripId) {
+        //tripId = buses[currentBusId].trip_id;
+        await prepareGeometry(tripId);
     }
 
     //Do not center and animate if selected bus is not in the bounds
@@ -125,6 +112,27 @@ async function refresh(automatic = false) {
     setTimeout(() => {
         document.getElementById("refresh").classList.remove("refresh_animate");
     }, 1000);
+}
+
+/**
+ * Prepares geometry and tripData of the trip
+ * @param {*} tripId the tripId you wish to display the geometry for.
+ */
+async function prepareGeometry(tripId) {
+    tripData = await obtainDataByTripId(tripId);
+    nextStopData = getNextStopData(tripData.stop_times);
+    endStopData = getStartEndStopData(tripData.stop_times);
+
+    if (currentBusData.tripId !== tripId || (currentBusData.tripId === tripId && currentBusData.displayedGeometry === false)) {
+        geometry = await obtainGeometryByTripId(tripId);
+        currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, nextStopData: nextStopData, endStopData, endStopData, displayedGeometry: true, geometry: geometry};   
+    }
+    else {
+        currentBusData = {busId: currentBusId, tripId: tripId, tripData: tripData, nextStopData: nextStopData, endStopData, endStopData, displayedGeometry: true};
+    }
+    
+    displayBusRoute(geometry);
+    setPopupContent();
 }
 
 
