@@ -70,6 +70,7 @@ async function requestAllBusStops() {
     for (let p of busStopsData) {
         if (!p.gtfs_id.startsWith("IJPP:")) continue;
         let name = p.name;
+        if(name === "Ljubljana") name = "Ljubljana ŽP";
         busStops?.[name]?.push(p.gtfs_id) ?? (busStops[name] = [p.gtfs_id]);
     }
     return;

@@ -103,7 +103,7 @@ async function addBusStops() {
     if (Object.keys(busStops).length === 0) {
         await requestAllBusStops();
     }
-    let query = prompt("Vnesi name vstopne postaje");
+    let query = prompt("Vnesi name vstopne postaje").trimEnd();
     if (query.length < 3) {
         alert("Vnesi vsaj 3 črke ... Upam, da nima kakšna postaja krajšega imena 😅");
         return;
@@ -687,6 +687,8 @@ const busId = urlParams.get('busId'); // e.g., https://link?busId=123
 document.addEventListener("DOMContentLoaded", function() {
     if (busId) {
         displayBus(busId);
+    } else {
+        toggleFavorite();
     }
 
     // TODO: Make this a beautiful tooltip
