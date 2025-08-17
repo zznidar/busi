@@ -523,12 +523,17 @@ function updateSearch(e) {
 
 SEARCH_RESULTS.addEventListener("click", function(e) {
     console.log(e);
+    // Close potentially open bus popups to prevent map auto-panning on location update
+    m2[currentBusId]?.closePopup();
     if (e.target.tagName === "LI") {
         displayBusStopsOnMap(e.target.dataset.busStopName);
     }
 });
 
 
+/**
+ * Handle keyboard selection of search results
+ */
 updownselectindex = 0;
 function updownselect(e) {
     console.log("updownselect: ", e);
