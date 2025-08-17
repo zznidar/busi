@@ -967,3 +967,10 @@ input[type='text']{
     pointer-events: none;
     opacity: 0.4;
 }
+
+.selected::before {
+    content: "🟡 ";
+}
+.selected {
+    font-weight: bold;
+}

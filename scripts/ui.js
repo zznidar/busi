@@ -518,6 +518,7 @@ function updateSearch(e) {
         SEARCH_RESULTS.style.minHeight = "0";
         search_results_container.style.opacity = "0";
     }
+    updownselect();
 }
 
 SEARCH_RESULTS.addEventListener("click", function(e) {
@@ -528,7 +529,32 @@ SEARCH_RESULTS.addEventListener("click", function(e) {
 });
 
 
+updownselectindex = 0;
+function updownselect(e) {
+    console.log("updownselect: ", e);
+    let shownResults = document.getElementById("search_results").getElementsByTagName("li");
+    shownResults[updownselectindex]?.classList.remove("selected");
+    switch(e?.key) {
+        case "ArrowDown":
+            e.preventDefault();
+            updownselectindex = ++updownselectindex%shownResults.length;
+            break;
+        case "ArrowUp":
+            e.preventDefault();
+            updownselectindex = (--updownselectindex + shownResults.length)%shownResults.length;
+            break;
+        case "Enter":
+            shownResults[updownselectindex]?.click();
+            break;
+        default:
+            updownselectindex = 0;
+            //updownselectindex = updownselectindex% shownResults.length;
+    }
+    shownResults[updownselectindex]?.classList.add("selected");
+}
+
 document.getElementById("search_field").addEventListener("input", updateSearch);
+document.getElementById("search_container").addEventListener("keydown", updownselect);
 
 
 /**
