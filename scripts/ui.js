@@ -66,7 +66,16 @@ async function printTimetable(trips) {
         td.appendChild(zeleniRelacijskiGumb);
         tr.appendChild(td);
         td = document.createElement("td");
-        td.innerText = `${Math.round((new Date(`${todayISO}T${seconds2time(t.endStopArrival)}`) - new Date(`${todayISO}T${seconds2time(t.departure_realtime ?? t.arrival_realtime)}`)) / 60000)} min`;
+
+        let HHmmss = seconds2time(t.endStopArrival).split(":");
+        let endStopArrivalDate = new Date(todayISO);
+        endStopArrivalDate.setHours(...HHmmss);
+        
+        HHmmss = seconds2time(t.departure_realtime ?? t.arrival_realtime).split(":");
+        let departureDate = new Date(todayISO);
+        departureDate.setHours(...HHmmss);
+
+        td.innerText = `${Math.round((endStopArrivalDate - departureDate) / 60000)} min`;
         tr.appendChild(td);
         td = document.createElement("td");
         // only fisrt 5 letters of operator name
