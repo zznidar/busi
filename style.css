@@ -13,6 +13,10 @@
     --color-theme-second: rgba(204, 204, 204, 0.69);
     --color-toast: #ecca9e;
     --color-live: #4f6f52;
+    
+    --slide-animation:    transform 0.18s -0.1s cubic-bezier(0, 0, 0.2, 1), opacity 0.08s 0s cubic-bezier(0, 0, 0.2, 1), display 0.08s 0s cubic-bezier(0, 0, 0.2, 1) allow-discrete;
+    --slide-in-animation: transform 0.18s 0s    cubic-bezier(0, 0, 0.2, 1), opacity 0.08s 0s cubic-bezier(0, 0, 0.2, 1), display 0.08s 0s cubic-bezier(0, 0, 0.2, 1) allow-discrete;
+    --slide-amount: 3rem;
 
     overscroll-behavior: none;
 }
@@ -91,6 +95,38 @@ button:not(.zamudas button) {
 
 /*Containers*/
 
+/* The transitions work nicely (both ways) in Chrome. For unknown reason, fading out with display: none and allow-discrete happens instantaniously in Firefox. (It fades in correctly) */
+#favorites {
+    transform: translateX(0);
+    opacity: 1;
+    transition: var(--slide-animation);
+    @starting-style {
+        opacity: 0;
+        transform: translateX(calc(-1 * var(--slide-amount)));
+
+      }
+}
+#favorites.no {
+ transform: translateX(calc(-1 * var(--slide-amount)));
+    opacity: 0;
+    transition: var(--slide-in-animation);
+}
+
+#timetable_container {
+    transform: translateX(0);
+    opacity: 1;
+    transition: var(--slide-animation);
+    @starting-style {
+        opacity: 0;
+        transform: translateX(var(--slide-amount));
+
+      }
+}
+#timetable_container.no {
+ transform: translateX(var(--slide-amount));
+    opacity: 0;
+    transition: var(--slide-in-animation);
+}
 
 .site_container{
     min-height: 350px;
@@ -307,7 +343,7 @@ input:-webkit-autofill {
 }
 
 #search_results li{
-    width: fit-content;
+    /* width: fit-content; */
     list-style-type: none;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
@@ -973,4 +1009,8 @@ input[type='text']{
 }
 .selected {
     font-weight: bold;
+}
+
+#search_results_container li:hover {
+    background-color: var(--color-theme-second);
 }

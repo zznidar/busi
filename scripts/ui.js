@@ -343,7 +343,7 @@ function menuClose() {
     setTimeout(function() {
         var element = document.getElementById('menu');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 300); // Adjust the delay (in milliseconds) to make it slower
+    }, 0); // Adjust the delay (in milliseconds) to make it slower
 }
 
 /**
@@ -353,7 +353,7 @@ function menuOpen() {
     setTimeout(function() {
         var element = document.getElementById('menu');
         element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
-    }, 300); // Adjust the delay (in milliseconds) to make it slower
+    }, 0); // Adjust the delay (in milliseconds) to make it slower
 }
 
 
@@ -385,16 +385,17 @@ function toggleFavorite() {
 
     //If favorite is visible, close menus, change visibilites and toggle menu
     if (elementFavorite.classList.contains("no")) {
-        if (!elementMenu.classList.contains("closed")) {
-            menuClose();
+        //if (!elementMenu.classList.contains("closed")) {
+        if (true) {
+            //menuClose();
+            elementTimetable.classList.add("no");
+            elementDelay.classList.add("no");
             setTimeout(function() {
                 elementFavorite.classList.remove("no");
-                elementTimetable.classList.add("no");
-                elementDelay.classList.add("no");
-            }, 800);
+            }, 100);
             setTimeout(() => {
                 menuOpen();
-            }, 1000);
+            }, 0);
         }
         else {
             elementFavorite.classList.remove("no");
@@ -402,7 +403,7 @@ function toggleFavorite() {
             elementDelay.classList.add("no");
             setTimeout(() => {
                 menuOpen();
-            }, 100);
+            }, 0);
         }
         elementMenu.classList.remove("closed");
 
@@ -426,20 +427,21 @@ function toggleTimetable() {
 
     //If favorite is visible, close menus, change visibilites and toggle menu
     if (elementTimetable.classList.contains("no")) {
-        if (!elementMenu.classList.contains("closed")) {
-            menuClose();
+        //if (!elementMenu.classList.contains("closed")) {
+        if (true) {
+            //menuClose();
+            elementFavorite.classList.add("no");
             setTimeout(() => {
                 elementTimetable.classList.remove("no");
-                elementFavorite.classList.add("no");
 
                 if (delayContent.innerHTML != '\n\t\t\t') {
                     elementDelay.classList.remove("no");
                 }
 
-            }, 800);
+            }, 100);
             setTimeout(() => {
                 menuOpen();
-            }, 1000);
+            }, 0);
         }
         else {
             elementTimetable.classList.remove("no");
@@ -449,7 +451,7 @@ function toggleTimetable() {
             }
             setTimeout(() => {
                 menuOpen();
-            }, 100);
+            }, 0);
         }
         elementMenu.classList.remove("closed");
 
@@ -543,7 +545,7 @@ SEARCH_RESULTS.addEventListener("click", function(e) {
 /**
  * Handle keyboard selection of search results
  */
-updownselectindex = 0;
+updownselectindex = -1;
 function updownselect(e) {
     console.log("updownselect: ", e);
     let shownResults = document.getElementById("search_results").getElementsByTagName("li");
@@ -561,7 +563,7 @@ function updownselect(e) {
             shownResults[updownselectindex]?.click();
             break;
         default:
-            updownselectindex = 0;
+            updownselectindex = -1;
             //updownselectindex = updownselectindex% shownResults.length;
     }
     shownResults[updownselectindex]?.classList.add("selected");
