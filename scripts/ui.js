@@ -340,20 +340,15 @@ function closeBusContainer(){
  * Function to close the menu/scrollable site container
  */
 function menuClose() {
-    setTimeout(function() {
-        var element = document.getElementById('menu');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 0); // Adjust the delay (in milliseconds) to make it slower
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /**
  * Function to open the menu/scrollable site container
  */
 function menuOpen() {
-    setTimeout(function() {
-        var element = document.getElementById('menu');
-        element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
-    }, 0); // Adjust the delay (in milliseconds) to make it slower
+    var element = document.getElementById('menu');
+    element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
 }
 
 
@@ -385,28 +380,14 @@ function toggleFavorite() {
 
     //If favorite is visible, close menus, change visibilites and toggle menu
     if (elementFavorite.classList.contains("no")) {
-        //if (!elementMenu.classList.contains("closed")) {
-        if (true) {
-            //menuClose();
-            elementTimetable.classList.add("no");
-            elementDelay.classList.add("no");
-            setTimeout(function() {
-                elementFavorite.classList.remove("no");
-            }, 100);
-            setTimeout(() => {
-                menuOpen();
-            }, 0);
-        }
-        else {
+        elementTimetable.classList.add("no");
+        elementDelay.classList.add("no");
+        setTimeout(function() {
             elementFavorite.classList.remove("no");
-            elementTimetable.classList.add("no");
-            elementDelay.classList.add("no");
-            setTimeout(() => {
-                menuOpen();
-            }, 0);
-        }
-        elementMenu.classList.remove("closed");
+        }, 100);
+        menuOpen();
 
+        elementMenu.classList.remove("closed");
 
     }
     else { toggleMenu(); }
@@ -428,31 +409,17 @@ function toggleTimetable() {
     //If favorite is visible, close menus, change visibilites and toggle menu
     if (elementTimetable.classList.contains("no")) {
         //if (!elementMenu.classList.contains("closed")) {
-        if (true) {
-            //menuClose();
-            elementFavorite.classList.add("no");
-            setTimeout(() => {
-                elementTimetable.classList.remove("no");
-
-                if (delayContent.innerHTML != '\n\t\t\t') {
-                    elementDelay.classList.remove("no");
-                }
-
-            }, 100);
-            setTimeout(() => {
-                menuOpen();
-            }, 0);
-        }
-        else {
+        //menuClose();
+        elementFavorite.classList.add("no");
+        setTimeout(() => {
             elementTimetable.classList.remove("no");
-            elementFavorite.classList.add("no");
+
             if (delayContent.innerHTML != '\n\t\t\t') {
                 elementDelay.classList.remove("no");
             }
-            setTimeout(() => {
-                menuOpen();
-            }, 0);
-        }
+
+        }, 100);
+        menuOpen();
         elementMenu.classList.remove("closed");
 
     }
