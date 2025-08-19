@@ -384,6 +384,8 @@ function toggleFavorite() {
         elementDelay.classList.add("no");
         setTimeout(function() {
             elementFavorite.classList.remove("no");
+            elementTimetable.classList.add("no");
+            elementDelay.classList.add("no");
         }, 100);
         menuOpen();
 
@@ -413,6 +415,7 @@ function toggleTimetable() {
         elementFavorite.classList.add("no");
         setTimeout(() => {
             elementTimetable.classList.remove("no");
+            elementFavorite.classList.add("no");
 
             if (delayContent.innerHTML != '\n\t\t\t') {
                 elementDelay.classList.remove("no");
