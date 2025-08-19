@@ -108,8 +108,27 @@ async function printTimetable(trips) {
  */
 
 //busStops = {};
+function setLabel(text, placeholderText="Išči po postajah", clearSearchField=false) {
+    let labela = document.getElementById("label_search_field");
+    document.getElementById("search_field").placeholder = placeholderText;
+    if(clearSearchField) document.getElementById("search_field").value = "";
+    if(!text) {
+        labela.classList.add("no");
+        return
+    }
+    labela.innerText = text;
+    labela.classList.remove("no");
+}
+
+var searchSelectionType; // "search", "entry", "exit"
+var vstopnaPostajaPriDodajanjuRelacije;
+var izstopnaPostajaPriDodajanjuRelacije;
 async function addBusStops() {
-    if (Object.keys(busStops).length === 0) {
+    await toggleSearch("open"); // Open search container
+    /* setLabel("<- Vstopna postaja", "Išči vstopno postajo"); */
+    setLabel("Vstopna postaja:", "Išči vstopno postajo");
+    searchSelectionType = "entry"; // Set selection type to entry bus stop
+/*     if (Object.keys(busStops).length === 0) {
         await requestAllBusStops();
     }
     let query = prompt("Vnesi name vstopne postaje").trimEnd();
@@ -151,7 +170,7 @@ async function addBusStops() {
             }
         }
         ADDBUSSTOPCONTAINER.appendChild(button);
-    }
+    } */
 }
 
 /**
@@ -434,12 +453,14 @@ function toggleTimetable() {
 /**
  * Toggles search container
  */
-async function toggleSearch() {
+async function toggleSearch(force=undefined) {
+    //setLabel("");
+    //searchSelectionType = "search";
     var element = document.getElementById("search_container");
     element.classList.toggle("closed");
 
     clearTimeout(searchTimeout);
-    if (element.classList.contains("closed")) {
+    if (force!="close" && element.classList.contains("closed") || force=="open") {
         menuClose();
         closeBusContainer();
         document.getElementById('menu').classList.add('closed');
@@ -472,7 +493,7 @@ const isWebkit =
  * @param {*} e Current search input
  */
 function updateSearch(e) {
-    let query = e.target.value;
+    let query = e.target.value.trimEnd();
     var search_results_container = document.getElementById("search_results_container");
     SEARCH_RESULTS.innerHTML = "";
     if (query.length >= 3) {
@@ -507,7 +528,28 @@ SEARCH_RESULTS.addEventListener("click", function(e) {
     // Close potentially open bus popups to prevent map auto-panning on location update
     m2[currentBusId]?.closePopup();
     if (e.target.tagName === "LI") {
-        displayBusStopsOnMap(e.target.dataset.busStopName);
+        switch(searchSelectionType) {
+            case "entry":
+                vstopnaPostajaPriDodajanjuRelacije = e.target.dataset.busStopName;
+                searchSelectionType = "exit";
+                /* setLabel(`<- ${vstopnaPostajaPriDodajanjuRelacije}`, "Išči izstopno postajo", true); */
+                setLabel(`${vstopnaPostajaPriDodajanjuRelacije}–`, "Išči izstopno postajo", true);
+                const event = new Event("input");
+                document.getElementById("search_field").dispatchEvent(event);
+                document.getElementById("search_field").focus();
+                break
+            case "exit":
+                izstopnaPostajaPriDodajanjuRelacije = e.target.dataset.busStopName;
+                let entryBusStop = busStops[vstopnaPostajaPriDodajanjuRelacije];
+                let exitBusStop = busStops[izstopnaPostajaPriDodajanjuRelacije];
+                toggleSearch("close");
+                requestLineAllStops(entryBusStop, exitBusStop);
+                saveBusLine(entryBusStop, exitBusStop, `${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije}`)
+                break
+            case "search":
+            default:
+                displayBusStopsOnMap(e.target.dataset.busStopName);
+        }
     }
 });
 

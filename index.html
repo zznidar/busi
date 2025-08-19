@@ -56,8 +56,11 @@
 
 	<div class="search_container no" id="search_container">
 		<div style="margin-top:-2px">
-			<input type="text" id="search_field" class="search_field" placeholder="Išči po postajah">
-			<span class="material-symbols-outlined" id="search_logo">search</span>
+			<div style="display: flex; align-items: center;">
+				<label id="label_search_field" for="search_field" class="no center">&lt;- Vstopna postaja</label>
+				<input type="text" id="search_field" class="search_field" placeholder="Išči po postajah">
+				<span class="material-symbols-outlined" id="search_logo">search</span>
+			</div>
 			<div id="search_results_container">
 				<ul id="search_results">
 				</ul>
@@ -154,7 +157,7 @@
 			<span class="tool_item" style="left:37.5%">Vozni red</span>
 
 			<span class="material-symbols-outlined tool_icon" style="left: 62.5%;"
-				onclick="toggleSearch()">search</span>
+				onclick="setLabel(''); searchSelectionType='search'; toggleSearch()">search</span>
 			<span class="tool_item" style="left:62.5%">Iskanje</span>
 
 			<!-- <span class="material-symbols-outlined tool_icon" style="left: 62.5%;" onclick="trips = undefined; showBuses()">directions_bus</span>
