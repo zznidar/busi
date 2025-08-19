@@ -130,6 +130,16 @@ async function addBusStops() {
     searchSelectionType = "entry"; // Set selection type to entry bus stop
 }
 
+function labelClick() {
+    if(searchSelectionType === "exit") {
+        document.getElementById("search_field").value = vstopnaPostajaPriDodajanjuRelacije;
+        setLabel("Vstopna postaja:", "Išči vstopno postajo");
+        searchSelectionType = "entry";
+        const event = new Event("input");
+        document.getElementById("search_field").dispatchEvent(event);
+    }
+}
+
 /**
  * Draw favorite relation buttons
  * @param {*} buttons Array of all buttons
