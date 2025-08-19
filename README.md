@@ -8,9 +8,7 @@ Spletna aplikacija [Busi](https://zznidar.github.io/busi/) omogoča pregled nad 
 * zemljevid s potjo posameznega avtobusa
 * **lokacije** vseh avtobusov  
 
-<img src="images/3.png" alt="Spet zamuja? Preveri zamude!" width="30%">
-<img src="images/2.png" alt="Kdaj bo naslednji? Urnik za izbrano relacijo!" width="30%">
-<img src="images/1.png" alt="Sledi avtobusom po vsej Sloveniji!" width="30%">
+<img src="images/3.png" alt="Spet zamuja? Preveri zamude!" width="30%"> <img src="images/2.png" alt="Kdaj bo naslednji? Urnik za izbrano relacijo!" width="30%"> <img src="images/1.png" alt="Sledi avtobusom po vsej Sloveniji!" width="30%">
 
 
 ## Vir podatkov
