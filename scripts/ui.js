@@ -119,7 +119,7 @@ async function addBusStops() {
     }
     ADDBUSSTOPCONTAINER.innerHTML = "";
 
-    let stops = Object.keys(busStops).filter(p => p.toLowerCase().includes(query.toLowerCase()));
+    let stops = Object.keys(busStops).sort().filter(p => p.toLowerCase().includes(query.toLowerCase()));
     for (let p of stops) {
         let button = document.createElement("span");
         button.classList.add("btn_busstop");
@@ -133,7 +133,7 @@ async function addBusStops() {
                 return;
             }
             ADDBUSSTOPCONTAINER.innerHTML = "";
-            let stops = Object.keys(busStops).filter(p => p.toLowerCase().includes(endPoint.toLowerCase()));
+            let stops = Object.keys(busStops).sort().filter(p => p.toLowerCase().includes(endPoint.toLowerCase()));
             for (let p of stops) {
                 let button = document.createElement("span");
                 button.classList.add("btn_busstop");
@@ -504,7 +504,7 @@ function updateSearch(e) {
     var search_results_container = document.getElementById("search_results_container");
     SEARCH_RESULTS.innerHTML = "";
     if (query.length >= 3) {
-        let stops = Object.keys(busStops).filter(p => p.toLowerCase().includes(query.toLowerCase()));
+        let stops = Object.keys(busStops).sort().filter(p => p.toLowerCase().includes(query.toLowerCase()));
         for (let p of stops) {
             let li = document.createElement("li");
             li.innerHTML = p;
@@ -565,6 +565,12 @@ function updownselect(e) {
             //updownselectindex = updownselectindex% shownResults.length;
     }
     shownResults[updownselectindex]?.classList.add("selected");
+    if(!!shownResults[updownselectindex]?.scrollIntoViewIfNeeded) {
+        shownResults[updownselectindex]?.scrollIntoViewIfNeeded(false);
+    } else {
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=403510
+        shownResults[updownselectindex]?.scrollIntoView({block: "center", container: "nearest" });
+    }
 }
 
 document.getElementById("search_field").addEventListener("input", updateSearch);
