@@ -128,49 +128,6 @@ async function addBusStops() {
     /* setLabel("<- Vstopna postaja", "Išči vstopno postajo"); */
     setLabel("Vstopna postaja:", "Išči vstopno postajo");
     searchSelectionType = "entry"; // Set selection type to entry bus stop
-/*     if (Object.keys(busStops).length === 0) {
-        await requestAllBusStops();
-    }
-    let query = prompt("Vnesi name vstopne postaje").trimEnd();
-    if (query.length < 3) {
-        alert("Vnesi vsaj 3 črke ... Upam, da nima kakšna postaja krajšega imena 😅");
-        return;
-    }
-    ADDBUSSTOPCONTAINER.innerHTML = "";
-
-    let stops = Object.keys(busStops).sort().filter(p => p.toLowerCase().includes(query.toLowerCase()));
-    for (let p of stops) {
-        let button = document.createElement("span");
-        button.classList.add("btn_busstop");
-        button.innerText = p;
-        button.onclick = () => {
-            entryBusStop = busStops[p];
-            entryBusStopName = p;
-            let endPoint = prompt("Vnesi name izstopne postaje");
-            if (endPoint.length < 3) {
-                alert("Vnesi vsaj 3 črke ... Upam, da nima kakšna postaja krajšega imena 😅");
-                return;
-            }
-            ADDBUSSTOPCONTAINER.innerHTML = "";
-            let stops = Object.keys(busStops).sort().filter(p => p.toLowerCase().includes(endPoint.toLowerCase()));
-            for (let p of stops) {
-                let button = document.createElement("span");
-                button.classList.add("btn_busstop");
-                button.innerText = p;
-                button.onclick = () => {
-                    exitBusStop = busStops[p];
-                    exitBusStopName = p;
-                    requestLineAllStops(entryBusStop, exitBusStop);
-                    saveBusLine(entryBusStop, exitBusStop, `${entryBusStopName}–${exitBusStopName}`)
-                    //Delete bus stop buttons after the relation has been added
-                    ADDBUSSTOPCONTAINER.innerHTML = "";
-                }
-                ADDBUSSTOPCONTAINER.appendChild(button);
-
-            }
-        }
-        ADDBUSSTOPCONTAINER.appendChild(button);
-    } */
 }
 
 /**
@@ -545,6 +502,7 @@ SEARCH_RESULTS.addEventListener("click", function(e) {
                 toggleSearch("close");
                 requestLineAllStops(entryBusStop, exitBusStop);
                 saveBusLine(entryBusStop, exitBusStop, `${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije}`)
+                toast(`Relacija ${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije} je bila shranjena med priljubljene.`)
                 break
             case "search":
             default:

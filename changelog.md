@@ -3,6 +3,23 @@
 # Changelog
 All versions of releases will be documented here. Versions before 1.0 relase are not documented here as changelog was not established then. 
 
+## v2.2
+Release date: 2025-08-20
+### What is new?
+**🌟 Improvements**  
+* Use modern search field when adding new _Pribljubljene relacije_
+* Use arrow keys and Enter to select search results on computer #14
+* Better and faster UX when switching between tabs
+* _Priljubljene relacije_ now opens automatically on start
+
+**🐛 Bug fixes**  
+* Prevent automatic map moving when selecting a bus stop if vehicle locations refresh #13
+* Fix NaN duration if it extends past midnight #17
+
+**🔁 Changes**  
+* Train stations 🚂 are now separated from bus stations. This should make usage more straight-forward (and avoid confusion why there are no buses on Ljubljana)
+
+
 ## v2.1
 Release date: 2025-04-20
 ### What is new?
