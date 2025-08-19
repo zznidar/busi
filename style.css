@@ -13,6 +13,10 @@
     --color-theme-second: rgba(204, 204, 204, 0.69);
     --color-toast: #ecca9e;
     --color-live: #4f6f52;
+    
+    --slide-animation:    transform 0.18s -0.1s cubic-bezier(0, 0, 0.2, 1), opacity 0.08s 0s cubic-bezier(0, 0, 0.2, 1), display 0.08s 0s cubic-bezier(0, 0, 0.2, 1) allow-discrete;
+    --slide-in-animation: transform 0.18s 0s    cubic-bezier(0, 0, 0.2, 1), opacity 0.08s 0s cubic-bezier(0, 0, 0.2, 1), display 0.08s 0s cubic-bezier(0, 0, 0.2, 1) allow-discrete;
+    --slide-amount: 3rem;
 
     overscroll-behavior: none;
 }
@@ -91,6 +95,38 @@ button:not(.zamudas button) {
 
 /*Containers*/
 
+/* The transitions work nicely (both ways) in Chrome. For unknown reason, fading out with display: none and allow-discrete happens instantaniously in Firefox. (It fades in correctly) */
+#favorites {
+    transform: translateX(0);
+    opacity: 1;
+    transition: var(--slide-animation);
+    @starting-style {
+        opacity: 0;
+        transform: translateX(calc(-1 * var(--slide-amount)));
+
+      }
+}
+#favorites.no {
+ transform: translateX(calc(-1 * var(--slide-amount)));
+    opacity: 0;
+    transition: var(--slide-in-animation);
+}
+
+#timetable_container {
+    transform: translateX(0);
+    opacity: 1;
+    transition: var(--slide-animation);
+    @starting-style {
+        opacity: 0;
+        transform: translateX(var(--slide-amount));
+
+      }
+}
+#timetable_container.no {
+ transform: translateX(var(--slide-amount));
+    opacity: 0;
+    transition: var(--slide-in-animation);
+}
 
 .site_container{
     min-height: 350px;
@@ -250,11 +286,12 @@ button:not(.zamudas button) {
 
 }
 #search_field{
-    position: relative;
+/*     position: relative; */
     font-family: 'Open Sans', sans-serif;
     background-color: var(--color-theme);
     width:70%;
-    left:10px;
+    /* left:10px; */
+    margin-left: 10px;
     border:none;
     text-align: left;
     z-index: 5;
@@ -266,9 +303,10 @@ input:-webkit-autofill {
 }
 
 #search_logo{
-    position: absolute;
+    /* position: absolute; */
+    position: relative;
     right: 20px;
-    transform: translate(0, 60%);
+    /* transform: translate(0, 60%); */
     font-size: 2em;
     color: var(--color-primary);
     z-index: 5;	
@@ -307,7 +345,7 @@ input:-webkit-autofill {
 }
 
 #search_results li{
-    width: fit-content;
+    /* width: fit-content; */
     list-style-type: none;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
@@ -867,7 +905,7 @@ input[type='text']{
     border-bottom: 2px solid var(--color-primary);
     width: 60%;
     padding: 0.5rem 1rem;
-    margin-left: auto;
+/*     margin-left: auto; */
     margin-right: auto;
     margin-block-end: 10px;
     margin-block-start: 10px;
@@ -966,4 +1004,27 @@ input[type='text']{
 .shareContainer[disabled]{
     pointer-events: none;
     opacity: 0.4;
+}
+
+.selected::before {
+    content: "🟡 ";
+}
+.selected {
+    font-weight: bold;
+}
+
+#search_results_container li:hover {
+    background-color: var(--color-theme-second);
+}
+
+#label_search_field {
+    z-index: 6;
+/*     position: absolute;
+    right: 2rem;
+    top: 1.1rem; */
+    background-color: var(--color-theme-second);
+    height: 50px; /* Always set to same as element search_container */
+    border-radius: 25px 0 0 25px;
+    display: flex;
+    align-items: center;
 }

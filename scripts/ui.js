@@ -66,7 +66,16 @@ async function printTimetable(trips) {
         td.appendChild(zeleniRelacijskiGumb);
         tr.appendChild(td);
         td = document.createElement("td");
-        td.innerText = `${Math.round((new Date(`${todayISO}T${seconds2time(t.endStopArrival)}`) - new Date(`${todayISO}T${seconds2time(t.departure_realtime ?? t.arrival_realtime)}`)) / 60000)} min`;
+
+        let HHmmss = seconds2time(t.endStopArrival).split(":");
+        let endStopArrivalDate = new Date(todayISO);
+        endStopArrivalDate.setHours(...HHmmss);
+        
+        HHmmss = seconds2time(t.departure_realtime ?? t.arrival_realtime).split(":");
+        let departureDate = new Date(todayISO);
+        departureDate.setHours(...HHmmss);
+
+        td.innerText = `${Math.round((endStopArrivalDate - departureDate) / 60000)} min`;
         tr.appendChild(td);
         td = document.createElement("td");
         // only fisrt 5 letters of operator name
@@ -99,49 +108,35 @@ async function printTimetable(trips) {
  */
 
 //busStops = {};
+function setLabel(text, placeholderText="Išči po postajah", clearSearchField=false) {
+    let labela = document.getElementById("label_search_field");
+    document.getElementById("search_field").placeholder = placeholderText;
+    if(clearSearchField) document.getElementById("search_field").value = "";
+    if(!text) {
+        labela.classList.add("no");
+        return
+    }
+    labela.innerText = text;
+    labela.classList.remove("no");
+}
+
+var searchSelectionType; // "search", "entry", "exit"
+var vstopnaPostajaPriDodajanjuRelacije;
+var izstopnaPostajaPriDodajanjuRelacije;
 async function addBusStops() {
-    if (Object.keys(busStops).length === 0) {
-        await requestAllBusStops();
-    }
-    let query = prompt("Vnesi name vstopne postaje");
-    if (query.length < 3) {
-        alert("Vnesi vsaj 3 črke ... Upam, da nima kakšna postaja krajšega imena 😅");
-        return;
-    }
-    ADDBUSSTOPCONTAINER.innerHTML = "";
+    await toggleSearch("open"); // Open search container
+    /* setLabel("<- Vstopna postaja", "Išči vstopno postajo"); */
+    setLabel("Vstopna postaja:", "Išči vstopno postajo");
+    searchSelectionType = "entry"; // Set selection type to entry bus stop
+}
 
-    let stops = Object.keys(busStops).filter(p => p.toLowerCase().includes(query.toLowerCase()));
-    for (let p of stops) {
-        let button = document.createElement("span");
-        button.classList.add("btn_busstop");
-        button.innerText = p;
-        button.onclick = () => {
-            entryBusStop = busStops[p];
-            entryBusStopName = p;
-            let endPoint = prompt("Vnesi name izstopne postaje");
-            if (endPoint.length < 3) {
-                alert("Vnesi vsaj 3 črke ... Upam, da nima kakšna postaja krajšega imena 😅");
-                return;
-            }
-            ADDBUSSTOPCONTAINER.innerHTML = "";
-            let stops = Object.keys(busStops).filter(p => p.toLowerCase().includes(endPoint.toLowerCase()));
-            for (let p of stops) {
-                let button = document.createElement("span");
-                button.classList.add("btn_busstop");
-                button.innerText = p;
-                button.onclick = () => {
-                    exitBusStop = busStops[p];
-                    exitBusStopName = p;
-                    requestLineAllStops(entryBusStop, exitBusStop);
-                    saveBusLine(entryBusStop, exitBusStop, `${entryBusStopName}–${exitBusStopName}`)
-                    //Delete bus stop buttons after the relation has been added
-                    ADDBUSSTOPCONTAINER.innerHTML = "";
-                }
-                ADDBUSSTOPCONTAINER.appendChild(button);
-
-            }
-        }
-        ADDBUSSTOPCONTAINER.appendChild(button);
+function labelClick() {
+    if(searchSelectionType === "exit") {
+        document.getElementById("search_field").value = vstopnaPostajaPriDodajanjuRelacije;
+        setLabel("Vstopna postaja:", "Išči vstopno postajo");
+        searchSelectionType = "entry";
+        const event = new Event("input");
+        document.getElementById("search_field").dispatchEvent(event);
     }
 }
 
@@ -331,20 +326,15 @@ function closeBusContainer(){
  * Function to close the menu/scrollable site container
  */
 function menuClose() {
-    setTimeout(function() {
-        var element = document.getElementById('menu');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 300); // Adjust the delay (in milliseconds) to make it slower
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /**
  * Function to open the menu/scrollable site container
  */
 function menuOpen() {
-    setTimeout(function() {
-        var element = document.getElementById('menu');
-        element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
-    }, 300); // Adjust the delay (in milliseconds) to make it slower
+    var element = document.getElementById('menu');
+    element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
 }
 
 
@@ -376,27 +366,16 @@ function toggleFavorite() {
 
     //If favorite is visible, close menus, change visibilites and toggle menu
     if (elementFavorite.classList.contains("no")) {
-        if (!elementMenu.classList.contains("closed")) {
-            menuClose();
-            setTimeout(function() {
-                elementFavorite.classList.remove("no");
-                elementTimetable.classList.add("no");
-                elementDelay.classList.add("no");
-            }, 800);
-            setTimeout(() => {
-                menuOpen();
-            }, 1000);
-        }
-        else {
+        elementTimetable.classList.add("no");
+        elementDelay.classList.add("no");
+        setTimeout(function() {
             elementFavorite.classList.remove("no");
             elementTimetable.classList.add("no");
             elementDelay.classList.add("no");
-            setTimeout(() => {
-                menuOpen();
-            }, 100);
-        }
-        elementMenu.classList.remove("closed");
+        }, 100);
+        menuOpen();
 
+        elementMenu.classList.remove("closed");
 
     }
     else { toggleMenu(); }
@@ -417,31 +396,19 @@ function toggleTimetable() {
 
     //If favorite is visible, close menus, change visibilites and toggle menu
     if (elementTimetable.classList.contains("no")) {
-        if (!elementMenu.classList.contains("closed")) {
-            menuClose();
-            setTimeout(() => {
-                elementTimetable.classList.remove("no");
-                elementFavorite.classList.add("no");
-
-                if (delayContent.innerHTML != '\n\t\t\t') {
-                    elementDelay.classList.remove("no");
-                }
-
-            }, 800);
-            setTimeout(() => {
-                menuOpen();
-            }, 1000);
-        }
-        else {
+        //if (!elementMenu.classList.contains("closed")) {
+        //menuClose();
+        elementFavorite.classList.add("no");
+        setTimeout(() => {
             elementTimetable.classList.remove("no");
             elementFavorite.classList.add("no");
+
             if (delayContent.innerHTML != '\n\t\t\t') {
                 elementDelay.classList.remove("no");
             }
-            setTimeout(() => {
-                menuOpen();
-            }, 100);
-        }
+
+        }, 100);
+        menuOpen();
         elementMenu.classList.remove("closed");
 
     }
@@ -453,12 +420,14 @@ function toggleTimetable() {
 /**
  * Toggles search container
  */
-async function toggleSearch() {
+async function toggleSearch(force=undefined) {
+    //setLabel("");
+    //searchSelectionType = "search";
     var element = document.getElementById("search_container");
     element.classList.toggle("closed");
 
     clearTimeout(searchTimeout);
-    if (element.classList.contains("closed")) {
+    if (force!="close" && element.classList.contains("closed") || force=="open") {
         menuClose();
         closeBusContainer();
         document.getElementById('menu').classList.add('closed');
@@ -491,11 +460,11 @@ const isWebkit =
  * @param {*} e Current search input
  */
 function updateSearch(e) {
-    let query = e.target.value;
+    let query = e.target.value.trimEnd();
     var search_results_container = document.getElementById("search_results_container");
     SEARCH_RESULTS.innerHTML = "";
     if (query.length >= 3) {
-        let stops = Object.keys(busStops).filter(p => p.toLowerCase().includes(query.toLowerCase()));
+        let stops = Object.keys(busStops).sort().filter(p => p.toLowerCase().includes(query.toLowerCase()));
         for (let p of stops) {
             let li = document.createElement("li");
             li.innerHTML = p;
@@ -518,17 +487,76 @@ function updateSearch(e) {
         SEARCH_RESULTS.style.minHeight = "0";
         search_results_container.style.opacity = "0";
     }
+    updownselect();
 }
 
 SEARCH_RESULTS.addEventListener("click", function(e) {
     console.log(e);
+    // Close potentially open bus popups to prevent map auto-panning on location update
+    m2[currentBusId]?.closePopup();
     if (e.target.tagName === "LI") {
-        displayBusStopsOnMap(e.target.dataset.busStopName);
+        switch(searchSelectionType) {
+            case "entry":
+                vstopnaPostajaPriDodajanjuRelacije = e.target.dataset.busStopName;
+                searchSelectionType = "exit";
+                /* setLabel(`<- ${vstopnaPostajaPriDodajanjuRelacije}`, "Išči izstopno postajo", true); */
+                setLabel(`${vstopnaPostajaPriDodajanjuRelacije}–`, "Išči izstopno postajo", true);
+                const event = new Event("input");
+                document.getElementById("search_field").dispatchEvent(event);
+                document.getElementById("search_field").focus();
+                break
+            case "exit":
+                izstopnaPostajaPriDodajanjuRelacije = e.target.dataset.busStopName;
+                let entryBusStop = busStops[vstopnaPostajaPriDodajanjuRelacije];
+                let exitBusStop = busStops[izstopnaPostajaPriDodajanjuRelacije];
+                toggleSearch("close");
+                requestLineAllStops(entryBusStop, exitBusStop);
+                saveBusLine(entryBusStop, exitBusStop, `${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije}`)
+                toast(`Relacija ${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije} je bila shranjena med priljubljene.`)
+                break
+            case "search":
+            default:
+                displayBusStopsOnMap(e.target.dataset.busStopName);
+        }
     }
 });
 
 
+/**
+ * Handle keyboard selection of search results
+ */
+updownselectindex = -1;
+function updownselect(e) {
+    console.log("updownselect: ", e);
+    let shownResults = document.getElementById("search_results").getElementsByTagName("li");
+    shownResults[updownselectindex]?.classList.remove("selected");
+    switch(e?.key) {
+        case "ArrowDown":
+            e.preventDefault();
+            updownselectindex = ++updownselectindex%shownResults.length;
+            break;
+        case "ArrowUp":
+            e.preventDefault();
+            updownselectindex = (--updownselectindex + shownResults.length)%shownResults.length;
+            break;
+        case "Enter":
+            shownResults[updownselectindex]?.click();
+            break;
+        default:
+            updownselectindex = -1;
+            //updownselectindex = updownselectindex% shownResults.length;
+    }
+    shownResults[updownselectindex]?.classList.add("selected");
+    if(!!shownResults[updownselectindex]?.scrollIntoViewIfNeeded) {
+        shownResults[updownselectindex]?.scrollIntoViewIfNeeded(false);
+    } else {
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=403510
+        shownResults[updownselectindex]?.scrollIntoView({block: "center", container: "nearest" });
+    }
+}
+
 document.getElementById("search_field").addEventListener("input", updateSearch);
+document.getElementById("search_container").addEventListener("keydown", updownselect);
 
 
 /**
@@ -656,6 +684,8 @@ const busId = urlParams.get('busId'); // e.g., https://link?busId=123
 document.addEventListener("DOMContentLoaded", function() {
     if (busId) {
         displayBus(busId);
+    } else {
+        toggleFavorite();
     }
 
     // TODO: Make this a beautiful tooltip
