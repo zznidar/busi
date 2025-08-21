@@ -396,7 +396,7 @@ async function  drawBuses(buses, automatic = false, fitView = false) {
                 //Zoom out
                 mymap.flyTo([response["lat"], response["lon"]], Math.max(lastZoom, 11), { duration: 0.5 });
                 currentBusId = 0;
-                document.getElementById("timetable_no_line").classList.remove("no");
+                //document.getElementById("timetable_no_line").classList.remove("no");
                 eraseGeometryOnMap();
                 closeBusContainer();
                 fadeOut('returnView', 1000);
@@ -629,14 +629,12 @@ function displayBusStopsOnMap(busStopName) {
             let lat = busStop.lat;
             let lon = busStop.lon;
             let marker = L.marker([lat, lon], { icon: peronIcon }).addTo(mymap);
-            let menuElement = document.getElementById('menu');
 
             //On popup open
             marker.on('popupopen', function() {
                 selectedStop = busStop.gtfs_id;
                 checkDepartures(busStop.gtfs_id);
                 menuClose();
-                menuElement.classList.add('closed');
                 toggleTimetable();
 
                 document.getElementById('timetable_title').innerHTML = busStop.name;
@@ -647,7 +645,6 @@ function displayBusStopsOnMap(busStopName) {
             marker.on('popupclose', function() {
                 selectedStop = 0;
                 menuClose();
-                menuElement.classList.add('closed');
             });
 
             let content = `<span style="color:var(--color-primary)">${busStop.name}</span>`;

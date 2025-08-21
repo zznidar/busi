@@ -495,12 +495,19 @@ footer {
     transform:translateX(-50%);
 }
 
-.tool_icon:active{
+.tool_icon:active {
     color: var(--color-secondary);
     background-color: var(--color-boxshadow);
     border-radius: 50%;
     padding: 0.5rem;
     opacity: 0.9;
+}
+
+.tool_container:has(~ #menu:not(.closed) #favorites:not(.no)) .toolbarFavourite,
+.tool_container:has(~ #menu:not(.closed) #timetable_container:not(.no)) .toolbarTimetable {
+    /* Toolbar shows which pannel is currently selected */
+    background-color: var(--color-theme-second);
+    border-radius: 50%;
 }
 
 .material-symbols-outlined {

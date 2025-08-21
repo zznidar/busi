@@ -16,6 +16,7 @@ var colorTheme =window.getComputedStyle(document.body).getPropertyValue('--color
 
 
 
+var nameOfCurrentRelation = "Nobena linija ni izbrana.";
 /**
  * Show timetable
  * Displays timetable in the timetable menu section for the selected relation in the favorites.
@@ -25,7 +26,7 @@ async function printTimetable(trips) {
 
 
     //Edit titles and warnings
-    document.getElementById("timetable_title").innerText = "Urnik za izbrano relacijo";
+    document.getElementById("timetable_title").innerText = `Urnik za relacijo ${nameOfCurrentRelation}`;
     document.getElementById("timetable_warning").classList.remove('no');
 
     TIMETABLE.innerHTML = "<thead><tr><td>Ura</td><td>Linija</td><td>Trajanje</td><td>Prevoznik</td></tr></thead>";
@@ -154,6 +155,7 @@ function displayBusLineButtons(buttons) {
             m2[currentBusId]?.closePopup();
             requestLineAllStops(start = busLine.start, finish = busLine.cilj);
             lastRelation = [busLine.start, busLine.cilj];
+            nameOfCurrentRelation = name;
             removeMarkers();
             toggleTimetable();
             menuClose();
@@ -326,6 +328,7 @@ function closeBusContainer(){
  * Function to close the menu/scrollable site container
  */
 function menuClose() {
+    document.getElementById('menu').classList.add('closed');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -430,7 +433,6 @@ async function toggleSearch(force=undefined) {
     if (force!="close" && element.classList.contains("closed") || force=="open") {
         menuClose();
         closeBusContainer();
-        document.getElementById('menu').classList.add('closed');
         fadeIn('search_container', 100);
         document.getElementById("search_field").focus();
     }
@@ -513,6 +515,7 @@ SEARCH_RESULTS.addEventListener("click", function(e) {
                 requestLineAllStops(entryBusStop, exitBusStop);
                 saveBusLine(entryBusStop, exitBusStop, `${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije}`)
                 toast(`Relacija ${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije} je bila shranjena med priljubljene.`)
+                nameOfCurrentRelation = `${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije}`;
                 break
             case "search":
             default:
@@ -770,5 +773,4 @@ setInterval(() => {
 }, 1000);
 
 
-menuClose()
 
