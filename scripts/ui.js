@@ -28,6 +28,12 @@ async function printTimetable(trips) {
     //Edit titles and warnings
     document.getElementById("timetable_title").innerText = `Urnik za relacijo ${nameOfCurrentRelation}`;
     document.getElementById("timetable_warning").classList.remove('no');
+    if(nameOfCurrentRelation.includes("🚂")) { 
+        document.getElementById("SZ_notSupported").classList.remove("no");
+    } else {
+        document.getElementById("SZ_notSupported").classList.add("no");
+    }
+    
 
     TIMETABLE.innerHTML = "<thead><tr><td>Ura</td><td>Linija</td><td>Trajanje</td><td>Prevoznik</td></tr></thead>";
     for (let t of trips) {
