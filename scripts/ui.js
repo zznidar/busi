@@ -64,6 +64,9 @@ async function printTimetable(trips) {
             tr.classList.add("missed");
             tr.classList.add("no");
         }
+        else if ((busHour < hour) || (busHour === hour && busMinute < minute)) {
+            tr.classList.add("missed");
+        }
 
         tr.appendChild(td);
         td = document.createElement("td");
