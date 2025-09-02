@@ -89,6 +89,9 @@ async function showBuses(automatic = false, allBuses = false) {
  * @param {*} automatic True if called automatically
  */
 async function refresh(automatic = false, tripId = undefined) {
+    // In rare cases of running the app overnight, we need to update the date
+    todayISO = new Date().toLocaleDateString("sv");
+    today = todayISO.replaceAll("-", "");
 
     if (selectedStop) {
         await displayTripsOnStop(selectedStop, 300);
