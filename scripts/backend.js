@@ -225,7 +225,6 @@ function getTimeAsDate(timeString) {
  * @param {int} id id of the bus stop (properties.id)
  */
 async function checkDepartures(id) {
-    console.log(id);
     removeMarkers(); // We want to hide all other buses
     await displayTripsOnStop(id, 300);
     refresh(automatic=true);
