@@ -89,6 +89,9 @@ async function showBuses(automatic = false, allBuses = false) {
  * @param {*} automatic True if called automatically
  */
 async function refresh(automatic = false, tripId = undefined) {
+    // In rare cases of running the app overnight, we need to update the date
+    todayISO = new Date().toLocaleDateString("sv");
+    today = todayISO.replaceAll("-", "");
 
     if (selectedStop) {
         await displayTripsOnStop(selectedStop, 300);
@@ -222,7 +225,6 @@ function getTimeAsDate(timeString) {
  * @param {int} id id of the bus stop (properties.id)
  */
 async function checkDepartures(id) {
-    console.log(id);
     removeMarkers(); // We want to hide all other buses
     await displayTripsOnStop(id, 300);
     refresh(automatic=true);

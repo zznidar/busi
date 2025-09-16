@@ -286,12 +286,14 @@ var toastTT1, toastTT2, toastTT3;
  * Display a toast message
  * @param {*} message - Message to be displayed in the toast
  */
-function toast(message) {
+function toast(message, duration=3000) {
     clearTimeout(toastTT1);
     clearTimeout(toastTT2);
     clearTimeout(toastTT3);
     let toast = document.getElementById("toast_message");
     toast.getElementsByTagName("p")[0].innerText = message;
+
+    if(duration < 104) duration = 104; // To prevent animation glitches, we add 1 frame at 30 fps
 
     //Increase opacity to 0.8 for 3 seconds with animation
     //Also remove the "no" class so display: none is removed and then add it back after 3 seconds
@@ -299,8 +301,8 @@ function toast(message) {
     toast.style.transition = "opacity 1s ease-in-out";
     toast.classList.remove("no");
     toastTT1 = setTimeout(function() { toast.style.opacity = 0.8; }, 100);
-    toastTT2 = setTimeout(function() { toast.style.opacity = 0; }, 3000);
-    toastTT3 = setTimeout(function() { toast.classList.add("no"); }, 4000);
+    toastTT2 = setTimeout(function() { toast.style.opacity = 0; }, duration);
+    toastTT3 = setTimeout(function() { toast.classList.add("no"); }, duration+1000);
 }
 
 /**
@@ -502,7 +504,6 @@ function updateSearch(e) {
 }
 
 SEARCH_RESULTS.addEventListener("click", function(e) {
-    console.log(e);
     // Close potentially open bus popups to prevent map auto-panning on location update
     m2[currentBusId]?.closePopup();
     if (e.target.tagName === "LI") {
@@ -539,7 +540,6 @@ SEARCH_RESULTS.addEventListener("click", function(e) {
  */
 updownselectindex = -1;
 function updownselect(e) {
-    console.log("updownselect: ", e);
     let shownResults = document.getElementById("search_results").getElementsByTagName("li");
     shownResults[updownselectindex]?.classList.remove("selected");
     switch(e?.key) {
@@ -703,6 +703,38 @@ document.addEventListener("DOMContentLoaded", function() {
     // TODO: Make this a beautiful tooltip
     document.getElementById("directions_bus_container").addEventListener("mouseover", function() {
         alert(`Prevoznik: ${buses?.[currentBusId]?.["operator_name"]}`);
+    });
+
+    window.addEventListener('click', () => {
+        // We want to prevent "back button" closing the app. Sure, if pressed twice, let it close.
+        history.scrollRestoration = "manual";
+        window.history.pushState({}, '');    
+        history.scrollRestoration = "manual";
+    }, { once: true })
+    
+    window.addEventListener('popstate', function() {
+        // If a pannel is visible, close it in that order: info -> bottom pannels -> bus info. And pushState. Else, do nothing.
+        if (!document.getElementById('info').classList.contains('no')) {
+            toggleInfo();
+        } else if (!document.getElementById('search_container').classList.contains('no')) {
+            toggleSearch("close");
+        } else if (!document.getElementById('menu').classList.contains('closed')) {
+            toggleMenu();
+        } else if (!document.getElementById('busInfoContainer').classList.contains('no')) {
+            closeBusContainer();
+        } else {
+            toast("Pritisnite vnovič za izhod iz aplikacije.");
+                window.addEventListener('click', () => {
+                    toast("Niste pritisnili vnovič, zato boste spet morali dvakrat. \nPritožbe sprejema: Tramvaj komanda d. o. o.", 0); // We want to hide the toast now.
+                    // We want to prevent "back button" closing the app. Sure, if pressed twice, let it close.
+                    history.scrollRestoration = "manual";
+                    window.history.pushState({}, '');    
+                    history.scrollRestoration = "manual";
+                }, { once: true })
+
+            return; // Let the back button do its thing
+        }
+        window.history.pushState({}, '');
     });
 });
 

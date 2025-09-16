@@ -1,6 +1,6 @@
 const apiUrl = 'https://api.beta.brezavta.si';
-var today = new Date().toISOString().slice(0,10).replaceAll("-", "");
-var todayISO = new Date().toISOString().slice(0,10);
+var todayISO = new Date().toLocaleDateString("sv");
+var today = todayISO.replaceAll("-", "");
 var noLoaders = 0;
 
 
