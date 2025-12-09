@@ -10,6 +10,8 @@ entryBusStop = [];
 exitBusStop = [];
 busStopsData = [];
 
+alert("test");
+
 
 // Theme styles
 var colorTheme =window.getComputedStyle(document.body).getPropertyValue('--color-theme'); //get
