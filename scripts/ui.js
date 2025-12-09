@@ -150,6 +150,27 @@ function labelClick() {
     }
 }
 
+// https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+Object.defineProperty(String.prototype, 'hashCode', {
+    value: function() {
+      var hash = 0, i, chr;
+      for (i = 0; i < this.length; i++) {
+        chr   = this.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+      }
+      return Math.abs(hash);
+    }
+  });
+
+function hashColor(s) {
+    //return (s.hashCode().toString(16) + "111111").slice(0, 6);
+    let H = s.hashCode() % 360;
+    const S = 25, L = 42;
+    return `hsl(${H} ${S}% ${L}%)`;
+}
+
+
 /**
  * Draw favorite relation buttons
  * @param {*} buttons Array of all buttons
@@ -193,6 +214,8 @@ function displayBusLineButtons(buttons) {
 
         btn.innerText = name;
         btn.classList.add("btn_busline");
+        let nameForHash = name.split("–").sort().join("–");
+        btn.style.backgroundColor = hashColor(nameForHash);
         BUS_LINE_BUTTONS.appendChild(btn);
     }
 }
