@@ -95,7 +95,7 @@ async function printTimetable(trips) {
         tr.addEventListener("click", function(e) {
             if (t.trip_id) {
                 id = tripId2busId(t.trip_id);
-                m2?.[id]?.openPopup() || prepareGeometry(t.trip_id) && menuClose();
+                m2?.[id]?.openPopup() || prepareGeometry(t.trip_id) && menuClose() ? null : m2?.[currentBusId]?.closePopup(currentBusId = 0);
             };
         });
 
@@ -168,6 +168,13 @@ function hashColor(s) {
     let H = s.hashCode() % 360;
     const S = 25, L = 42;
     return `hsl(${H} ${S}% ${L}%)`;
+
+    /* alternative:
+    const COLOUR_SEPARATION = 20 // We modulise it with (360/4), then multiply by 4 to increase hueial separation
+    let H = (s.hashCode() % (360/COLOUR_SEPARATION)) * COLOUR_SEPARATION;
+    let S = 20 + (s.hashCode() % 10)*2;
+    let L = 30 + (s.hashCode() % 8)*2 
+    */
 }
 
 
@@ -279,7 +286,7 @@ async function displayTripsOnStop(stopid, period = 60) {
         tr.addEventListener("click", function(e) {
             if (t.trip_id) {
                 id = tripId2busId(t.trip_id);
-                m2?.[id]?.openPopup() || prepareGeometry(t.trip_id) && menuClose();
+                m2?.[id]?.openPopup() || prepareGeometry(t.trip_id) && menuClose() ? null : m2?.[currentBusId]?.closePopup(currentBusId = 0);
             };
         });
 

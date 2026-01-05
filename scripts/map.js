@@ -394,7 +394,7 @@ async function  drawBuses(buses, automatic = false, fitView = false) {
             m2[vehicle].on('popupclose', function() {
                 hideDelays();
                 //Zoom out
-                mymap.flyTo([response["lat"], response["lon"]], Math.max(lastZoom, 11), { duration: 0.5 });
+                currentBusId && mymap.flyTo([response["lat"], response["lon"]], Math.max(lastZoom, 11), { duration: 0.5 });
                 currentBusId = 0;
                 //document.getElementById("timetable_no_line").classList.remove("no");
                 eraseGeometryOnMap();
