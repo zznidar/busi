@@ -754,7 +754,7 @@ document.addEventListener("DOMContentLoaded", function() {
             closeBusContainer();
         } else {
             toast("Pritisnite vnovič za izhod iz aplikacije.");
-                window.addEventListener('click', () => {
+                window.addEventListener('touchstart', () => {
                     toast("Niste pritisnili vnovič, zato boste spet morali dvakrat. \nPritožbe sprejema: Tramvaj komanda d. o. o.", 0); // We want to hide the toast now.
                     // We want to prevent "back button" closing the app. Sure, if pressed twice, let it close.
                     history.scrollRestoration = "manual";
