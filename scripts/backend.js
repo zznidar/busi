@@ -50,7 +50,7 @@ async function requestLineAllStops(start, end, date=undefined) {
 
     drawBuses(buses, automatic = false, fitView = true);
 
-    if (!currentBusId) {
+    if (!currentBusId || date) {
         printTimetable(trips, date);
     }
 }
