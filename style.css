@@ -1035,3 +1035,36 @@ input[type='text']{
     display: flex;
     align-items: center;
 }
+
+/* Timetable date row: 1 row, 3 columns */
+#timetable_date_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding-bottom: 2rem;
+    .float {
+        /* neutralize global .float fixed positioning inside this row */
+        position: static;
+        width: auto;
+        height: auto;
+        box-shadow: none;
+    }
+
+    > .btn_general{
+        flex: 0 0 16%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.4rem 0.6rem;
+        border-radius: 0.75rem;
+    }
+
+    > #timetable_date_display{
+        flex: 1 1 auto;
+        text-align: center;
+        display: block;
+    }
+}

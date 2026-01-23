@@ -9,11 +9,11 @@ var noLoaders = 0;
  * @param {*} link - Link to fetch
  * @returns data as JSON
  */
-async function fetchJson(link) {
+async function fetchJson(link, signal=undefined) {
     try {
         document.getElementById("loader").classList.remove("no");
         noLoaders++;
-        const response = await fetch(link);
+        const response = await fetch(link, { signal });
         const status = response.status;
         const data = await response.json();
 
@@ -43,10 +43,10 @@ async function fetchJson(link) {
  * @param {*} stops - Array of stop IDs
  * @returns trips - Trips obbject corresponding to the stop IDs
  */
-async function requestTrips(stops) {
+async function requestTrips(stops, date=undefined, signal=undefined) {
     let requests = [];
     for (let p of stops) {
-        requests.push(fetchJson(`${apiUrl}/stops/${encodeURIComponent(p)}/arrivals`));
+        requests.push(fetchJson(`${apiUrl}/stops/${encodeURIComponent(p)}/arrivals${date ? `?date=${date}` : ''}`, signal));
     }
     let trips = (await Promise.all(requests)).flat();
     return trips;

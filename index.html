@@ -198,29 +198,38 @@
 			id="timetable_container">
 			<h2 id="timetable_title">Urnik za izbrano relacijo</h2>
 			<p class="center" style="padding-top: 5px; padding-bottom: 20px;" id="timetable_no_line">Nobena linija ni izbrana.</p>
-			<div class="bubble info center" id="timetable_warning">
-				<span class="material-symbols-outlined"
+		<div class="bubble info center" id="timetable_warning">
+			<span class="material-symbols-outlined"
 					style="left:50%; color:var(--color-info); padding-top: 7.5px; font-size:1.5rem">warning</span>
-				<p style="margin-top: 2.5px;">Urniki so lahko napačni ali pomanjkljivi. <br> Preverite vozni red pri
+					<p style="margin-top: 2.5px;">Urniki so lahko napačni ali pomanjkljivi. <br> Preverite vozni red pri
 					svojem prevozniku!</p>
-				<b id="SZ_notSupported" class="no">🚂 Uradni podatki o vlakih niso na voljo. Prikazan je okviren spored. 🚂</b>
+					<b id="SZ_notSupported" class="no">🚂 Uradni podatki o vlakih niso na voljo. Prikazan je okviren spored. 🚂</b>
 			</div>
-
+			
 			<div class="bubble warning center no" style="margin-top: 10px;" id="timetable_sync_warning">
 				<span class="material-symbols-outlined spinning"
-					style="left:50%; color:var(--color-warning); margin-top: 7.5px; font-size:1.5rem">Sync</span>
+				style="left:50%; color:var(--color-warning); margin-top: 7.5px; font-size:1.5rem">Sync</span>
 				<p style="margin-top: 2.5px;">Poteka brisanje zastarelih linij z urnika. <br> Počakajte
 					trenutek&nbsp;...</p>
 			</div>
-
+			
 			<div id="urnik">
 
 				<!-- Timetable -->
 				<table id="timetable">
-
+					
 				</table>
 			</div>
+			<div id="timetable_date_row">
+				<!-- button left to decrease date, button right to increase date, selected day in middle -->
+				<span class="btn_general float" id="timetable_date_decrease" onclick="changeTimetableDate(-1)"><span
+						class="material-symbols-outlined" style="transform:translate(0.1rem, 0.2rem)">arrow_back_ios</span></span>
+				<span id="timetable_date_display" class="center" onclick="todayOffset=0; changeTimetableDate(0)">Datum</span>
+				<span class="btn_general float" id="timetable_date_increase" onclick="changeTimetableDate(1)"><span
+						class="material-symbols-outlined" style="transform:translate(0.1rem, 0.2rem)">arrow_forward_ios</span></span>
+			</div>
 		</div>
+
 
 		<p id="log" style="display:none">Log: <br></p>
 		<input type="checkbox" name="showOldBuses" id="showOldBuses" style="display: none;"><label
