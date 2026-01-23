@@ -22,7 +22,7 @@ var nameOfCurrentRelation = "Nobena linija ni izbrana.";
  * Displays timetable in the timetable menu section for the selected relation in the favorites.
  * @param {*} trips Array of trips 
  */
-async function printTimetable(trips) {
+async function printTimetable(trips, date) {
 
 
     //Edit titles and warnings
@@ -34,6 +34,8 @@ async function printTimetable(trips) {
         document.getElementById("SZ_notSupported").classList.add("no");
     }
     
+    document.getElementById("timetable_date_row").classList.remove("no");
+
 
     TIMETABLE.innerHTML = "<thead><tr><td>Ura</td><td>Linija</td><td>Trajanje</td><td>Prevoznik</td></tr></thead>";
     for (let t of trips) {
@@ -42,6 +44,8 @@ async function printTimetable(trips) {
         date = new Date;
         hour = date.getHours();
         minute = date.getMinutes();
+
+        if(todayOffset) hour = minute = 0;
 
         let tr = document.createElement("tr");
 
@@ -107,6 +111,8 @@ async function printTimetable(trips) {
             td.appendChild(span);
             tr.classList.add("tripLive");
         }
+
+        if(todayOffset < 0) tr.classList.add("missed");
 
         TIMETABLE.appendChild(tr);
     }
@@ -189,6 +195,9 @@ function displayBusLineButtons(buttons) {
         let btn = document.createElement("span");
         btn.type = "span";
         btn.onclick = () => {
+            todayOffset = 0;
+            document.getElementById("timetable_date_display").innerText = `${(new Date()).toLocaleDateString("sl-SI")} (${casovniPrislovi.get(todayOffset)})`;
+            document.getElementById("timetable_date_decrease").classList.add("missed");
             m2[currentBusId]?.closePopup();
             requestLineAllStops(start = busLine.start, finish = busLine.cilj);
             lastRelation = [busLine.start, busLine.cilj];
@@ -246,6 +255,9 @@ if (data.size) {
  */
 async function displayTripsOnStop(stopid, period = 60) {
     filtered = await requestTripsOnBusStop(stopid, period);
+
+    // hide date picker
+    document.getElementById("timetable_date_row").classList.add("no");
 
     //Display the trips
     TIMETABLE.innerHTML = `
@@ -552,7 +564,7 @@ SEARCH_RESULTS.addEventListener("click", function(e) {
                 let entryBusStop = busStops[vstopnaPostajaPriDodajanjuRelacije];
                 let exitBusStop = busStops[izstopnaPostajaPriDodajanjuRelacije];
                 toggleSearch("close");
-                requestLineAllStops(entryBusStop, exitBusStop);
+                requestLineAllStops(...lastRelation = [entryBusStop, exitBusStop]);
                 saveBusLine(entryBusStop, exitBusStop, `${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije}`)
                 toast(`Relacija ${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije} je bila shranjena med priljubljene.`)
                 nameOfCurrentRelation = `${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije}`;
@@ -766,6 +778,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         window.history.pushState({}, '');
     });
+
+    document.getElementById("timetable_date_display").innerText = `${(new Date).toLocaleDateString("sl-SI")} (${casovniPrislovi.get(todayOffset)})`;
 });
 
 // Make sharable button apear for all popups
@@ -845,3 +859,34 @@ setInterval(() => {
 
 
 
+var casovniPrislovi = new Map([
+    [-1, "včeraj"],
+    [0, "danes"],
+    [1, "jutri"]
+]);
+var todayOffset = 0;
+async function changeTimetableDate(offsetDays) {
+    if(todayOffset + offsetDays < 0) {
+        toast("Kam v preteklost skušate vpogledati? Če včerajšnji bus še vedno ni prišel, se lahko pritožite na tramvaj komando.")
+        return;
+    }
+    todayOffset += offsetDays;
+    let date = new Date();
+    date.setDate(date.getDate() + todayOffset);
+    let todayISOwithOffset = date.toLocaleDateString("sv");
+    let todaywithOffset = todayISOwithOffset.replaceAll("-", "");
+    
+    document.getElementById("timetable_date_display").innerText = `${date.toLocaleDateString("sl-SI")} (${casovniPrislovi.get(todayOffset) ?? date.toLocaleDateString("sl-SI", { weekday: 'long' })})`;
+
+    if(todayOffset === 0) {
+        document.getElementById("timetable_date_decrease").classList.add("missed");
+    } else {
+        document.getElementById("timetable_date_decrease").classList.remove("missed");
+    }
+    
+    if (nameOfCurrentRelation !== "Nobena linija ni izbrana.") {
+        await requestLineAllStops(...lastRelation, todaywithOffset);
+    }
+    //menuOpen();
+
+}

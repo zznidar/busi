@@ -13,11 +13,19 @@ var currentBusData = {};
 
 
 
-
-async function requestLineAllStops(start, end) {
+var controller = new AbortController();
+async function requestLineAllStops(start, end, date=undefined) {
+    controller.abort(); // Abort any ongoing requests
+    controller = new AbortController();
+    signal = controller.signal;
+    selectedStop = 0;
+    if(date === undefined){
+        todayOffset = 0;
+        console.warn("Date not provided, using today's date forever:");
+    }
     [trips_start, trips_finish, data_buses] = await Promise.all([
-        requestTrips(start),
-        requestTrips(end),
+        requestTrips(start, date, signal),
+        requestTrips(end, date, signal),
         (await requestBuses())
     ]);
 
@@ -43,8 +51,8 @@ async function requestLineAllStops(start, end) {
 
     drawBuses(buses, automatic = false, fitView = true);
 
-    if (!currentBusId) {
-        printTimetable(trips);
+    if (!currentBusId || date) {
+        printTimetable(trips, date);
     }
 }
 
