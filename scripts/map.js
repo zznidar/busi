@@ -486,7 +486,9 @@ async function obtainGeometryByTripId(tripId) {
  */
 async function obtainDataByTripId(tripId) {
     // Get the geometry for the trip
-    let today = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+    let today = new Date()
+    today.setDate(today.getDate() + todayOffset);
+    today = today.toISOString().slice(0, 10).replaceAll("-", "");
     const data = await fetchJson(`${apiUrl}/trips/${tripId}?date=${today}`);
     return data;
 }

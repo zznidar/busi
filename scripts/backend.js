@@ -18,6 +18,7 @@ async function requestLineAllStops(start, end, date=undefined) {
     controller.abort(); // Abort any ongoing requests
     controller = new AbortController();
     signal = controller.signal;
+    selectedStop = 0;
     if(date === undefined){
         todayOffset = 0;
         console.warn("Date not provided, using today's date forever:");

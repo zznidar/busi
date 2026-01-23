@@ -564,7 +564,7 @@ SEARCH_RESULTS.addEventListener("click", function(e) {
                 let entryBusStop = busStops[vstopnaPostajaPriDodajanjuRelacije];
                 let exitBusStop = busStops[izstopnaPostajaPriDodajanjuRelacije];
                 toggleSearch("close");
-                requestLineAllStops(entryBusStop, exitBusStop);
+                requestLineAllStops(...lastRelation = [entryBusStop, exitBusStop]);
                 saveBusLine(entryBusStop, exitBusStop, `${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije}`)
                 toast(`Relacija ${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije} je bila shranjena med priljubljene.`)
                 nameOfCurrentRelation = `${vstopnaPostajaPriDodajanjuRelacije}–${izstopnaPostajaPriDodajanjuRelacije}`;
