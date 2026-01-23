@@ -860,7 +860,7 @@ table tr {
 
 /*Missed bus styling*/
 .missed {
-    opacity: 0.5;
+    opacity: 0.5 !important;
 }
 
 .on_route {
