@@ -732,8 +732,8 @@ function fadeOut(elementID, time) {
 // Get the busId from the URL
 const urlParams = new URLSearchParams(window.location.search);
 const busId = urlParams.get('busId'); // e.g., https://link?busId=123
-const stationName = urlParams.get('stationName'); // e.g., https://link?stationName=Central+Station
-const busStopId = urlParams.get('busStopId'); // e.g., https://link?busStopId=456
+const stationName = urlParams.get('s'); // e.g., https://link?stationName=Central+Station
+const busStopId = urlParams.get('i'); // e.g., https://link?busStopId=456
 // Maybe we could also add array busStopsId = urlParams.getAll('busStopId'); // e.g., https://link?busStopId=456&busStopId=789
 
 /* !!! IMPORTANT !!!
