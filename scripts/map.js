@@ -639,7 +639,7 @@ function displayBusStopsOnMap(busStopName) {
                 menuClose();
                 toggleTimetable();
 
-                document.getElementById('timetable_title').innerHTML = busStop.name;
+                document.getElementById('timetable_title').innerHTML = busStopName;
                 document.getElementById('timetable_warning').classList.add("no");
             });
 
@@ -649,7 +649,7 @@ function displayBusStopsOnMap(busStopName) {
                 menuClose();
             });
 
-            let content = `<span style="color:var(--color-primary)">${busStop.name}</span>`;
+            let content = `<span style="color:var(--color-primary)">${busStopName}</span>`;
             marker.bindPopup(content);
             // Fly to
             mymap.flyTo([lat, lon], 18.5, { duration: 0.5 });
