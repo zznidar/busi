@@ -85,7 +85,17 @@ async function requestAllBusStops() {
  * @returns Array of trips
  */
 async function requestTripsOnBusStop(stop_id, period) {
-    trips = (await fetchJson(`${apiUrl}/stops/${stop_id}?date=${today}&current=false`))["arrivals"]; // Set current=true to show only buses which haven't passed the stop yet. However, if no live-tracking is available, it will filter on schedule (not good)!
+    if(typeof(stop_id) === "object"){
+        trips = [];
+        for(let id of stop_id){
+            let trips_part = (await fetchJson(`${apiUrl}/stops/${id}?date=${today}&current=false`))["arrivals"];
+            trips = trips.concat(trips_part);
+        }
+        // sort by departure_realtime
+        trips.sort((a, b) => (a.departure_realtime ?? 0) - (b.departure_realtime ?? 0));
+    } else {
+        trips = (await fetchJson(`${apiUrl}/stops/${stop_id}?date=${today}&current=false`))["arrivals"]; // Set current=true to show only buses which haven't passed the stop yet. However, if no live-tracking is available, it will filter on schedule (not good)!
+    }
 
     //Log just trips that are comming in the next hour
     trips = (trips.filter(trip => (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) < period * 60 * 1000 && (new getTimeAsDate(seconds2time(trip?.departure_realtime) ?? "-24:01:01") - new Date()) > -3 * 60 * 1000));
