@@ -65,7 +65,7 @@ async function requestLineAllStops(start, end, date=undefined) {
  * @param {*} allBuses - True if all buses should be displayed
  * @returns 
  */
-async function showBuses(automatic = false, allBuses = false) {
+async function showBuses(automatic = false, allBuses = false, fitView=false) {
 
     if (trips || currentBusId || allBuses) {
         buses_response = (await requestBuses());
@@ -79,7 +79,7 @@ async function showBuses(automatic = false, allBuses = false) {
             buses[id] = { ...buses[id], ...b.vehicle, ...b };
         }
 
-        drawBuses(buses, automatic);
+        drawBuses(buses, automatic, fitView);
         centerCurrentBus();
 
         if (!currentBusId && !automatic) {
@@ -96,7 +96,7 @@ async function showBuses(automatic = false, allBuses = false) {
  * Refreshes all displayed buses and trips.
  * @param {*} automatic True if called automatically
  */
-async function refresh(automatic = false, tripId = undefined) {
+async function refresh(automatic = false, tripId = undefined, fitView=false) {
     // In rare cases of running the app overnight, we need to update the date
     todayISO = new Date().toLocaleDateString("sv");
     today = todayISO.replaceAll("-", "");
@@ -116,7 +116,7 @@ async function refresh(automatic = false, tripId = undefined) {
         return ;
     }
 
-    await showBuses(automatic);
+    await showBuses(automatic, allBuses=false, fitView=fitView);
     setTimeout(centerCurrentBus, 50);
 
     document.getElementById("refresh").classList.add("refresh_animate");
@@ -232,10 +232,10 @@ function getTimeAsDate(timeString) {
  * Wrapper function for the correct flow of showing only buses of this stop
  * @param {int} id id of the bus stop (properties.id)
  */
-async function checkDepartures(id) {
+async function checkDepartures(id, fitView=false) {
     removeMarkers(); // We want to hide all other buses
     await displayTripsOnStop(id, 300);
-    refresh(automatic=true);
+    refresh(automatic=true, tripId=undefined, fitView=fitView);
 }
 
 

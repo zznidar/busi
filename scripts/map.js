@@ -281,7 +281,7 @@ function removeMarkers() {
  * @param {*} fitView - True if displayed marker should fit on the screen
  * @returns 
  */
-async function  drawBuses(buses, automatic = false, fitView = false) {
+async function drawBuses(buses, automatic = false, fitView = false) {
     myIcon = busIcon;
 
     d = new Date(); // Uporabimo kasneje za skrivanje starih busov

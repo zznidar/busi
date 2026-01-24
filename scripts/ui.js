@@ -732,6 +732,14 @@ function fadeOut(elementID, time) {
 // Get the busId from the URL
 const urlParams = new URLSearchParams(window.location.search);
 const busId = urlParams.get('busId'); // e.g., https://link?busId=123
+const stationName = urlParams.get('stationName'); // e.g., https://link?stationName=Central+Station
+const busStopId = urlParams.get('busStopId'); // e.g., https://link?busStopId=456
+// Maybe we could also add array busStopsId = urlParams.getAll('busStopId'); // e.g., https://link?busStopId=456&busStopId=789
+
+/* !!! IMPORTANT !!!
+** when sharing URLs with stationName, there _must_ be another param at the end! (e. g. live=true or foo=bar or pritozbeSprejema=tramvajKomanda)
+** Names often end with a dot. Link parsers see that dot as a textual full stop,
+** so it becomes not-a-part of the clickable link. */
 
 // Display the result
 
@@ -741,6 +749,30 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
         toggleFavorite();
     }
+    if(busStopId) {
+        console.log(busId, stationName, busStopId);
+        selectedStop = busStopId;
+        checkDepartures(busStopId, fitView=true);
+        toggleTimetable();
+
+        document.getElementById('timetable_title').innerHTML = stationName ?? "Prihodi na izbrano postajališče";
+        document.getElementById('timetable_warning').classList.add("no");
+    } else if(stationName) { // if ijpp_ids change in the future, change "else if" to "if" and do it only by name.
+        // We need to get bus stop ID from name
+        requestAllBusStops().then(() => {
+            for(let [name, id] of Object.entries(busStops)) {
+                if(name.toLowerCase() === stationName.toLowerCase()) {
+                    selectedStop = id;
+                    checkDepartures(id, fitView=true);
+                    toggleTimetable();
+                    document.getElementById('timetable_title').innerHTML = name;
+                    document.getElementById('timetable_warning').classList.add("no");
+                    break;
+                }
+            }
+        });
+    }
+
 
     // TODO: Make this a beautiful tooltip
     document.getElementById("directions_bus_container").addEventListener("mouseover", function() {
