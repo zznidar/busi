@@ -381,8 +381,8 @@ async function drawBuses(buses, automatic = false, fitView = false) {
                 //Make all other visible markers more transparent
                 for (let m in m2) {
                     if (m !== currentBusId){
-                        m2[m].setOpacity(0);
-                        m3[m].setOpacity(0);
+                        m2[m].getElement().classList.add("hidden");
+                        m3[m].getElement().classList.add("hidden");
                     }
                 }
 
@@ -403,8 +403,8 @@ async function drawBuses(buses, automatic = false, fitView = false) {
 
                 //Restore opacity
                 for (let m in m2) {
-                    m2[m].setOpacity(1);
-                    m3[m].setOpacity(1);
+                    m2[m].getElement().classList.remove("hidden");
+                    m3[m].getElement().classList.remove("hidden");
                 }
 
                 //Reset global variable
