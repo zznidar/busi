@@ -1,0 +1,174 @@
+/*
+This is a combination of https://github.com/cherniavskii/Leaflet.DoubleTapDrag and https://github.com/cherniavskii/Leaflet.DoubleTapDragZoom, both under MIT license. 
+modified by zznidar to fix map nudge
+*/
+
+/* File 1 */
+function DoubleTapDragInitHook() {
+  var timer = null;
+  var fired = false;
+  var lastTimestamp = null;
+  var DOUBLE_CLICK_TIMEOUT = 500;
+  var WAIT_FOR_DRAG_END_TIMEOUT = 0;
+  var lastTouchLocation = null;
+  var TOUCH_DISTANCE_THRESHOLD = 100;
+
+  this._container.addEventListener('touchstart', L.Util.bind(function (e) {
+    if (e.touches.length !== 1) {
+      return;
+    }
+    var now = Date.now();
+    var touchLoaction = [e.touches[0].clientX, e.touches[0].clientY];
+    if (lastTimestamp) {
+      if (now - lastTimestamp < DOUBLE_CLICK_TIMEOUT && distance(touchLoaction, lastTouchLocation) <= TOUCH_DISTANCE_THRESHOLD) {
+        timer = setTimeout(L.Util.bind(function () {
+          this.fire('doubletapdragstart', e);
+          timer = null;
+          fired = true;
+        }, this), WAIT_FOR_DRAG_END_TIMEOUT);
+      }
+      lastTimestamp = now;
+      lastTouchLocation = touchLoaction;
+    } else {
+      lastTimestamp = Date.now();
+      lastTouchLocation = [e.touches[0].clientX, e.touches[0].clientY];
+      setTimeout(L.Util.bind(function () {
+        lastTimestamp = null;
+        lastTouchLocation = null;
+      }, this), DOUBLE_CLICK_TIMEOUT);
+    }
+  }, this));
+
+  this._container.addEventListener('touchend', L.Util.bind(function (e) {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    if (fired) {
+      this.fire('doubletapdragend', e);
+      fired = null;
+    }
+  }, this));
+
+  this._container.addEventListener('touchmove', L.Util.bind(function (e) {
+    if (!fired) {
+      return;
+    }
+
+    this.fire('doubletapdrag', e);
+  }, this));
+}
+
+L.Map.addInitHook(DoubleTapDragInitHook);
+
+function distance(x1y1, x2y2) {
+  return Math.sqrt((x1y1[0] - x2y2[0])**2 + (x1y1[1] - x2y2[1])**2);
+}
+
+/* File 2 */
+L.Map.mergeOptions({
+  doubleTapDragZoom: L.Browser.touch && !L.Browser.android23,
+  doubleTapDragZoomOptions: {
+    reverse: false,
+  },
+});
+
+var DoubleTapDragZoom = L.Handler.extend({
+  addHooks: function () {
+    this._map.on('doubletapdragstart', this._onDoubleTapDragStart, this);
+    this._map.on('doubletapdrag', this._onDoubleTapDrag, this);
+    this._map.on('doubletapdragend', this._onDoubleTapDragEnd, this);
+    L.DomEvent.on(this._map._container, 'touchmove', this._onDragging, this);
+  },
+
+  removeHooks: function () {
+    this._map.off('doubletapdragstart', this._onDoubleTapDragStart, this);
+    this._map.off('doubletapdrag', this._onDoubleTapDrag, this);
+    this._map.off('doubletapdragend', this._onDoubleTapDragEnd, this);
+  },
+
+  _onDoubleTapDragStart: function (e) {
+    var map = this._map;
+    if (!e.touches || e.touches.length !== 1 || map._animatingZoom) { return; }
+
+    var p = map.mouseEventToContainerPoint(e.touches[0]);
+    this._startPointY = p.y;
+    this._startPoint = p;
+
+    this._centerPoint = map.getSize()._divideBy(2);
+
+    if (map.options.doubleTapDragZoom === 'center') {
+      this._startLatLng = map.containerPointToLatLng(this._centerPoint);
+    } else {
+      this._startLatLng = map.containerPointToLatLng(p);
+    }
+
+    this._startZoom = map.getZoom();
+
+    map._stop();
+    map._moveStart(true, false);
+    this._doubleTapDragging = true;
+  },
+
+  _onDoubleTapDrag: function (e) {
+    if (!e.touches || e.touches.length !== 1) { return; }
+
+    var map = this._map;
+    var reverse = this._map.options.doubleTapDragZoomOptions.reverse;
+    var p = map.mouseEventToContainerPoint(e.touches[0]);
+
+    if (p.y <= 0) {
+      return;
+    }
+
+    var distance = reverse ? p.y - this._startPointY : this._startPointY - p.y;
+
+    var scale = Math.pow(Math.E, distance / 200);
+
+    if (scale === 1) { return; }
+
+    this._zoom = map.getScaleZoom(scale, this._startZoom);
+
+    if (map.options.doubleTapDragZoom === 'center') {
+      this._center = this._startLatLng;
+    } else {
+      var delta =
+        L.point(this._startPoint.x, p.y)
+          ._add(this._startPoint)
+          .divideBy(2)
+          ._subtract(this._centerPoint);
+
+      this._center = map.unproject(map.project(this._startLatLng, this._zoom).subtract(delta), this._zoom);
+    }
+
+    L.Util.cancelAnimFrame(this._animRequest);
+
+    var moveFn = L.Util.bind(map._move, map, this._center, this._zoom, {pinch: true, round: false});
+    this._animRequest = L.Util.requestAnimFrame(moveFn, this, true);
+  },
+
+  _onDoubleTapDragEnd: function (e) {
+    this._doubleTapDragging = false;
+
+    if (!this._center) { return; }
+    L.Util.cancelAnimFrame(this._animRequest);
+
+    // Pinch updates GridLayers' levels only when zoomSnap is off, so zoomSnap becomes noUpdate.
+    if (this._map.options.zoomAnimation) {
+      this._map._animateZoom(this._center, this._map._limitZoom(this._zoom), true, this._map.options.zoomSnap);
+    } else {
+      this._map._resetView(this._center, this._map._limitZoom(this._zoom));
+    }
+
+    this._center = null;
+  },
+
+  _onDragging: function (e) {
+    if (this._doubleTapDragging) {
+      L.DomEvent.preventDefault(e);
+      L.DomEvent.stopPropagation(e);
+    }
+  }
+});
+
+L.Map.addInitHook('addHandler', 'doubleTapDragZoom', DoubleTapDragZoom);
