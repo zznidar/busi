@@ -1,5 +1,5 @@
 {
-	"version": "2.3.3",
+	"version": "2.4",
 	"fileList": [
 		"index.html",
 		"style.css",
@@ -14,7 +14,8 @@
 		"scripts/ZZ_leaflet.js",
 		"scripts/ui.js",
 		"scripts/api_calls.js",
-		"graphics/postaja.png"
+		"graphics/postaja.png",
+		"scripts/ZZ_Leaflet.DoubleTapDragZoom.js"
 	],
 	"lazyLoad": [
 	]

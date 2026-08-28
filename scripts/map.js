@@ -60,6 +60,10 @@ var mymap = L.map('mapid', {
     zoomControl: false,
     preferCanvas: true,
     attributionControl: true,
+    doubleTapDragZoom: true,
+    doubleTapDragZoomOptions: {
+        reverse: true,
+    },
 }).setView([x, y], 13);
 
 var mymapTileLayer = new L.maptilerLayer({
