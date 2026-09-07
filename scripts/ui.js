@@ -922,3 +922,14 @@ async function changeTimetableDate(offsetDays) {
     //menuOpen();
 
 }
+
+document.addEventListener("scrollend", menuCloseByScrollPosition);
+
+function menuCloseByScrollPosition() {
+    console.log("Scroll position: ", window.scrollX, window.scrollY);
+    if(window.scrollY <= 47) {
+        menuClose();
+    } else if(window.scrollY >= 55) {
+        document.getElementById('menu').classList.remove('closed');
+    }
+}
