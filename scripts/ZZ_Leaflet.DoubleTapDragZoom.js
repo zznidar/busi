@@ -40,6 +40,11 @@ function DoubleTapDragInitHook() {
   }, this));
 
   this._container.addEventListener('touchend', L.Util.bind(function (e) {
+    let touchEndLocation = [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
+    console.log('touchend', touchEndLocation, lastTouchLocation);
+    if(distance(touchEndLocation, lastTouchLocation) > TOUCH_DISTANCE_THRESHOLD) {
+      lastTimestamp = null;
+    }
     if (timer) {
       clearTimeout(timer);
       timer = null;
@@ -62,6 +67,9 @@ function DoubleTapDragInitHook() {
 L.Map.addInitHook(DoubleTapDragInitHook);
 
 function distance(x1y1, x2y2) {
+  if(x1y1 === null || x2y2 === null) {
+    return Infinity;
+  }
   return Math.sqrt((x1y1[0] - x2y2[0])**2 + (x1y1[1] - x2y2[1])**2);
 }
 
