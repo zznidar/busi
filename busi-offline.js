@@ -1,5 +1,5 @@
 {
-	"version": "2.4",
+	"version": "2.4.1",
 	"fileList": [
 		"index.html",
 		"style.css",
