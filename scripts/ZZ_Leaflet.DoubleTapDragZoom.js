@@ -41,7 +41,6 @@ function DoubleTapDragInitHook() {
 
   this._container.addEventListener('touchend', L.Util.bind(function (e) {
     let touchEndLocation = [e.changedTouches[0].clientX, e.changedTouches[0].clientY];
-    console.log('touchend', touchEndLocation, lastTouchLocation);
     if(distance(touchEndLocation, lastTouchLocation) > TOUCH_DISTANCE_THRESHOLD) {
       lastTimestamp = null;
     }
