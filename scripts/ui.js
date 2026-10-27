@@ -774,11 +774,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 
-    // TODO: Make this a beautiful tooltip
-    document.getElementById("directions_bus_container").addEventListener("mouseover", function() {
-        alert(`Prevoznik: ${buses?.[currentBusId]?.["operator_name"]}`);
-    });
-
     function closeVisiblePanel() {
         if (!document.getElementById('info').classList.contains('no')) {
             toggleInfo();
@@ -891,6 +886,7 @@ function share(busId) {
  */
 function setPopupContent(reset=false){
     reset_text = "nalaganje...";
+    document.getElementById("operator_tooltip").innerText = `Prevoznik: ${buses?.[currentBusId]?.["operator_name"] ?? "neznan"}`;
     if (reset) {
         currentBusData = {busId: null, tripId: null, tripData: null, nextStopData: null, endStopData: null, displayedGeometry: false};
         document.getElementById('directions_bus_container').style.opacity = "1";

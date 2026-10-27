@@ -534,6 +534,32 @@ footer {
         'opsz' 48
 }
 
+.operatorTooltip {
+    position: absolute;
+    left: 1.8rem;
+    top: 50%;
+    z-index: 2;
+    width: max-content;
+    max-width: min(18rem, 65vw);
+    padding: 0.45rem 0.7rem;
+    border: 1px solid var(--color-secondary);
+    border-radius: 0.6rem;
+    background: var(--color-theme);
+    color: var(--color-font);
+    box-shadow: 0 0.35rem 1rem var(--color-boxshadow);
+    font-size: 0.75rem;
+    line-height: 1.25;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-50%) translateX(-0.25rem);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+#directions_bus_container:hover .operatorTooltip {
+    opacity: 1;
+    transform: translateY(-50%);
+}
+
 /*Buttons*/
 .btn_general {
     background-color: var(--color-secondary);
