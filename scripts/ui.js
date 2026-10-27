@@ -779,15 +779,7 @@ document.addEventListener("DOMContentLoaded", function() {
         alert(`Prevoznik: ${buses?.[currentBusId]?.["operator_name"]}`);
     });
 
-    window.addEventListener('click', () => {
-        // We want to prevent "back button" closing the app. Sure, if pressed twice, let it close.
-        history.scrollRestoration = "manual";
-        window.history.pushState({}, '');    
-        history.scrollRestoration = "manual";
-    }, { once: true })
-    
-    window.addEventListener('popstate', function() {
-        // If a pannel is visible, close it in that order: info -> bottom pannels -> bus info. And pushState. Else, do nothing.
+    function closeVisiblePanel() {
         if (!document.getElementById('info').classList.contains('no')) {
             toggleInfo();
         } else if (!document.getElementById('search_container').classList.contains('no')) {
@@ -797,19 +789,73 @@ document.addEventListener("DOMContentLoaded", function() {
         } else if (!document.getElementById('busInfoContainer').classList.contains('no')) {
             closeBusContainer();
         } else {
-            toast("Pritisnite vnovič za izhod iz aplikacije.");
-                window.addEventListener('touchstart', () => {
-                    toast("Niste pritisnili vnovič, zato boste spet morali dvakrat. \nPritožbe sprejema: Tramvaj komanda d. o. o.", 0); // We want to hide the toast now.
-                    // We want to prevent "back button" closing the app. Sure, if pressed twice, let it close.
-                    history.scrollRestoration = "manual";
-                    window.history.pushState({}, '');    
-                    history.scrollRestoration = "manual";
-                }, { once: true })
-
-            return; // Let the back button do its thing
+            return false;
         }
-        window.history.pushState({}, '');
-    });
+        return true;
+    }
+
+    const isChromeMobile = /Android.*Chrome\//.test(navigator.userAgent) &&
+        !/EdgA|OPR|SamsungBrowser/.test(navigator.userAgent);
+
+    if (isChromeMobile && "CloseWatcher" in window) {
+        let closeWatcher;
+        let backPressPending = false;
+
+        function watchClose() {
+            closeWatcher = new CloseWatcher();
+            closeWatcher.onclose = () => {
+                closeWatcher = undefined;
+                if (closeVisiblePanel()) {
+                    backPressPending = false;
+                    watchClose();
+                } else if (!backPressPending) {
+                    backPressPending = true;
+                    toast("Pritisnite vnovič za izhod iz aplikacije.");
+                } else {
+                    window.close();
+                }
+            };
+        }
+
+        document.addEventListener("pointerdown", () => {
+            if (backPressPending) {
+                backPressPending = false;
+                watchClose();
+            }
+        });
+
+        watchClose();
+    } else {
+        window.addEventListener('click', () => {
+            history.scrollRestoration = "manual";
+            window.history.pushState({}, '');
+        }, { once: true });
+
+        window.addEventListener('popstate', function() {
+            // If a pannel is visible, close it in that order: info -> bottom pannels -> bus info. And pushState. Else, do nothing.
+            if (!document.getElementById('info').classList.contains('no')) {
+                toggleInfo();
+            } else if (!document.getElementById('search_container').classList.contains('no')) {
+                toggleSearch("close");
+            } else if (!document.getElementById('menu').classList.contains('closed')) {
+                toggleMenu();
+            } else if (!document.getElementById('busInfoContainer').classList.contains('no')) {
+                closeBusContainer();
+            } else {
+                toast("Pritisnite vnovič za izhod iz aplikacije.");
+                    window.addEventListener('pointerdown', () => {
+                        toast("Niste pritisnili vnovič, zato boste spet morali dvakrat. \nPritožbe sprejema: Tramvaj komanda d. o. o.", 0); // We want to hide the toast now.
+                        // We want to prevent "back button" closing the app. Sure, if pressed twice, let it close.
+                        history.scrollRestoration = "manual";
+                        window.history.pushState({}, '');    
+                        history.scrollRestoration = "manual";
+                    }, { once: true })
+
+                return; // Let the back button do its thing
+            }
+            window.history.pushState({}, '');
+        });
+    }
 
     document.getElementById("timetable_date_display").innerText = `${(new Date).toLocaleDateString("sl-SI")} (${casovniPrislovi.get(todayOffset)})`;
 });
