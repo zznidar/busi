@@ -181,6 +181,7 @@ async function migrate() {
     // Migrate from old to new api.
     // For each entry, split the name by en-dash, then find the new ids in the postajalisca_data
     console.log("Migrating", data);
+    toast("Poteka migracija shranjenih relacij na novi vir podatkov ...");
 
     await requestAllBusStops()
     let newData = new Map();
@@ -193,6 +194,7 @@ async function migrate() {
     data = newData;
     console.log("Migrated", data);
     st.setItem(SAVENAME, JSON.stringify([...data]));
+    st.setItem("busi_lastMigration", new Date().toISOString());
     displayBusLineButtons(data);
     toast("Potekla je migracija shranjenih relacij na novi vir podatkov. Migracija končana. Srečno vožnjo!");
 }

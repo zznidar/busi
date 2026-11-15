@@ -20,6 +20,11 @@ async function fetchJson(link, signal=undefined) {
         if (status !== 200) {
             document.getElementById("log").innerText += ('Error' + status);
             console.error('Error', status);
+            // Stale busStopId: re-migrate, at most once a day
+            if (status === 404 && data?.detail === "Stop not found" && Date.now() - new Date(localStorage.getItem("busi_lastMigration")) > 864e5) {
+                localStorage.setItem("busi_lastMigration", new Date().toISOString()); // set now so parallel 404s don't each start a migration
+                migrate();
+            }
             return;
         }
 
@@ -67,6 +72,7 @@ async function requestBuses() {
  */
 async function requestAllBusStops() {
     busStopsData = await fetchJson(`${apiUrl}/stops/`);
+    busStops = {}; // rebuild, otherwise repeated calls append duplicate ids
     for (let p of busStopsData) {
         if (!p.gtfs_id.startsWith("IJPP:")) continue;
         let name = p.name;

@@ -116,6 +116,16 @@ async function printTimetable(trips, date) {
 
         TIMETABLE.appendChild(tr);
     }
+    /*     
+    // This never happens because function errors before reaching this point if busStopIds have changed. Leaving here for future.
+    if (!trips.length) {
+            // Empty timetable may mean stale busStopIds; let the user re-run the migration
+            let btn = document.createElement("button");
+            btn.innerText = "Moje relacije ne delajo 😤";
+            btn.classList.add("btn_general");
+            btn.onclick = migrate;
+            TIMETABLE.insertRow().insertCell().appendChild(btn).parentNode.colSpan = 4;
+        } */
     document.getElementById("timetable_no_line").classList.add("no");
 }
 
@@ -236,16 +246,6 @@ function displayBusLineButtons(buttons) {
     }
 }
 
-// FAVOURITE BUS LINES SECTION
-const st = localStorage;
-data = new Map(JSON.parse(st.getItem(SAVENAME))); // We use maps to maintain order
-if (data.size) {
-    if (!`${data?.entries()?.next()?.["value"]?.[1]?.["start"]?.[0]}`?.includes(":")) {
-        toast("Poteka migracija shranjenih relacij na novi vir podatkov ...")
-        migrate();
-    }
-    displayBusLineButtons(data);
-}
 
 /**
  * Display trips on bus stop
@@ -743,7 +743,17 @@ const busStopId = urlParams.get('i'); // e.g., https://link?busStopId=456
 
 // Display the result
 
-document.addEventListener("DOMContentLoaded", function() {
+const st = localStorage;
+document.addEventListener("DOMContentLoaded", function() {    
+    // FAVOURITE BUS LINES SECTION
+    data = new Map(JSON.parse(st.getItem(SAVENAME))); // We use maps to maintain order
+    if (data.size) {
+        if (!`${data?.entries()?.next()?.["value"]?.[1]?.["start"]?.[0]}`?.includes(":") || !st.getItem("busi_lastMigration")) console.log(); //migrate();
+        displayBusLineButtons(data);
+    } else {
+        st.setItem("busi_lastMigration", new Date().toISOString());
+    }
+
     if (busId) {
         displayBus(busId);
     } else {
